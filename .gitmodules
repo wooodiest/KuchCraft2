@@ -1,0 +1,3 @@
+[submodule "KuchCraft2/vendor/spdlog"]
+	path = KuchCraft2/vendor/spdlog
+	url = https://github.com/wooodiest/spdlog

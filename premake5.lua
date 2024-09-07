@@ -28,7 +28,8 @@ project "KuchCraft2"
 
     includedirs
     {
-        "%{wks.location}/KuchCraft2/src"
+        "%{wks.location}/KuchCraft2/src",
+        "%{wks.location}/KuchCraft2/vendor/spdlog/include"
     }
 
     filter "system:windows"
@@ -40,13 +41,13 @@ project "KuchCraft2"
     }
 
     filter   "configurations:Debug"
-    defines  "KC_Debug"
+    defines  "KC_DEBUG"
     runtime  "Release"
     optimize "on"
     symbols  "On"
 
     filter   "configurations:Release"
-    defines  "KC_Release"
+    defines  "KC_RELEASE"
     runtime  "Release"
     optimize "on"
     symbols  "Off"

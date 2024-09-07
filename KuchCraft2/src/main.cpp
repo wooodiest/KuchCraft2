@@ -1,8 +1,11 @@
 #include <iostream>
 
+#include "Core/Log.h"
+
 int main()
 {
-	std::cout << "Hello KuchCraft2" << std::endl;
+	KuchCraft::Log::Init();
+	KuchCraft::Log::Info("Hello KuchCraft{0}", 2);
 
 	return 0;
 }
