@@ -44,8 +44,6 @@
 
 namespace KuchCraft {
 
-	/// @class Log
-	/// @brief A static class for managing application logging.
 	class Log
 	{
 	public:
@@ -85,6 +83,17 @@ namespace KuchCraft {
 
 		/// A file sink for logging to a file.
 		static inline spdlog::sink_ptr s_FileSink;
+
+	private:
+		/// The Log class is a static utility class and cannot be instantiated.
+		/// Constructors, destructors, and assignment operators are deleted to
+		/// prevent instantiation and copying.
+		Log() = delete;
+		~Log() = delete;
+		Log(const Log&) = delete;
+		Log& operator=(const Log&) = delete;
+		Log(Log&&) = delete;
+		Log& operator=(Log&&) = delete;
 
 	};
 
