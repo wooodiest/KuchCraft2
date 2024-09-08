@@ -20,7 +20,7 @@
 ///         // Getting example data   
 ///         loggerFilePath = KuchCraft::ApplicationConfig::GetLogData().File;
 /// 
-/// @future Add more configuration files.
+/// @future Add more configuration files such as audio, renderer, application, etc.
 /// 
 
 #pragma once
@@ -52,7 +52,7 @@ namespace KuchCraft {
 
         /// Retrieves log configuration data.
         /// @return Reference to the log configuration data.
-        static inline LogConfigData& GetLogData() { return s_LogConfig; }
+        [[nodiscard]] static inline const LogConfigData& GetLogData() { return s_LogConfig; }
 
     private:
         /// Log configuration data.

@@ -6,8 +6,9 @@
 int main()
 {
 	KuchCraft::ApplicationConfig::Init();
+
 	KuchCraft::Log::Init();
-	KuchCraft::Log::Info("Hello KuchCraft{0}", 2);
+	KuchCraft::Log::Info("Hello KuchCraft");
 
 	return 0;
 }
