@@ -32,8 +32,6 @@
 /// 
 /// @future Could be extended to log also to game console.
 /// 
-/// @deprecated None.
-/// 
 /// @see spdlog::logger for more information about the underlying logger library used.
 /// 
 
@@ -54,7 +52,7 @@ namespace KuchCraft {
 		/// @param format - format string
 		/// @param args - format arguments
 		template<typename... Args>
-		inline static void Info(fmt::format_string<Args...> format, Args&&... args)
+		static inline void Info(fmt::format_string<Args...> format, Args&&... args)
 		{
 			s_Logger->info(format, std::forward<Args>(args)...);
 		}
@@ -63,7 +61,7 @@ namespace KuchCraft {
 		/// @param format - format string
 		/// @param args - format arguments
 		template<typename... Args>
-		inline static void Warn(fmt::format_string<Args...> format, Args&&... args)
+		static inline void Warn(fmt::format_string<Args...> format, Args&&... args)
 		{
 			s_Logger->warn(format, std::forward<Args>(args)...);
 		}
@@ -72,7 +70,7 @@ namespace KuchCraft {
 		/// @param format - format string
 		/// @param args - format arguments
 		template<typename... Args>
-		inline static void Error(fmt::format_string<Args...> format, Args&&... args)
+		static inline void Error(fmt::format_string<Args...> format, Args&&... args)
 		{
 			s_Logger->error(format, std::forward<Args>(args)...);
 		}
