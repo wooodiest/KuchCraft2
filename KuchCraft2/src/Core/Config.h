@@ -25,8 +25,6 @@
 
 #pragma once
 
-#include <string>
-
 namespace KuchCraft {
 
     /// Path to the application configuration file.

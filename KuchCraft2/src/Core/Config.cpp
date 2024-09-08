@@ -4,6 +4,8 @@
 /// @author Michal Kuchnicki 
 /// 
 
+#include "kcpch.h"
+
 #include "Core/Config.h"
 
 namespace KuchCraft {
