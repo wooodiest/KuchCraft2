@@ -32,12 +32,12 @@
 ///			}
 ///			 
 ///			// Method to handle key press events specifically.
-///			bool KuchCraft::Appliccation::OnKeyPressed(KuchCraft::KeyPressedEvent& e)
+///			bool KuchCraft::Application::OnKeyPressed(KuchCraft::KeyPressedEvent& e)
 ///			{
 ///				// Check if the pressed key is the Escape key.
-///				if (e.GetKeyCode == KeyCode::Escape)
+///				if (e.GetKeyCode == KuchCraft::KeyCode::Escape)
 ///				{
-///					applicationShouldStop = true;
+///					//...do something...
 ///					return true; // Indicate that the event has been handled.
 ///				}
 ///				return false; // Indicate that the event has not been handled.
@@ -122,16 +122,16 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const = 0;
+		virtual [[nodiscard]] [[noexcept]] EventType GetEventType() const = 0;
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
-		virtual int GetCategoryFlags() const = 0;
+		virtual [[nodiscard]] [[noexcept]] int GetCategoryFlags() const = 0;
 
 		/// Checks if the event is in a given category.
 		/// @param category to check.
 		/// @return True if the event belongs to the given category, false otherwise.
-		bool IsInCategory(EventCategory category) const
+		[[nodiscard]] [[noexcept]] bool IsInCategory(EventCategory category) const
 		{
 			return GetCategoryFlags() & category;
 		}
@@ -188,7 +188,7 @@ namespace KuchCraft {
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::WindowResize; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::WindowResize; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -200,11 +200,11 @@ namespace KuchCraft {
 
 		/// Retrieves the new width of the window.
 		/// @return The width of the window.
-		uint32_t GetWidth() const { return m_Width; }
+		inline [[nodiscard]] [[noexcept]] uint32_t GetWidth() const { return m_Width; }
 
 		/// Retrieves the new height of the window.
 		/// @return The height of the window.
-		uint32_t GetHeight() const { return m_Height; }
+		inline [[nodiscard]] [[noexcept]] uint32_t GetHeight() const { return m_Height; }
 
 	private:
 		/// New width of the window.
@@ -225,7 +225,7 @@ namespace KuchCraft {
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::WindowClose; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::WindowClose; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -244,7 +244,7 @@ namespace KuchCraft {
 	public:
 		/// Retrieves the key code associated with the event.
 		/// @return The key code.
-		KeyCode GetKeyCode() const { return m_KeyCode; }
+		inline [[nodiscard]] [[noexcept]] KeyCode GetKeyCode() const { return m_KeyCode; }
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
@@ -275,11 +275,11 @@ namespace KuchCraft {
 
 		/// Checks if the key press is a repeated action.
 		/// @return True if the key press is repeated, otherwise false.
-		bool IsRepeat() const { return m_IsRepeat; }
+		inline [[nodiscard]] [[noexcept]] bool IsRepeat() const { return m_IsRepeat; }
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::KeyPressed; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::KeyPressed; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -303,7 +303,7 @@ namespace KuchCraft {
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::KeyReleased; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::KeyReleased; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -323,7 +323,7 @@ namespace KuchCraft {
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::KeyTyped; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::KeyTyped; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -344,15 +344,15 @@ namespace KuchCraft {
 
 		/// Retrieves the X-coordinate of the mouse cursor.
 		/// @return The X-coordinate of the mouse
-		float GetX() const { return m_MouseX; }
+		inline [[nodiscard]] [[noexcept]] float GetX() const { return m_MouseX; }
 
 		/// Retrieves the Y-coordinate of the mouse cursor.
 		/// @return The Y-coordinate of the mouse.
-		float GetY() const { return m_MouseY; }
+		inline [[nodiscard]] [[noexcept]] float GetY() const { return m_MouseY; }
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::MouseMoved; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::MouseMoved; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -384,15 +384,15 @@ namespace KuchCraft {
 
 		/// Retrieves the X-axis scroll offset.
 		/// @return The X-axis scroll offset.
-		float GetXOffset() const { return m_XOffset; }
+		inline [[nodiscard]] [[noexcept]] float GetXOffset() const { return m_XOffset; }
 
 		/// Retrieves the Y-axis scroll offset.
 		/// @return The Y-axis scroll offset.
-		float GetYOffset() const { return m_YOffset; }
+		inline [[nodiscard]] [[noexcept]] float GetYOffset() const { return m_YOffset; }
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::MouseScrolled; }
+		static inline [[nodiscard]] EventType GetStaticType() { return EventType::MouseScrolled; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -418,7 +418,7 @@ namespace KuchCraft {
 	public:
 		/// Retrieves the mouse button that triggered the event.
 		/// @return The mouse button code.
-		MouseCode GetMouseButton() const { return m_Button; }
+		inline [[nodiscard]] [[noexcept]] MouseCode GetMouseButton() const { return m_Button; }
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
@@ -447,7 +447,7 @@ namespace KuchCraft {
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::MouseButtonPressed; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::MouseButtonPressed; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event
@@ -467,7 +467,7 @@ namespace KuchCraft {
 
 		/// Retrieves the static event type for window resizing.
 		/// @return The static event type.
-		static inline EventType GetStaticType() { return EventType::MouseButtonReleased; }
+		static inline [[nodiscard]] [[noexcept]] EventType GetStaticType() { return EventType::MouseButtonReleased; }
 
 		/// Retrieves the event type.
 		/// @return The type of the event

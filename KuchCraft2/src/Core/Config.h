@@ -52,7 +52,7 @@ namespace KuchCraft {
 
         /// Retrieves log configuration data.
         /// @return Reference to the log configuration data.
-        [[nodiscard]] static inline const LogConfigData& GetLogData() { return s_LogConfig; }
+        static inline [[nodiscard]] const LogConfigData& GetLogData() { return s_LogConfig; }
 
     private:
         /// Log configuration data.
