@@ -81,6 +81,15 @@
 ///           the macro is used.
 #define KC_BIND_EVENT_FN(fn) [this](auto&&... args) -> decltype(auto) { return this->fn(std::forward<decltype(args)>(args)...); }
 
+/// Macro to bind static member functions for event handling.
+/// This macro creates a lambda function that calls the specified static member function (`fn`)
+/// with the provided arguments. This allows static methods to be called with the appropriate arguments.
+/// 
+/// @param fn - The static member function to bind. This function must be a static member of the class where
+///           the macro is used.
+#define KC_BIND_STATIC_EVENT_FN(fn) [](auto&&... args) -> decltype(auto) { return fn(std::forward<decltype(args)>(args)...); }
+
+
 namespace KuchCraft {
 
 	/// Enum class representing different types of events that can occur in the application.
