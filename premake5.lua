@@ -26,13 +26,16 @@ project "KuchCraft2"
     files
     {
         "%{wks.location}/KuchCraft2/src/**.h",
-        "%{wks.location}/KuchCraft2/src/**.cpp"
+        "%{wks.location}/KuchCraft2/src/**.cpp",
+        "%{wks.location}/KuchCraft2/vendor/glm/glm/**.hpp",
+        "%{wks.location}/KuchCraft2/vendor/glm/glm/**.inl"
     }
 
     includedirs
     {
         "%{wks.location}/KuchCraft2/src",
-        "%{wks.location}/KuchCraft2/vendor/spdlog/include"
+        "%{wks.location}/KuchCraft2/vendor/spdlog/include",
+        "%{wks.location}/KuchCraft2/vendor/glm"
     }
 
     filter "system:windows"

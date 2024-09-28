@@ -37,7 +37,10 @@ namespace KuchCraft {
 			if (!s_Data.Minimized)
 			{
 				// Temporary placeholder for main application logic.
-				Log::Info("KucgCraft 2");
+				glm::vec2 v = { 1.234f, 2.011f };
+				auto [x, y] = v;
+				Log::Info("KucgCraft 2 {0}", y);
+
 				Shutdown();
 			}			
 		}
