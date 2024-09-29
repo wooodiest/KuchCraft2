@@ -114,6 +114,16 @@ namespace KuchCraft {
 		/// @return The delta time in seconds, representing the time elapsed since the last frame.
 		inline [[nodiscard]] float GetDeltaTime() const noexcept { return m_TimeData.DeltaTime; }
 
+		/// Retrieves the raw pointer to the underlying GLFW window.
+		/// This function provides direct access to the internal GLFW window pointer (`GLFWwindow*`). 
+		/// **Use with caution**, as modifying or directly interacting with this pointer can bypass 
+		/// the Window class's safeguards, potentially leading to undefined behavior, crashes, or 
+		/// resource management issues. Misuse of this pointer can lead to serious errors, such as double freeing resources or 
+		/// corrupting the internal state of the Window class. Make sure to fully understand GLFW 
+		/// window management before using this function.
+		/// @return The pointer to the underlying `GLFWwindow*` object.
+		inline [[nodiscard]] GLFWwindow* GetGLFWWindow() const noexcept { return m_Window; }
+
 		/// Checks if the window is currently focused.
 		/// @return true if the window is focused, false otherwise.
 		[[nodiscard]] bool IsFocused() const noexcept;
