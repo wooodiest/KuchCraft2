@@ -17,6 +17,18 @@ namespace KuchCraft {
 		/// Initialize the main parts of the application
 		ApplicationConfig::Init();
 		Log::Init();
+
+		WindowData windowData;
+		const auto& windowConfig = ApplicationConfig::GetWindowData();
+		windowData.Title         = windowConfig.Title;
+		windowData.Width         = windowConfig.Width;
+		windowData.Height        = windowConfig.Height;
+		windowData.Vsync         = windowConfig.Vsync;
+		windowData.Resizable     = windowConfig.Resizable;
+		windowData.FullScreen    = windowConfig.FullScreen;
+		windowData.ShowCursor    = windowConfig.ShowCursor;
+		windowData.EventCallback = KC_BIND_STATIC_EVENT_FN(Application::OnEvent);
+		s_Data.Window = std::make_unique<Window>(windowData);
 	}
 
 	void Application::OnShutdown()
@@ -32,17 +44,19 @@ namespace KuchCraft {
 		/// Continue running until the application is signaled to shut down.
 		while (s_Data.Running)
 		{
+			/// Start a new frame for the window, allowing for updates and rendering.
+			s_Data.Window->BeginFrame();
+			float deltaTime = s_Data.Window->GetDeltaTime();
+
 			/// Check if the application window is minimized.
 			/// If minimized, skip core logic to avoid unnecessary processing while the application is inactive.
 			if (!s_Data.Minimized)
 			{
-				// Temporary placeholder for main application logic.
-				glm::vec2 v = { 1.234f, 2.011f };
-				auto [x, y] = v;
-				Log::Info("KucgCraft 2 {0}", y);
+				/// Main application logic.
+			}	
 
-				Shutdown();
-			}			
+			/// Finalize the current frame, polling for events and swapping buffers to display the rendered frame.
+			s_Data.Window->EndFrame();
 		}
 
 		/// Once the main loop exits, perform any necessary cleanup

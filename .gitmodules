@@ -4,3 +4,9 @@
 [submodule "KuchCraft2/vendor/glm"]
 	path = KuchCraft2/vendor/glm
 	url = https://github.com/wooodiest/glm
+[submodule "KuchCraft2/vendor/glfw"]
+	path = KuchCraft2/vendor/glfw
+	url = https://github.com/wooodiest/glfw
+[submodule "KuchCraft2/vendor/glad"]
+	path = KuchCraft2/vendor/glad
+	url = https://github.com/wooodiest/glad

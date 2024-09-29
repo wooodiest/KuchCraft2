@@ -44,6 +44,40 @@ namespace KuchCraft {
 
     };
 
+    struct WindowConfigData
+    {
+        /// The title of the window.
+        std::string Title = "KuchCraft2";
+
+        /// The width of the window in pixels
+        int32_t Width = 1280;
+
+        /// The height of the window in pixels.
+        int32_t Height = 720;
+
+        /// Flag indicating whether vertical synchronization is enabled.
+        bool Vsync = true;
+
+        /// Flag indicating whether the window is resizable.
+        bool Resizable = true;
+
+        /// Flag indicating whether the window is in fullscreen mode.
+        bool FullScreen = false;
+
+        /// Flag indicating whether the cursor should be shown.
+        bool ShowCursor = true;
+
+    };
+
+    /// Limits for window sizes
+    constexpr int32_t min_window_width = 640;
+    constexpr int32_t min_window_height = 480;
+    constexpr int32_t max_window_width  = 7680;
+    constexpr int32_t max_window_height = 4320;
+
+    /// Max value for delta time
+    constexpr float max_delta_time = 1.0f / 60.0f;
+
     class ApplicationConfig
     {
     public:
@@ -54,9 +88,16 @@ namespace KuchCraft {
         /// @return Reference to the log configuration data.
         static inline [[nodiscard]] const LogConfigData& GetLogData() noexcept { return s_LogConfig; }
 
+        /// Retrieves window configuration data.
+        /// @return Reference to the window configuration data.
+        static inline [[nodiscard]] const WindowConfigData& GetWindowData() noexcept { return s_WindowConfig; }
+
     private:
         /// Log configuration data.
         static inline LogConfigData s_LogConfig;
+
+        /// Window configuration data.
+        static inline WindowConfigData s_WindowConfig;
 
     };
 }

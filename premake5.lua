@@ -12,6 +12,11 @@ workspace "KuchCraft2"
         "MultiProcessorCompile" 
     }
 
+group "Dependencies"
+	include "KuchCraft2/vendor/glfw"
+    include "KuchCraft2/vendor/glad"
+group ""
+
 project "KuchCraft2"
     kind       "ConsoleApp"
     language   "C++"
@@ -35,7 +40,16 @@ project "KuchCraft2"
     {
         "%{wks.location}/KuchCraft2/src",
         "%{wks.location}/KuchCraft2/vendor/spdlog/include",
-        "%{wks.location}/KuchCraft2/vendor/glm"
+        "%{wks.location}/KuchCraft2/vendor/glm",
+        "%{wks.location}/KuchCraft2/vendor/glfw/include",
+        "%{wks.location}/KuchCraft2/vendor/glad/include"
+    }
+
+    links
+    {
+        "GLFW",
+        "Glad",
+        "opengl32.lib",
     }
 
     filter "system:windows"
@@ -43,7 +57,8 @@ project "KuchCraft2"
 
     defines
     { 
-        "_CRT_SECURE_NO_WARNINGS"
+        "_CRT_SECURE_NO_WARNINGS",
+        "GLFW_INCLUDE_NONE"
     }
 
     filter   "configurations:Debug"

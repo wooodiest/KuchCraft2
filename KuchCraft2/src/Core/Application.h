@@ -18,18 +18,30 @@
 #pragma once
 
 #include "Core/Event.h"
+#include "Core/Window.h"
 
 namespace KuchCraft {
 
-	/// This struct maintains essential flags related to the application's execution state,
-	/// such as whether the application is running or minimized. These flags are crucial for
-	/// managing the application's lifecycle and responding to user actions or system events.
+	/// The ApplicationData struct stores essential information needed for the 
+	/// application's operation, including the window object and flags. 
+	/// These data members are critical for managing the application's lifecycle
 	struct ApplicationData
 	{
 		/// Indicates whether the application is currently running.
+		/// This flag is used to control the execution of the main loop. 
+		/// When set to false, the application will terminate.
 		bool Running = true;
+
 		/// Indicates whether the application window is minimized.
+		/// This flag is used to pause or adjust certain behaviors when the application window is minimized,
+		/// such as suspending rendering or other resource-heavy operations.
 		bool Minimized = false;
+
+		/// Holds the main application window.
+		/// This pointer manages the Window object, which represents the main interface of the application.
+		/// It is responsible for handling all window-related operations, such as creating, resizing, and closing 
+		/// the window, as well as managing events that occur within the window.
+		std::unique_ptr<Window> Window;
 	};
 
 	class Application
@@ -42,6 +54,10 @@ namespace KuchCraft {
 
 		/// It sets the application state to not running, effectively ending the main loop and stopping the application.
 		static void Shutdown();
+
+		/// Retrieves the Window instance currently used by the application.
+		/// @return A reference to the Window instance.
+		static Window& GetWindow() { return *s_Data.Window; }
 
 	private:
 		/// Initializes the application.
@@ -68,7 +84,9 @@ namespace KuchCraft {
 		static [[nodiscard]] bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
-		/// Holds current application data
+		/// This static member stores an instance of the ApplicationData struct, 
+		/// which contains essential flags and objects that represent the state of the application.
+		/// This centralized data is used throughout the application's lifecycle to manage and monitor its execution.
 		static inline ApplicationData s_Data;
 
 	private:
