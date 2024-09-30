@@ -18,7 +18,7 @@ group "Dependencies"
 group ""
 
 project "KuchCraft2"
-    kind       "ConsoleApp"
+    kind       "WindowedApp"
     language   "C++"
     cppdialect "C++20"
     location   "KuchCraft2"
@@ -54,6 +54,8 @@ project "KuchCraft2"
 
     filter "system:windows"
         systemversion "latest"
+        links { "kernel32", "user32" }
+        entrypoint "WinMainCRTStartup"
 
     defines
     { 
