@@ -192,7 +192,7 @@ namespace KuchCraft {
 		/// Constructor for WindowResizeEvent.
 		/// @param width - new width of the window.
 		/// @param height - new height of the window.
-		WindowResizeEvent(uint32_t width, uint32_t height)
+		WindowResizeEvent(int width, int height)
 			: m_Width(width), m_Height(height) {}
 
 		/// Retrieves the static event type for window resizing.
@@ -209,18 +209,18 @@ namespace KuchCraft {
 
 		/// Retrieves the new width of the window.
 		/// @return The width of the window.
-		inline [[nodiscard]] uint32_t GetWidth() const noexcept { return m_Width; }
+		inline [[nodiscard]] int GetWidth() const noexcept { return m_Width; }
 
 		/// Retrieves the new height of the window.
 		/// @return The height of the window.
-		inline [[nodiscard]] uint32_t GetHeight() const noexcept { return m_Height; }
+		inline [[nodiscard]] int GetHeight() const noexcept { return m_Height; }
 
 	private:
 		/// New width of the window.
-		uint32_t m_Width;
+		int m_Width;
 
 		/// New height of the window.
-		uint32_t m_Height;
+		int m_Height;
 
 	};
 

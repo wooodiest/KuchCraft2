@@ -50,10 +50,10 @@ namespace KuchCraft {
         std::string Title = "KuchCraft2";
 
         /// The width of the window in pixels
-        int32_t Width = 1280;
+        int Width = 1280;
 
         /// The height of the window in pixels.
-        int32_t Height = 720;
+        int Height = 720;
 
         /// Flag indicating whether vertical synchronization is enabled.
         bool Vsync = true;
@@ -70,10 +70,10 @@ namespace KuchCraft {
     };
 
     /// Limits for window sizes
-    constexpr int32_t min_window_width = 640;
-    constexpr int32_t min_window_height = 480;
-    constexpr int32_t max_window_width  = 7680;
-    constexpr int32_t max_window_height = 4320;
+    constexpr int min_window_width  = 640;
+    constexpr int min_window_height = 480;
+    constexpr int max_window_width  = 7680;
+    constexpr int max_window_height = 4320;
 
     /// Max value for delta time
     constexpr float max_delta_time = 1.0f / 60.0f;

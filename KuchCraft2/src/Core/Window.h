@@ -37,10 +37,10 @@ namespace KuchCraft {
 		std::string Title = "KuchCraft2";
 
 		/// The width of the window in pixels
-		int32_t Width = 1280;
+		int Width = 1280;
 
 		/// The height of the window in pixels.
-		int32_t Height = 720;
+		int Height = 720;
 
 		/// Flag indicating whether vertical synchronization is enabled.
 		bool Vsync = true;
@@ -84,11 +84,11 @@ namespace KuchCraft {
 		
 		/// Gets the width of the window.
 		/// @return The width of the window in pixels.
-		inline [[nodiscard]] uint32_t GetWidth() const noexcept { return m_Data.Width; }
+		inline [[nodiscard]] int GetWidth() const noexcept { return m_Data.Width; }
 
 		/// Gets the height of the window.
 		/// @return The height of the window in pixels.
-		inline [[nodiscard]] uint32_t GetHeigth() const noexcept { return m_Data.Height; }
+		inline [[nodiscard]] int GetHeigth() const noexcept { return m_Data.Height; }
 
 		/// Gets the size of the window.
 		/// @return A vec2 containing the width and height of the window.
@@ -139,11 +139,11 @@ namespace KuchCraft {
 
 		/// Sets the width of the window.
 		/// @param width - the new width for the window.
-		void SetWidth(uint32_t width) { SetSize({ width, m_Data.Height }); }
+		void SetWidth(int width) { SetSize({ width, m_Data.Height }); }
 
 		/// Sets the height of the window.
 		/// @param height - the new height for the window.
-		void SetHeigth(uint32_t height) { SetSize({ m_Data.Width, height }); }
+		void SetHeigth(int height) { SetSize({ m_Data.Width, height }); }
 
 		/// Sets the size of the window.
 		/// @param size - vec2 with new size for the window.
