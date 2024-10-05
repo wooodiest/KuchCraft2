@@ -57,6 +57,10 @@ project "KuchCraft2"
         links { "kernel32", "user32" }
         entrypoint "WinMainCRTStartup"
 
+    filter "action:vs*"
+        linkoptions { "/NODEFAULTLIB:LIBCMT" }
+    filter {}
+
     defines
     { 
         "_CRT_SECURE_NO_WARNINGS",

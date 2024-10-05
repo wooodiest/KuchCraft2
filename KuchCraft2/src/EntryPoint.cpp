@@ -14,6 +14,8 @@
 #include "kcpch.h"
 #include "Core/Application.h"
 
+#include <windows.h>
+
 /// Windows entry point for the application.
 /// Initializes the application and starts the main game loop by calling `Application::Run()`.
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
