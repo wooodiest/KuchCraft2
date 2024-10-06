@@ -57,7 +57,7 @@ namespace KuchCraft {
 
 		/// Retrieves the Window instance currently used by the application.
 		/// @return A reference to the Window instance.
-		static Window& GetWindow() { return *s_Data.Window; }
+		static inline [[nodiscard]] Window& GetWindow() { return *s_Data.Window; }
 
 	private:
 		/// Initializes the application.

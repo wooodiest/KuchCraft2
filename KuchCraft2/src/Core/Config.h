@@ -70,13 +70,13 @@ namespace KuchCraft {
     };
 
     /// Limits for window sizes
-    constexpr int min_window_width  = 640;
-    constexpr int min_window_height = 480;
-    constexpr int max_window_width  = 7680;
-    constexpr int max_window_height = 4320;
+    constexpr inline int min_window_width  = 640;
+    constexpr inline int min_window_height = 480;
+    constexpr inline int max_window_width  = 7680;
+    constexpr inline int max_window_height = 4320;
 
     /// Max value for delta time
-    constexpr float max_delta_time = 1.0f / 60.0f;
+    constexpr inline float max_delta_time = 1.0f / 60.0f;
 
     class ApplicationConfig
     {
