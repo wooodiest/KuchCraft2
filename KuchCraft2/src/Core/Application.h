@@ -73,6 +73,11 @@ namespace KuchCraft {
 		/// @param e - the event to process.
 		static void OnEvent(Event& e);
 
+		/// Initializes the random number generator for each thread.
+		/// This method creates and starts threads that each call the Random::Init() function to ensure
+		/// that each thread has its own random engine initialized.
+		static void RandomEngineInit();
+
 		/// Handles the window close event.
 		/// @param e - the window close event.
 		/// @return Returns true if the event has been handled and should stop being propagated further

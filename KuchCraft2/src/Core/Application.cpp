@@ -9,6 +9,7 @@
 
 #include "Core/Log.h"
 #include "Core/Config.h"
+#include "Core/Random.h"
 
 namespace KuchCraft {
 
@@ -17,6 +18,7 @@ namespace KuchCraft {
 		/// Initialize the main parts of the application
 		ApplicationConfig::Init();
 		Log::Init();
+		RandomEngineInit();
 
 		WindowData windowData;
 		const auto& windowConfig = ApplicationConfig::GetWindowData();
@@ -98,5 +100,23 @@ namespace KuchCraft {
 		// We do not want the event to be marked as handled so that other
 		// parts of the application can also receive it and handle it appropriately
 		return false;
+	}
+
+	void Application::RandomEngineInit()
+	{
+		/// Determine the number of threads based on the number of available CPU cores
+		uint32_t threadsCount = std::thread::hardware_concurrency();
+
+		/// Create a vector to hold the threads and reserve space for the number of threads
+		std::vector<std::thread> threads;
+		threads.reserve(threadsCount);
+
+		/// Create and start threads, each initializing the random engine
+		for (uint32_t i = 0; i < threadsCount; i++)
+			threads.emplace_back([]() { Random::Init(); });
+		
+		/// Wait for all threads to finish execution
+		for (auto& t : threads)
+			t.join();	
 	}
 }
