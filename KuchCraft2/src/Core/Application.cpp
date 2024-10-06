@@ -31,11 +31,12 @@ namespace KuchCraft {
 		windowData.ShowCursor    = windowConfig.ShowCursor;
 		windowData.EventCallback = KC_BIND_STATIC_EVENT_FN(Application::OnEvent);
 		s_Data.Window = std::make_unique<Window>(windowData);
+		s_Data.Game = std::make_unique<KuchCraft>();
 	}
 
 	void Application::OnShutdown()
 	{
-		/// TODO
+		
 	}
 
 	void Application::Run()
@@ -55,6 +56,7 @@ namespace KuchCraft {
 			if (!s_Data.Minimized)
 			{
 				/// Main application logic.
+				s_Data.Game->OnUpdate(deltaTime);
 			}	
 
 			/// Finalize the current frame, polling for events and swapping buffers to display the rendered frame.
@@ -79,6 +81,8 @@ namespace KuchCraft {
 		/// Dispatch events to appropriate handlers
 		dispatcher.Dispatch<WindowCloseEvent>(KC_BIND_STATIC_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(KC_BIND_STATIC_EVENT_FN(Application::OnWindowResize));
+
+		s_Data.Game->OnEvent(e);
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

@@ -20,6 +20,8 @@
 #include "Core/Event.h"
 #include "Core/Window.h"
 
+#include "KuchCraft.h"
+
 namespace KuchCraft {
 
 	/// The ApplicationData struct stores essential information needed for the 
@@ -42,6 +44,12 @@ namespace KuchCraft {
 		/// It is responsible for handling all window-related operations, such as creating, resizing, and closing 
 		/// the window, as well as managing events that occur within the window.
 		std::unique_ptr<Window> Window;
+
+		/// Holds the game instance.
+		/// This pointer manages the KuchCraft object, which encapsulates the core logic and state of the game.
+		/// It is responsible for handling game mechanics, updating game state, rendering graphics, and processing 
+		/// user input.
+		std::unique_ptr<KuchCraft> Game;
 	};
 
 	class Application
@@ -58,6 +66,10 @@ namespace KuchCraft {
 		/// Retrieves the Window instance currently used by the application.
 		/// @return A reference to the Window instance.
 		static inline [[nodiscard]] Window& GetWindow() { return *s_Data.Window; }
+
+		/// Retrieves the Game instance used by the application.
+		/// @return A reference to the Game instance.
+		static inline [[nodiscard]] KuchCraft& GetGame() { return *s_Data.Game; }
 
 	private:
 		/// Initializes the application.
