@@ -11,6 +11,8 @@
 #include "Core/Config.h"
 #include "Core/Random.h"
 
+#include "Graphics/Renderer.h"
+
 namespace KuchCraft {
 
 	void Application::Init()
@@ -31,12 +33,14 @@ namespace KuchCraft {
 		windowData.ShowCursor    = windowConfig.ShowCursor;
 		windowData.EventCallback = KC_BIND_STATIC_EVENT_FN(Application::OnEvent);
 		s_Data.Window = std::make_unique<Window>(windowData);
+
+		Renderer::Init();
 		s_Data.Game = std::make_unique<KuchCraft>();
 	}
 
 	void Application::OnShutdown()
 	{
-		
+		Renderer::Shutdown();
 	}
 
 	void Application::Run()
@@ -49,6 +53,11 @@ namespace KuchCraft {
 		{
 			/// Start a new frame for the window, allowing for updates and rendering.
 			s_Data.Window->BeginFrame();
+
+			/// Begin the rendering process for the new frame.
+			Renderer::BeginFrame();
+
+			/// Get the time passed since the last frame
 			float deltaTime = s_Data.Window->GetDeltaTime();
 
 			/// Check if the application window is minimized.
@@ -58,6 +67,9 @@ namespace KuchCraft {
 				/// Main application logic.
 				s_Data.Game->OnUpdate(deltaTime);
 			}	
+
+			/// Finalize rendering for the current frame.
+			Renderer::EndFrame();
 
 			/// Finalize the current frame, polling for events and swapping buffers to display the rendered frame.
 			s_Data.Window->EndFrame();

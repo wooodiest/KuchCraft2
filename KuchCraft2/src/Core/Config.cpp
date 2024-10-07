@@ -17,4 +17,10 @@ namespace KuchCraft {
 		/// if (find("LogConfigData-File") && data is valid)
 		/// s_ConfigData.LogConfig.File = data;
 	}
+
+	void ApplicationConfig::Save()
+	{
+		/// Renderer::GetDATAAAAAA
+		/// s_RandererData.2433 = rgg rg
+	}
 }

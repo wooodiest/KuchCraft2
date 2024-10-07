@@ -78,11 +78,19 @@ namespace KuchCraft {
     /// Max value for delta time
     constexpr inline float max_delta_time = 1.0f / 60.0f;
 
+    struct RendererConfigData
+    {
+        bool Logs = true;
+    };
+
     class ApplicationConfig
     {
     public:
         /// Initializes the application configuration
         static void Init();
+
+        /// Saves application configuration
+        static void Save();
 
         /// Retrieves log configuration data.
         /// @return Reference to the log configuration data.
@@ -92,12 +100,19 @@ namespace KuchCraft {
         /// @return Reference to the window configuration data.
         static inline [[nodiscard]] const WindowConfigData& GetWindowData() noexcept { return s_WindowConfig; }
 
+        /// Retrieves renderer configuration data.
+        /// @return Reference to the renderer configuration data.
+        static inline [[nodiscard]] const RendererConfigData& GetRendererData() noexcept { return s_RendererConfig; }
+
     private:
         /// Log configuration data.
         static inline LogConfigData s_LogConfig;
 
         /// Window configuration data.
         static inline WindowConfigData s_WindowConfig;
+
+        /// Window configuration data.
+        static inline RendererConfigData s_RendererConfig;
 
     };
 }
