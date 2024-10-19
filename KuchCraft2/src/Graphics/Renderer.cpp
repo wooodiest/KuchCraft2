@@ -1,3 +1,9 @@
+///
+/// @file Renderer.cpp
+/// 
+/// @author Michal Kuchnicki
+/// 
+
 #include "kcpch.h"
 #include "Graphics/Renderer.h"
 
@@ -42,6 +48,28 @@ namespace KuchCraft {
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		}
 
+		/// tmp
+		float vertices[] = {
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 
+			 0.0f,  0.5f, 0.0f
+		};
+
+		unsigned int VBO;
+		glGenVertexArrays(1, &s_TMPData.VAO);
+		glGenBuffers(1, &VBO);
+
+		glBindVertexArray(s_TMPData.VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+
+		s_TMPData.Shader = std::make_shared<Shader>("assets/shaders/tmp.glsl");
+		s_TMPData.Shader->Bind();
+		s_TMPData.Shader->SetFloat4("u_Color", { 1.0f, 0.0f, 0.0f, 1.0f });
 	}
 
 	void Renderer::Shutdown()
@@ -51,12 +79,15 @@ namespace KuchCraft {
 
 	void Renderer::BeginFrame()
 	{
-
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void Renderer::EndFrame()
 	{
-
+		s_TMPData.Shader->Bind();
+		glBindVertexArray(s_TMPData.VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
 }

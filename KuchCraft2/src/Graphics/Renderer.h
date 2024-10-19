@@ -1,6 +1,8 @@
 ///
 /// @file Renderer.h
 /// 
+/// @author Michal Kuchnicki
+/// 
 /// @brief Header file containing the declaration of the Renderer class, which provides static methods
 ///        for all rendering operations
 /// 
@@ -40,6 +42,8 @@ namespace KuchCraft {
 
 	private:
 		static inline RendererData s_Data;
+
+		static inline RendererTMPData s_TMPData;
 
 	};
 }
