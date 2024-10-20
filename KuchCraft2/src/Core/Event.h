@@ -35,7 +35,7 @@
 ///			bool KuchCraft::Application::OnKeyPressed(KuchCraft::KeyPressedEvent& e)
 ///			{
 ///				// Check if the pressed key is the Escape key.
-///				if (e.GetKeyCode == KuchCraft::KeyCode::Escape)
+///				if (e.GetKeyCode() == KuchCraft::KeyCode::Escape)
 ///				{
 ///					//...do something...
 ///					return true; // Indicate that the event has been handled.

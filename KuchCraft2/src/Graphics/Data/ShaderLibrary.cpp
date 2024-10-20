@@ -9,7 +9,7 @@
 
 namespace KuchCraft {
 
-	std::shared_ptr<Shader> ShaderLibrary::Load(const std::string& filePath)
+	std::shared_ptr<Shader> ShaderLibrary::Load(const std::filesystem::path& filePath)
 	{
 		auto shader = std::make_shared<Shader>(filePath);
 		Add(shader);

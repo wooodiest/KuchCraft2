@@ -40,7 +40,7 @@ namespace KuchCraft {
 		/// @param filepath The path to the shader source code file. This file is expected
 		///                 to contain both vertex and fragment shader code, separated by custom
 		///                 preprocessor directives.
-		Shader(const std::string& filepath);
+		Shader(const std::filesystem::path& filepath);
 
 		/// Destructor that deletes the shader program from the GPU memory.
 		/// Ensures that all resources associated with the shader program are released
@@ -109,10 +109,6 @@ namespace KuchCraft {
 		void SetMat4(const std::string& name, const glm::mat4& value);
 
 	private:
-		/// Extracts the name of the shader from its file path.
-        /// This method is used during shader initialization to give a shader a meaningful name
-		void ExtractName();
-
 		/// This method reads the shader file, preprocesses it, and compiles the shader by 
 		/// creating and linking the shader program. It handles all the stages of shader 
 		/// creation, including compiling individual shader stagesand linking them into a complete program
@@ -122,7 +118,7 @@ namespace KuchCraft {
 		/// This utility function is used to load the shader source code into a string.
 		/// @param filepath - the path to the file to read.
 		/// @return - a string containing the entire contents of the file.
-		[[nodiscard]] std::string ReadFile(const std::string filepath);
+		[[nodiscard]] std::string ReadFile(const std::filesystem::path& filepath);
 
 		/// This method processes the source code of the shader by handling preprocessor directives, 
 		/// It reads the content of included files and integrates them into the shader source code,
@@ -156,7 +152,7 @@ namespace KuchCraft {
 		uint32_t m_RendererID = 0;
 
 		/// Stores the file path to the shader source file
-		std::string m_Filepath;
+		std::filesystem::path m_Filepath;
 
 		/// Mame of the shader, extracted from the file path.
 		/// It is used for logging and debugging purposes, providing a human-readable identifier

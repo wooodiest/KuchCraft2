@@ -35,10 +35,12 @@ namespace KuchCraft {
         }
     }
 
-    Shader::Shader(const std::string& filepath)
+    Shader::Shader(const std::filesystem::path& filepath)
         : m_Filepath(filepath)
     {
-        ExtractName();
+        /// Extract the name of the shader from its file path.
+        m_Name = m_Filepath.filename().replace_extension("").string();
+
         Compile();
     }
 
@@ -111,24 +113,6 @@ namespace KuchCraft {
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());
         glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
-    }
-
-    void Shader::ExtractName()
-    {
-        /// Find the last slash in the file path
-        size_t lastSlash = m_Filepath.find_last_of("/\\");
-
-        /// Adjust to get the start of the name
-        lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
-
-        /// Find the last dot in the file path
-        size_t lastDot = m_Filepath.rfind('.');
-
-        /// Calculate the length of the name
-        size_t count = lastDot == std::string::npos ? m_Filepath.size() - lastSlash : lastDot - lastSlash;
-
-        /// Extract the name from the file path
-        m_Name = m_Filepath.substr(lastSlash, count);
     }
 
     void Shader::Compile()
@@ -204,13 +188,13 @@ namespace KuchCraft {
             glDeleteShader(shaderID);
     }
 
-    std::string Shader::ReadFile(const std::string filepath)
+    std::string Shader::ReadFile(const std::filesystem::path& filepath)
     {
         /// Variable to hold the shader source code
         std::string source;
 
         /// Open the file in binary mode
-        std::ifstream in(m_Filepath, std::ios::in | std::ios::binary);
+        std::ifstream in(filepath, std::ios::in | std::ios::binary);
 
         /// Check if the file was successfully opened
         if (in)
@@ -229,13 +213,13 @@ namespace KuchCraft {
             }
             else
             {
-                Log::Error("Could not read from file '{0}'", m_Filepath);
+                Log::Error("Could not read from file '{0}'", filepath.string());
                 return std::string();
             }
         }
         else
         {
-            Log::Error("Could not open file '{0}'", m_Filepath);
+            Log::Error("Could not open file '{0}'", filepath.string());
             return std::string();
         }
 

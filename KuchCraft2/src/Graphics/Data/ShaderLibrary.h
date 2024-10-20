@@ -31,7 +31,7 @@ namespace KuchCraft {
 		/// compiles it, and stores it in the library for future use.
 		/// @param filePath - the path to the shader source file.
 		/// @return - a shared pointer to the loaded shader.
-		[[nodiscard]] std::shared_ptr<Shader> Load(const std::string& filePath);
+		[[nodiscard]] std::shared_ptr<Shader> Load(const std::filesystem::path& filePath);
 
 	    /// Adds a shader to the library.
 		/// Stores a shader in the internal map, associating it with its name.
