@@ -140,6 +140,15 @@ namespace KuchCraft {
 		/// @return a map associating ShaderType enums with their corresponding source code strings.
 		[[nodiscard]] std::map<ShaderType, std::string> GroupByType(const std::string& source);
 
+		/// Applies shader substitutions to the provided source code string
+		/// This function replaces all occurrences of specific placeholder strings in the shader source code
+		/// with their corresponding values from the shader substitution map. The substitutions are retrieved
+		/// from the renderer, allowing dynamic modification of shader source code at runtime. This is useful
+		/// for injecting configuration options or constants into shaders without modifying the original source code.
+		/// @param source - a reference to a string containing the shader source code. The function modifies this string
+		///               in place by replacing any found placeholders with their corresponding values from the substitution map.
+		void ApplySubstitutions(std::string& source);
+
 	private: 
 		/// It holds the OpenGL renderer ID for the compiled shader program.
 		/// It is assigned when the shader program is created and linked, allowing the shader

@@ -40,9 +40,30 @@ namespace KuchCraft {
 		/// the display
 		static void EndFrame();
 
+	public:
+		/// Recompiles all shaders.
+		/// This function triggers the recompilation of all shaders in the shader library,
+		/// typically used when shader source code has been updated or substitutions need to be applied.
+		static void ReCompileShaders();
+
+	public:
+		/// Retrieves the current shader substitution map.
+		/// @return A const reference to the shader substitution map, containing key-value pairs
+		///         used for dynamic shader configurations.
+		static inline [[nodiscard]] const auto& GetShaderSubstitutionMap() { return s_Data.ShaderLibrary.GetSubstitutionMap(); }
+
 	private:
+		/// Adds shader substitutions.
+		/// @details This function adds key-value pairs to the shader substitution map, which allows
+		///          dynamic replacements of placeholders in the shader code. It is used to inject
+		///          values like constants or configuration options into shaders.
+		static void AddSubstitutions();
+
+	private:
+		/// This structure contains essential data for rendering and renderer working process
 		static inline RendererData s_Data;
 
+		/// Holds temporary data for a simple rendering operation.
 		static inline RendererTMPData s_TMPData;
 
 	};

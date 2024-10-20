@@ -6,6 +6,7 @@
 
 #include "kcpch.h"
 #include "Graphics/Renderer.h"
+#include "Graphics/Data/ShaderLibrary.h"
 
 #include "Core/Config.h"
 
@@ -48,6 +49,10 @@ namespace KuchCraft {
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		}
 
+		/// Add custom shader substitutions
+		AddSubstitutions();
+
+
 		/// tmp
 		float vertices[] = {
 			-0.5f, -0.5f, 0.0f,
@@ -67,7 +72,7 @@ namespace KuchCraft {
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
-		s_TMPData.Shader = std::make_shared<Shader>("assets/shaders/tmp.glsl");
+		s_TMPData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/tmp.glsl");
 		s_TMPData.Shader->Bind();
 		s_TMPData.Shader->SetFloat4("u_Color", { 1.0f, 0.0f, 0.0f, 1.0f });
 	}
@@ -88,6 +93,18 @@ namespace KuchCraft {
 		s_TMPData.Shader->Bind();
 		glBindVertexArray(s_TMPData.VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
+	}
+
+	void Renderer::ReCompileShaders()
+	{
+		AddSubstitutions();
+		s_Data.ShaderLibrary.ReCompileAll();
+	}
+
+	void Renderer::AddSubstitutions()
+	{
+		auto tmp = std::make_pair<std::string, std::string>("TMP", "1.0");
+		s_Data.ShaderLibrary.AddSubstitution(tmp);
 	}
 
 }

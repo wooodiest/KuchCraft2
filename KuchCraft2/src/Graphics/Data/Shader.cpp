@@ -6,6 +6,8 @@
 
 #include "kcpch.h"
 #include "Graphics/Data/Shader.h"
+#include "Graphics/Data/ShaderLibrary.h"
+#include "Graphics/Renderer.h"
 
 #include <glad/glad.h>
 
@@ -136,6 +138,8 @@ namespace KuchCraft {
 
         /// Preprocess the source code to handle includes and other directives
         Preprocess(source);
+
+        ApplySubstitutions(source);
 
         /// Group the shader source code by type (vertex and fragment)
         auto sources = GroupByType(source);
@@ -315,6 +319,23 @@ namespace KuchCraft {
 
         /// Return the map of shader types and their source code
         return data;
+    }
+
+    void Shader::ApplySubstitutions(std::string& source)
+    {
+        const auto& substitutions = Renderer::GetShaderSubstitutionMap();
+
+        std::for_each(substitutions.begin(), substitutions.end(), [&](const auto& pair) {
+            const auto& from = pair.first;
+            const auto& to = pair.second;
+
+            size_t pos = 0;
+            while ((pos = source.find(from, pos)) != std::string::npos)
+            {
+                source.replace(pos, from.length(), to);
+                pos += to.length();
+            }
+            });
     }
 
 }
