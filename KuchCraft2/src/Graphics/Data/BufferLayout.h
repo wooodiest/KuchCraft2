@@ -40,11 +40,11 @@ namespace KuchCraft {
 
 		/// Gets the count of components in the buffer element based on its type.
 		/// @return - the number of components (1 for Uint, Int, Float; 2 for Float2, etc...)
-		inline [[nodiscard]] uint32_t GetCount() const;
+		[[nodiscard]] uint32_t GetCount() const;
 
 		/// Gets the size of the buffer element in bytes based on its type.
 		/// @return the size in bytes
-		inline [[nodiscard]] uint32_t GetSize() const;
+		[[nodiscard]] uint32_t GetSize() const;
 
 	};
 
