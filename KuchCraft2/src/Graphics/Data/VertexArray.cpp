@@ -36,6 +36,7 @@ namespace KuchCraft {
 	void VertexArray::Create()
 	{
 		glCreateVertexArrays(1, &m_RendererID);
+		Bind();
 	}
 
 	void VertexArray::SetVertexBuffer(const VertexBuffer& vertexBuffer)

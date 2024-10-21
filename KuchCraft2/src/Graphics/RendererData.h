@@ -10,6 +10,8 @@
 
 #include "Graphics/Data/Shader.h"
 #include "Graphics/Data/ShaderLibrary.h"
+#include "Graphics/Data/VertexBuffer.h"
+#include "Graphics/Data/VertexArray.h"
 
 namespace KuchCraft {
 
@@ -28,7 +30,8 @@ namespace KuchCraft {
 	struct RendererTMPData
 	{
 		std::shared_ptr<Shader> Shader;
-		uint32_t VAO = 0;
+		VertexArray VertexArray;
+		VertexBuffer VertexBuffer;
 	};
 
 }

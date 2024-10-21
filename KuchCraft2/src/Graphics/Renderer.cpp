@@ -52,29 +52,27 @@ namespace KuchCraft {
 		/// Add custom shader substitutions
 		AddSubstitutions();
 
-
 		/// tmp
-		float vertices[] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f, 
-			 0.0f,  0.5f, 0.0f
-		};
+		{
+			float vertices[] = {
+				-0.5f, -0.5f, 0.0f,
+				 0.5f, -0.5f, 0.0f,
+				 0.0f,  0.5f, 0.0f
+			};
 
-		unsigned int VBO;
-		glGenVertexArrays(1, &s_TMPData.VAO);
-		glGenBuffers(1, &VBO);
+			s_TMPData.VertexArray.Create();
+			s_TMPData.VertexBuffer.Create(VertexBufferDataUsage::STATIC, sizeof(vertices), vertices);
+			s_TMPData.VertexBuffer.SetBufferLayout({
+				{ ShaderDataType::Float3, "aPos" }
+				});
 
-		glBindVertexArray(s_TMPData.VAO);
+			s_TMPData.VertexArray.SetVertexBuffer(s_TMPData.VertexBuffer);
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
-
-		s_TMPData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/tmp.glsl");
-		s_TMPData.Shader->Bind();
-		s_TMPData.Shader->SetFloat4("u_Color", { 1.0f, 0.0f, 0.0f, 1.0f });
+			s_TMPData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/tmp.glsl");
+			s_TMPData.Shader->Bind();
+			s_TMPData.Shader->SetFloat4("u_Color", { 1.0f, 0.0f, 0.0f, 1.0f });
+		}
+		
 	}
 
 	void Renderer::Shutdown()
@@ -91,7 +89,7 @@ namespace KuchCraft {
 	void Renderer::EndFrame()
 	{
 		s_TMPData.Shader->Bind();
-		glBindVertexArray(s_TMPData.VAO);
+		s_TMPData.VertexArray.Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 
