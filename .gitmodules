@@ -10,3 +10,6 @@
 [submodule "KuchCraft2/vendor/glad"]
 	path = KuchCraft2/vendor/glad
 	url = https://github.com/wooodiest/glad
+[submodule "KuchCraft2/vendor/imgui"]
+	path = KuchCraft2/vendor/imgui
+	url = https://github.com/wooodiest/imgui

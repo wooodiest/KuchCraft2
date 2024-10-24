@@ -15,6 +15,7 @@ workspace "KuchCraft2"
 group "Dependencies"
 	include "KuchCraft2/vendor/glfw"
     include "KuchCraft2/vendor/glad"
+    include "KuchCraft2/vendor/imgui"
 group ""
 
 project "KuchCraft2"
@@ -42,7 +43,8 @@ project "KuchCraft2"
         "%{wks.location}/KuchCraft2/vendor/spdlog/include",
         "%{wks.location}/KuchCraft2/vendor/glm",
         "%{wks.location}/KuchCraft2/vendor/glfw/include",
-        "%{wks.location}/KuchCraft2/vendor/glad/include"
+        "%{wks.location}/KuchCraft2/vendor/glad/include",
+        "%{wks.location}/KuchCraft2/vendor/imgui"
     }
 
     links
@@ -50,6 +52,7 @@ project "KuchCraft2"
         "GLFW",
         "Glad",
         "opengl32.lib",
+        "ImGui"
     }
 
     filter "system:windows"

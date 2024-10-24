@@ -13,6 +13,13 @@
 
 #include "Graphics/Renderer.h"
 
+#ifdef  INCLUDE_IMGUI
+	#include <imgui.h>
+	#include <backends/imgui_impl_glfw.h>
+	#include <backends/imgui_impl_opengl3.h>
+#endif
+
+
 namespace KuchCraft {
 
 	void Application::Init()
@@ -35,12 +42,40 @@ namespace KuchCraft {
 		s_Data.Window = std::make_unique<Window>(windowData);
 
 		Renderer::Init();
+
+#ifdef  INCLUDE_IMGUI
+
+		/// Initialize the ImGui context and set up GLFW and OpenGL backends
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO();
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+
+		ImGui_ImplGlfw_InitForOpenGL(s_Data.Window->GetGLFWWindow(), true);
+		ImGui_ImplOpenGL3_Init("#version 460 core");
+
+		/// Styles
+		ImGui::StyleColorsDark();
+		ImGuiStyle& style = ImGui::GetStyle();
+		style.Colors[ImGuiCol_WindowBg].w = 0.5f;
+
+#endif
+
 		s_Data.Game = std::make_unique<KuchCraft>();
 	}
 
 	void Application::OnShutdown()
 	{
 		Renderer::Shutdown();
+
+#ifdef  INCLUDE_IMGUI
+
+		/// Shutdown ImGui and its backends for GLFW and OpenGL
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+#endif
 	}
 
 	void Application::Run()
@@ -53,6 +88,17 @@ namespace KuchCraft {
 		{
 			/// Start a new frame for the window, allowing for updates and rendering.
 			s_Data.Window->BeginFrame();
+
+#ifdef  INCLUDE_IMGUI
+
+			/// Start a new ImGui frame
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+
+			/// tmp
+			ImGui::ShowDemoWindow();
+#endif
 
 			/// Begin the rendering process for the new frame.
 			Renderer::BeginFrame();
@@ -70,6 +116,13 @@ namespace KuchCraft {
 
 			/// Finalize rendering for the current frame.
 			Renderer::EndFrame();
+
+#ifdef  INCLUDE_IMGUI
+
+			/// Render ImGui draw data
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
 
 			/// Finalize the current frame, polling for events and swapping buffers to display the rendered frame.
 			s_Data.Window->EndFrame();

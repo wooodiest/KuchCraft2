@@ -64,7 +64,7 @@ namespace KuchCraft {
 			s_TMPData.VertexBuffer.Create(VertexBufferDataUsage::STATIC, sizeof(vertices), vertices);
 			s_TMPData.VertexBuffer.SetBufferLayout({
 				{ ShaderDataType::Float3, "aPos" }
-				});
+			});
 
 			s_TMPData.VertexArray.SetVertexBuffer(s_TMPData.VertexBuffer);
 
