@@ -13,9 +13,11 @@ void main()
 
 layout (location = 0) out vec4 oColor;
 
-uniform vec4 u_Color = vec4(1.0, 0.0, 0.0, 1.0);
+#include "assets/shaders/jd.glsl"
+
+uniform vec4 u_Color;
 
 void main()
 {
-    oColor = u_Color;
+    oColor = vec4(RED(), ##TMP, 0.0, 1.0);
 }

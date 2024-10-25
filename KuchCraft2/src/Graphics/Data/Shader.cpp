@@ -62,7 +62,10 @@ namespace KuchCraft {
     void Shader::ReCompile()
     {
         if (m_RendererID)
+        {
             glDeleteProgram(m_RendererID);
+            m_RendererID = 0;
+        }
 
         Compile();
     }

@@ -74,6 +74,14 @@ namespace KuchCraft {
 		/// @return - a constant reference to the map of shader substitutions.
 		inline [[nodiscard]] const auto& GetSubstitutionMap() { return s_Substitutions; }
 
+		/// Retrieves the current map of shaders in the shader library.
+		/// This method returns a non-constant reference to the internal shader map, 
+		/// allowing access to modify or manage the loaded shaders directly by name.
+		/// Each shader is stored as a shared pointer, enabling shared ownership across 
+		/// multiple components in the application.
+		/// @return - a reference to the map of loaded shaders.
+		inline [[nodiscard]] auto& GetShaders() { return s_Shaders; }
+
 	private:
 		/// This unordered map holds shared pointers to all shaders loaded into the library,
 		/// allowing them to be accessed by name.

@@ -29,7 +29,8 @@ namespace KuchCraft {
 	/// Holds temporary data for a simple rendering operation.
 	struct RendererTMPData
 	{
-		std::shared_ptr<Shader> Shader;
+		std::shared_ptr<Shader> Shader1;
+		std::shared_ptr<Shader> Shader2;
 		VertexArray VertexArray;
 		VertexBuffer VertexBuffer;
 	};

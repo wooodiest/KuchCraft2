@@ -100,6 +100,20 @@ namespace KuchCraft {
 		/// @return Returns true if the event has been handled and should stop being propagated further
 		static [[nodiscard]] bool OnWindowResize(WindowResizeEvent& e);
 
+		/// Begins a new ImGui frame for rendering GUI elements.
+		/// This method initializes a new ImGui frame by setting up OpenGL and GLFW context-specific 
+		/// ImGui data. It prepares the GUI environment to render UI elements in the application.
+		static void BeginImGuiFrame();
+
+		/// Ends the current ImGui frame and renders it to the screen.
+		/// This method finalizes the ImGui frame by rendering all accumulated ImGui draw data 
+		/// and presenting it on the screen.
+		static void EndImGuiFrame();
+
+		/// Renders ImGui-specific components for the application.
+		/// This method handles the application's custom ImGui rendering logic.
+		static void OnImGuiRender();
+
 	private:
 		/// This static member stores an instance of the ApplicationData struct, 
 		/// which contains essential flags and objects that represent the state of the application.

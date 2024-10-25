@@ -89,18 +89,8 @@ namespace KuchCraft {
 			/// Start a new frame for the window, allowing for updates and rendering.
 			s_Data.Window->BeginFrame();
 
-#ifdef  INCLUDE_IMGUI
-
-			/// Start a new ImGui frame
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
-
-			/// tmp
-			ImGui::ShowDemoWindow();
-#endif
-
 			/// Begin the rendering process for the new frame.
+			BeginImGuiFrame();
 			Renderer::BeginFrame();
 
 			/// Get the time passed since the last frame
@@ -116,13 +106,7 @@ namespace KuchCraft {
 
 			/// Finalize rendering for the current frame.
 			Renderer::EndFrame();
-
-#ifdef  INCLUDE_IMGUI
-
-			/// Render ImGui draw data
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-#endif
+			EndImGuiFrame();
 
 			/// Finalize the current frame, polling for events and swapping buffers to display the rendered frame.
 			s_Data.Window->EndFrame();
@@ -169,6 +153,53 @@ namespace KuchCraft {
 		// We do not want the event to be marked as handled so that other
 		// parts of the application can also receive it and handle it appropriately
 		return false;
+	}
+
+	void Application::BeginImGuiFrame()
+	{
+#ifdef  INCLUDE_IMGUI
+
+		/// Start a new ImGui frame
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+
+		ImGui::Begin("Debug");
+		if (ImGui::BeginTabBar("DebugTabBar"))
+		{
+			if (ImGui::BeginTabItem("Application"))
+			{
+				OnImGuiRender();
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Renderer"))
+			{
+				Renderer::OnImGuiRender();
+				ImGui::EndTabItem();
+			}
+
+			ImGui::EndTabBar();
+		}
+#endif
+	}
+
+	void Application::EndImGuiFrame()
+	{
+#ifdef  INCLUDE_IMGUI
+
+		/// Render ImGui draw data
+		ImGui::End();
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
+	}
+
+	void Application::OnImGuiRender()
+	{
+#ifdef  INCLUDE_IMGUI
+
+#endif
 	}
 
 	void Application::RandomEngineInit()

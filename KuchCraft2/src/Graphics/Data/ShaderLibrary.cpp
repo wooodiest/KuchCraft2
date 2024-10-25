@@ -53,7 +53,10 @@ namespace KuchCraft {
 	void ShaderLibrary::ReCompileAll()
 	{
 		for (auto& [name, shader] : s_Shaders)
+		{
 			shader->ReCompile();
+			Log::Info("Recompiled shader '{}'", name);
+		}
 	}
 
 	void ShaderLibrary::AddSubstitution(const std::pair<std::string, std::string>& sub)
@@ -62,7 +65,6 @@ namespace KuchCraft {
 		const std::string& to   = sub.second;
 
 		s_Substitutions["##" + from] = to;
-		Log::Info("Added substitution: '{}' -> '{}'", from, to);
 	}
 
 }

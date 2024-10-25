@@ -64,6 +64,18 @@ namespace KuchCraft {
 		/// @return A reference to the string containing the shader's name.
 		inline [[nodiscard]] const std::string& GetName() const { return m_Name; }
 
+		/// Returns the file path of the shader source file.
+		/// This path is useful for reloading the shader or for debugging purposes, allowing
+		/// the application to access the original source file for recompilation or inspection.
+		/// @return A constant reference to the std::filesystem::path containing the shader's file path.
+		inline [[nodiscard]] const auto& GetPath() const { return m_Filepath; }
+
+		/// Retrieves the renderer ID of the shader program.
+		/// This ID is assigned by the OpenGL upon shader compilation and
+		/// is used to manage the shader program on the GPU.
+		/// @return The unsigned integer representing the shader's renderer ID.
+		inline [[nodiscard]] uint32_t GetRendererID() const { return m_RendererID; }
+
 	public:
 		/// -> Methods for setting various uniform variables in the shader
 		

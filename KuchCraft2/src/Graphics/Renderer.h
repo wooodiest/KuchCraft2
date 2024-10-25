@@ -40,11 +40,22 @@ namespace KuchCraft {
 		/// the display
 		static void EndFrame();
 
+		/// Renders ImGui components specific to the renderer.
+		/// This function contains renderer-specific ImGui rendering logic and is used to
+		/// add UI components or debug information related to the rendering system.
+		static void OnImGuiRender();
+
 	public:
 		/// Recompiles all shaders.
 		/// This function triggers the recompilation of all shaders in the shader library,
 		/// typically used when shader source code has been updated or substitutions need to be applied.
 		static void ReCompileShaders();
+
+		/// Recompiles a specific shader by name.
+		/// This function recompiles a single shader identified by its name in the shader library.
+		/// It is useful for updating a particular shader after source code changes without recompiling all shaders.
+		/// @param name - the name of the shader to be recompiled.
+		static void ReCompileShader(const std::string& name);
 
 	public:
 		/// Retrieves the current shader substitution map.
