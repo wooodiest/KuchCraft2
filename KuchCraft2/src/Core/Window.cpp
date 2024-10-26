@@ -81,6 +81,18 @@ namespace KuchCraft {
 			data.EventCallback(event);
 		});
 
+		/// Set up a callback function for when the window is moved. It updates the window's
+		/// position and dispatches a WindowMoveEvent.
+		glfwSetWindowPosCallback(m_Window, [](GLFWwindow* window, int xPos, int yPos) {
+			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+			data.Config.PositionX = xPos;
+			data.Config.PositionY = yPos;
+
+			/// Create and dispatch the window move event to notify the application.
+			WindowMoveEvent event(xPos, yPos);
+			data.EventCallback(event);
+		});
+
 		/// Set up a callback function for when the window is closed. It creates and dispatches
 		/// a WindowCloseEvent to signal the application to stop running.
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {

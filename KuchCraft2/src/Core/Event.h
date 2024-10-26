@@ -98,7 +98,7 @@ namespace KuchCraft {
 		None = 0,
 
 		/// Associated with window
-		WindowClose, WindowResize,
+		WindowClose, WindowResize, WindowMoved,
 
 		/// Related to the use of the keyboard
 		KeyPressed, KeyReleased, KeyTyped,
@@ -201,11 +201,11 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
-		virtual int GetCategoryFlags() const noexcept override { return EventCategoryApplication; }
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryApplication; }
 
 		/// Retrieves the new width of the window.
 		/// @return The width of the window.
@@ -238,13 +238,54 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
-		virtual int GetCategoryFlags() const noexcept override { return EventCategoryApplication; }
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryApplication; }
 
 	};
+
+	/// Event class for window moving events.
+	/// This event is triggered when the window is moved.
+	class WindowMoveEvent : public Event
+	{
+	public:
+		/// Constructor for WindowMoveEvent.
+		/// @param x - new x-coordinate of the window.
+		/// @param y - new y-coordinate of the window.
+		WindowMoveEvent(int x, int y)
+			: m_X(x), m_Y(y) {}
+
+		/// Retrieves the static event type for window moving.
+		/// @return The static event type.
+		static inline [[nodiscard]] EventType GetStaticType() noexcept { return EventType::WindowMoved; }
+
+		/// Retrieves the event type.
+		/// @return The type of the event.
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
+
+		/// Retrieves the event category flags.
+		/// @return The category flags for this event.
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryApplication; }
+
+		/// Retrieves the new x-coordinate of the window.
+		/// @return The x-coordinate of the window.
+		inline [[nodiscard]] int GetX() const noexcept { return m_X; }
+
+		/// Retrieves the new y-coordinate of the window.
+		/// @return The y-coordinate of the window.
+		inline [[nodiscard]] int GetY() const noexcept { return m_Y; }
+
+	private:
+		/// New x-coordinate of the window.
+		int m_X;
+
+		/// New y-coordinate of the window.
+		int m_Y;
+	};
+
+
 
 	/// Base class for all key-related events.
 	/// This class handles storing the key code and retrieving category flags.
@@ -257,7 +298,7 @@ namespace KuchCraft {
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
-		virtual int GetCategoryFlags() const noexcept override { return EventCategoryKeyboard | EventCategoryInput; }
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryKeyboard | EventCategoryInput; }
 
 	protected:
 		/// Protected constructor to initialize the key code.
@@ -292,7 +333,7 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 	private:
 		/// Stores whether the key press is a repeat action.
@@ -316,7 +357,7 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 	};
 
@@ -336,7 +377,7 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 	};
 
@@ -365,11 +406,11 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
-		virtual int GetCategoryFlags() const noexcept override { return EventCategoryMouse | EventCategoryInput; }
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryMouse | EventCategoryInput; }
 
 	private:
 		/// X-coordinate of the mouse cursor.
@@ -405,11 +446,11 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
-		virtual int GetCategoryFlags() const noexcept override { return EventCategoryMouse | EventCategoryInput; }
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryMouse | EventCategoryInput; }
 
 	private:
 		/// X-axis scroll offset.
@@ -431,7 +472,7 @@ namespace KuchCraft {
 
 		/// Retrieves the event category flags.
 		/// @return The category flags for this event.
-		virtual int GetCategoryFlags() const noexcept override { return EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton; }
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton; }
 
 	protected:
 		/// Protected constructor for initializing the mouse button code.
@@ -460,7 +501,7 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept override { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
 
 	};
 
@@ -480,7 +521,7 @@ namespace KuchCraft {
 
 		/// Retrieves the event type.
 		/// @return The type of the event
-		virtual EventType GetEventType() const noexcept { return GetStaticType(); }
+		virtual [[nodiscard]] EventType GetEventType() const noexcept { return GetStaticType(); }
 
 	};
 
