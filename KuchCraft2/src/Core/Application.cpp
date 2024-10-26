@@ -30,14 +30,7 @@ namespace KuchCraft {
 		RandomEngineInit();
 
 		WindowData windowData;
-		const auto& windowConfig = ApplicationConfig::GetWindowData();
-		windowData.Title         = windowConfig.Title;
-		windowData.Width         = windowConfig.Width;
-		windowData.Height        = windowConfig.Height;
-		windowData.Vsync         = windowConfig.Vsync;
-		windowData.Resizable     = windowConfig.Resizable;
-		windowData.FullScreen    = windowConfig.FullScreen;
-		windowData.ShowCursor    = windowConfig.ShowCursor;
+		windowData.Config = ApplicationConfig::GetWindowData();
 		windowData.EventCallback = KC_BIND_STATIC_EVENT_FN(Application::OnEvent);
 		s_Data.Window = std::make_unique<Window>(windowData);
 

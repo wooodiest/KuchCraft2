@@ -9,6 +9,7 @@
 #include "Graphics/Data/ShaderLibrary.h"
 
 #include "Core/Config.h"
+#include "Core/Config.h"
 
 #include <glad/glad.h>
 
@@ -21,12 +22,8 @@ namespace KuchCraft {
 
 	void Renderer::Init()
 	{
-		/// Retrieve the renderer configuration data from the application config.
-		auto& config = ApplicationConfig::GetRendererData();
-		s_Data.Logs = config.Logs;
-
 		/// Check if logging for OpenGL is enabled.
-		if (s_Data.Logs)
+		if (ApplicationConfig::GetRendererData().Logs)
 		{
 			/// Set up an OpenGL debug message callback function to handle log messages.
 			glDebugMessageCallback( [](GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {

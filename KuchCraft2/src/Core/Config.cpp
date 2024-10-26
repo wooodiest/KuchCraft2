@@ -7,6 +7,7 @@
 #include "kcpch.h"
 
 #include "Core/Config.h"
+#include "Core/Application.h"
 
 namespace KuchCraft {
 
@@ -22,5 +23,7 @@ namespace KuchCraft {
 	{
 		/// Renderer::GetDATAAAAAA
 		/// s_RandererData.2433 = rgg rg
+		/// 
+		s_WindowConfig = Application::GetWindow().GetWindowData();
 	}
 }

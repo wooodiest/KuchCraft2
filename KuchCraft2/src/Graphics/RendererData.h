@@ -18,9 +18,6 @@ namespace KuchCraft {
 	/// This structure contains the main data needed by the rendering engine,
 	struct RendererData
 	{
-		/// Flag to toggle logging during rendering.
-		bool Logs = true;
-
 		/// Manages the collection of shaders used by the renderer.
 		/// It holds all shaders utilized in the rendering process, providing easy access and management.
 		ShaderLibrary ShaderLibrary;

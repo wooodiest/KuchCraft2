@@ -41,11 +41,11 @@ namespace KuchCraft {
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		/// Configure the window to be resizable or fixed-size based on the provided WindowData.
-		glfwWindowHint(GLFW_RESIZABLE, m_Data.Resizable ? GLFW_TRUE : GLFW_FALSE);
+		glfwWindowHint(GLFW_RESIZABLE, m_Data.Config.Resizable ? GLFW_TRUE : GLFW_FALSE);
 		
 		/// Create a new window with the specified width, height, and title. If fullscreen mode is enabled, 
 		/// the window will be created on the primary monitor; otherwise, it will be windowed.
-		m_Window = glfwCreateWindow(m_Data.Width, m_Data.Height, m_Data.Title.c_str(), m_Data.FullScreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
+		m_Window = glfwCreateWindow(m_Data.Config.Width, m_Data.Config.Height, m_Data.Config.Title.c_str(), m_Data.Config.FullScreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
 
 		/// We want the application to have some window size limits, we set them...
 		glfwSetWindowSizeLimits(m_Window, min_window_width, min_window_height, max_window_width, max_window_height);
@@ -64,17 +64,17 @@ namespace KuchCraft {
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 
 		/// Enable or disable vertical synchronization based on the provided WindowData.
-		SetVsync(m_Data.Vsync);
+		SetVsync(m_Data.Config.Vsync);
 
 		/// Enable or disable cursor visibility based on the provided WindowData.
-		ShowCursor(m_Data.ShowCursor);
+		ShowCursor(m_Data.Config.ShowCursor);
 
 		/// Set up a callback function that is triggered when the window is resized.
 		/// It updates the window's internal width and height and dispatches a WindowResizeEvent.
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
-			data.Width  = width;
-			data.Height = height;
+			data.Config.Width  = width;
+			data.Config.Height = height;
 
 			/// Create and dispatch the window resize event to notify the application.
 			WindowResizeEvent event(width, height);
@@ -229,8 +229,8 @@ namespace KuchCraft {
 
 		/// Set the new window size and update the internal window data
 		glfwSetWindowSize(m_Window, size.x, size.y);
-		m_Data.Width  = size.x;
-		m_Data.Height = size.y;
+		m_Data.Config.Width  = size.x;
+		m_Data.Config.Height = size.y;
 	}
 
 	void Window::SetVsync(bool status)
@@ -246,7 +246,7 @@ namespace KuchCraft {
 			glfwSwapInterval(0);
 
 		/// Update the internal window data
-		m_Data.Vsync = status;
+		m_Data.Config.Vsync = status;
 	}
 
 	void Window::SetResizable(bool status)
@@ -254,7 +254,7 @@ namespace KuchCraft {
 		glfwSetWindowAttrib(m_Window, GLFW_RESIZABLE, status ? GLFW_TRUE : GLFW_FALSE);
 
 		/// Update the internal window data
-		m_Data.Resizable = status;
+		m_Data.Config.Resizable = status;
 	}
 
 	void Window::SetFullScreen(bool status)
@@ -263,10 +263,10 @@ namespace KuchCraft {
 			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0,
 				glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height, GLFW_DONT_CARE);
 		else
-			glfwSetWindowMonitor(m_Window, nullptr, 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
+			glfwSetWindowMonitor(m_Window, nullptr, 0, 0, m_Data.Config.Width, m_Data.Config.Height, GLFW_DONT_CARE);
 
 		/// Update the internal window data
-		m_Data.FullScreen = status;
+		m_Data.Config.FullScreen = status;
 	}
 
 	void Window::SetTitle(const std::string& title)
@@ -274,7 +274,7 @@ namespace KuchCraft {
 		glfwSetWindowTitle(m_Window, title.c_str());
 
 		/// Update the internal window data
-		m_Data.Title = title;
+		m_Data.Config.Title = title;
 	}
 
 	void Window::Minimize()
@@ -302,7 +302,7 @@ namespace KuchCraft {
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		/// Update the internal window data
-		m_Data.ShowCursor = status;
+		m_Data.Config.ShowCursor = status;
 	}
 
 }

@@ -24,6 +24,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Core/Event.h"
+#include "Core/Config.h"
 
 namespace KuchCraft {
 
@@ -33,26 +34,8 @@ namespace KuchCraft {
 	/// Structure to hold window data
 	struct WindowData
 	{
-		/// The title of the window.
-		std::string Title = "KuchCraft2";
-
-		/// The width of the window in pixels
-		int Width = 1280;
-
-		/// The height of the window in pixels.
-		int Height = 720;
-
-		/// Flag indicating whether vertical synchronization is enabled.
-		bool Vsync = true;
-
-		/// Flag indicating whether the window is resizable.
-		bool Resizable = true;
-
-		/// Flag indicating whether the window is in fullscreen mode.
-		bool FullScreen = false;
-
-		/// Flag indicating whether the cursor is visible in the window.
-		bool ShowCursor = true;
+		/// structure containing the configuration settings for the window
+		WindowConfigData Config;
 
 		/// Callback function for handling events, allowing external components to respond to window events.
 		EventCallbackFn EventCallback;
@@ -82,33 +65,38 @@ namespace KuchCraft {
 		/// rendered frame to the user, effectively making the current frame visible.
 		void EndFrame();
 		
+		/// Retrieves the configuration data of the window.
+		/// @return A constant reference to the WindowConfigData structure containing
+		///         the configuration settings for the window.
+		inline [[nodiscard]] const WindowConfigData& GetWindowData() const noexcept { return m_Data.Config; }
+
 		/// Gets the width of the window.
 		/// @return The width of the window in pixels.
-		inline [[nodiscard]] int GetWidth() const noexcept { return m_Data.Width; }
+		inline [[nodiscard]] int GetWidth() const noexcept { return m_Data.Config.Width; }
 
 		/// Gets the height of the window.
 		/// @return The height of the window in pixels.
-		inline [[nodiscard]] int GetHeigth() const noexcept { return m_Data.Height; }
+		inline [[nodiscard]] int GetHeigth() const noexcept { return m_Data.Config.Height; }
 
 		/// Gets the size of the window.
 		/// @return A vec2 containing the width and height of the window.
-		inline [[nodiscard]] glm::ivec2 GetSize() const noexcept { return { m_Data.Width, m_Data.Height }; }
+		inline [[nodiscard]] glm::ivec2 GetSize() const noexcept { return { m_Data.Config.Width, m_Data.Config.Height }; }
 
 		/// Checks if vertical synchronization is enabled.
 		/// @return true if VSync is enabled, false otherwise.
-		inline [[nodiscard]] bool GetVsyncStatus() const noexcept { return m_Data.Vsync; }
+		inline [[nodiscard]] bool GetVsyncStatus() const noexcept { return m_Data.Config.Vsync; }
 
 		/// Checks if the window is resizable.
 		/// @return true if the window is resizable, false otherwise.
-		inline [[nodiscard]] bool GetResizableStatus() const noexcept { return m_Data.Resizable; }
+		inline [[nodiscard]] bool GetResizableStatus() const noexcept { return m_Data.Config.Resizable; }
 
 		/// Checks if the window is in fullscreen mode.
 		/// @return true if the window is fullscreen, false otherwise.
-		inline [[nodiscard]] bool GetFullScreenStatus() const noexcept { return m_Data.FullScreen; }
+		inline [[nodiscard]] bool GetFullScreenStatus() const noexcept { return m_Data.Config.FullScreen; }
 
 		/// Checks if the cursor is currently visible.
 		/// @return true if the cursor is shown, false otherwise.
-		inline [[nodiscard]] bool GetShowCursorStatus() const noexcept { return m_Data.ShowCursor; }
+		inline [[nodiscard]] bool GetShowCursorStatus() const noexcept { return m_Data.Config.ShowCursor; }
 
 		/// Retrieves the time interval between the current frame and the last frame.
 		/// @return The delta time in seconds, representing the time elapsed since the last frame.
@@ -139,11 +127,11 @@ namespace KuchCraft {
 
 		/// Sets the width of the window.
 		/// @param width - the new width for the window.
-		void SetWidth(int width) { SetSize({ width, m_Data.Height }); }
+		void SetWidth(int width) { SetSize({ width, m_Data.Config.Height }); }
 
 		/// Sets the height of the window.
 		/// @param height - the new height for the window.
-		void SetHeigth(int height) { SetSize({ m_Data.Width, height }); }
+		void SetHeigth(int height) { SetSize({ m_Data.Config.Width, height }); }
 
 		/// Sets the size of the window.
 		/// @param size - vec2 with new size for the window.
