@@ -53,7 +53,8 @@ namespace KuchCraft {
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 
 		ImGui_ImplGlfw_InitForOpenGL(s_Data.Window->GetGLFWWindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 460 core");
+		const std::string shaderVerstion = "#version " + ApplicationConfig::GetRendererData().ShaderVersion;
+		ImGui_ImplOpenGL3_Init(shaderVerstion.c_str());
 
 		/// Styles
 		ImGui::StyleColorsDark();

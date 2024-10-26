@@ -315,10 +315,7 @@ namespace KuchCraft {
 
 	void Renderer::AddSubstitutions()
 	{
-		auto tmp1 = std::make_pair<std::string, std::string>("TMP", "1.0");
-		auto tmp2 = std::make_pair<std::string, std::string>("TMP2", "17.0");
-		s_Data.ShaderLibrary.AddSubstitution(tmp1);
-		s_Data.ShaderLibrary.AddSubstitution(tmp2);
+		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("SHADER_VERSION", ApplicationConfig::GetRendererData().ShaderVersion));
 	}
 
 }

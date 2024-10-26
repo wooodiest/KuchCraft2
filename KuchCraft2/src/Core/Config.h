@@ -81,6 +81,8 @@ namespace KuchCraft {
     struct RendererConfigData
     {
         bool Logs = true;
+
+        std::string ShaderVersion = "460 core";
     };
 
     class ApplicationConfig
