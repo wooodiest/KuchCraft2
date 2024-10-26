@@ -45,11 +45,21 @@ namespace KuchCraft {
 		
 		/// Create a new window with the specified width, height, and title. If fullscreen mode is enabled, 
 		/// the window will be created on the primary monitor; otherwise, it will be windowed.
-		m_Window = glfwCreateWindow(m_Data.Config.Width, m_Data.Config.Height, m_Data.Config.Title.c_str(), m_Data.Config.FullScreen ? glfwGetPrimaryMonitor() : nullptr, nullptr);
+		m_Window = glfwCreateWindow(m_Data.Config.Width, m_Data.Config.Height, m_Data.Config.Title.c_str(), nullptr, nullptr);
+
+		/// Set Fullscreen
+		m_Data.Config.PositionBeforeFullscreenX = m_Data.Config.PositionX;
+		m_Data.Config.PositionBeforeFullscreenY = m_Data.Config.PositionY;
+		m_Data.Config.WidthBeforeFullscreen     = m_Data.Config.Width;
+		m_Data.Config.HeightBeforeFullscreen    = m_Data.Config.Height;
+		SetFullScreen(m_Data.Config.FullScreen);
 
 		/// We want the application to have some window size limits, we set them...
 		glfwSetWindowSizeLimits(m_Window, min_window_width, min_window_height, max_window_width, max_window_height);
 
+		/// Set window position
+		glfwSetWindowPos(m_Window, m_Data.Config.PositionX, m_Data.Config.PositionY);
+		
 		/// Set the created window as the current OpenGL context, allowing OpenGL rendering within it.
 		glfwMakeContextCurrent(m_Window);
 
@@ -269,13 +279,31 @@ namespace KuchCraft {
 		m_Data.Config.Resizable = status;
 	}
 
+	void Window::SetPosition(const glm::ivec2& position)
+	{
+		glfwSetWindowPos(m_Window, position.x, position.y);
+
+		m_Data.Config.PositionX = position.x;
+		m_Data.Config.PositionY = position.y;
+	}
+
 	void Window::SetFullScreen(bool status)
 	{
 		if (status)
+		{
+			m_Data.Config.PositionBeforeFullscreenX = m_Data.Config.PositionX;
+			m_Data.Config.PositionBeforeFullscreenY = m_Data.Config.PositionY;
+			m_Data.Config.WidthBeforeFullscreen     = m_Data.Config.Width;
+			m_Data.Config.HeightBeforeFullscreen    = m_Data.Config.Height;
+
 			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0,
 				glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height, GLFW_DONT_CARE);
+
+		}
 		else
-			glfwSetWindowMonitor(m_Window, nullptr, 0, 0, m_Data.Config.Width, m_Data.Config.Height, GLFW_DONT_CARE);
+			glfwSetWindowMonitor(m_Window, nullptr, m_Data.Config.PositionBeforeFullscreenX , m_Data.Config.PositionBeforeFullscreenY,
+				m_Data.Config.WidthBeforeFullscreen, m_Data.Config.HeightBeforeFullscreen, GLFW_DONT_CARE);
+	
 
 		/// Update the internal window data
 		m_Data.Config.FullScreen = status;

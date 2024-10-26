@@ -145,6 +145,19 @@ namespace KuchCraft {
 		/// @param status true to make the window resizable, false otherwise.
 		void SetResizable(bool status);
 
+		/// Sets the x position of the window on the screen.
+		/// @param x The x-coordinate for the window's top-left corner.
+		void SetPositionX(int positionX) { SetPosition({ positionX, m_Data.Config.PositionY }); }
+
+		/// Sets the y position of the window on the screen.
+		/// @param y The y-coordinate for the window's top-left corner.
+		void SetPositionY(int positionY) { SetPosition({ m_Data.Config.PositionX, positionY }); }
+
+		/// Sets the position of the window on the screen.
+		/// @param x The x-coordinate for the window's top-left corner.
+		/// @param y The y-coordinate for the window's top-left corner.
+		void SetPosition(const glm::ivec2& position);
+
 		/// Sets the window to fullscreen mode or windowed mode.
 		/// @param status true to enable fullscreen, false to disable it
 		void SetFullScreen(bool status);

@@ -193,6 +193,115 @@ namespace KuchCraft {
 	{
 #ifdef  INCLUDE_IMGUI
 
+		if (ImGui::CollapsingHeader("Window", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::SeparatorText("Window info");
+			
+			auto& window = GetWindow();
+			const auto& windowConfig = window.GetWindowData();
+
+			if (ImGui::BeginTable("TwoColumnTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+			{
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Width");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d",windowConfig.Width);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Height");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", windowConfig.Height);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Width bfc");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", windowConfig.WidthBeforeFullscreen);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Height bfc");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", windowConfig.HeightBeforeFullscreen);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Position x");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", windowConfig.PositionX);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Position y");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", windowConfig.PositionY);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Position x bfc");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", windowConfig.PositionBeforeFullscreenX);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Position y bfc");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%d", windowConfig.PositionBeforeFullscreenY);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Vsync");
+				ImGui::TableSetColumnIndex(1);
+				bool vsync = windowConfig.Vsync;
+				if (ImGui::Checkbox("##Vsync", &vsync))
+					window.SetVsync(vsync);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Resizable");
+				ImGui::TableSetColumnIndex(1);
+				bool resizable = windowConfig.Resizable;
+				if (ImGui::Checkbox("##Resizable", &resizable))
+					window.SetResizable(resizable);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Fullscreen");
+				ImGui::TableSetColumnIndex(1);
+				bool fullScreen = windowConfig.FullScreen;
+				if (ImGui::Checkbox("##FullScreen", &fullScreen))
+					window.SetFullScreen(fullScreen);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Show cursor");
+				ImGui::TableSetColumnIndex(1);
+				bool showCursor = windowConfig.ShowCursor;
+				if (ImGui::Checkbox("##ShowCursor", &showCursor))
+					window.ShowCursor(showCursor);
+
+				ImGui::TableNextRow();
+				ImGui::TableSetColumnIndex(0);
+				ImGui::TextUnformatted("Is focused");
+				ImGui::TableSetColumnIndex(1);
+				ImGui::Text("%s", window.IsFocused() ? "true" : "false");
+
+				ImGui::EndTable();
+			}		
+
+			if (ImGui::Button("Minimize", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				window.Minimize();
+
+			if (ImGui::Button("Maximize", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				window.Maximize();
+
+			if (ImGui::Button("Restore", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				window.Restore();
+			
+		}
+
 #endif
 	}
 

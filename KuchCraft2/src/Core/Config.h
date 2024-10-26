@@ -55,6 +55,24 @@ namespace KuchCraft {
         /// The height of the window in pixels.
         int Height = 720;
 
+        /// The X position of the window in windowed mode
+        int PositionX = 200;
+
+        /// The Y position of the window in windowed mode
+        int PositionY = 200;
+
+        /// The X position of the window before switching to fullscreen mode.
+        int PositionBeforeFullscreenX = 0;
+
+        /// The Y position of the window before switching to fullscreen mode.
+        int PositionBeforeFullscreenY = 0;
+
+        /// The width of the window before switching to fullscreen mode.
+        int WidthBeforeFullscreen = 0;
+
+        /// The height of the window before switching to fullscreen mode.
+        int HeightBeforeFullscreen = 0;
+
         /// Flag indicating whether vertical synchronization is enabled.
         bool Vsync = true;
 
