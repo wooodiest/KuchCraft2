@@ -172,7 +172,20 @@ namespace KuchCraft {
 				Renderer::OnImGuiRender();
 				ImGui::EndTabItem();
 			}
-
+			
+			if (s_Data.Game)
+			{
+				auto world = s_Data.Game->GetWorld();
+				if (world)
+				{
+					if (ImGui::BeginTabItem("World"))
+					{
+						world->OnImGuiRender();
+						ImGui::EndTabItem();
+					}
+				}
+			}
+	
 			ImGui::EndTabBar();
 		}
 #endif

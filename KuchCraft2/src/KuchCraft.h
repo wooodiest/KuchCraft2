@@ -11,6 +11,7 @@
 #pragma once
 
 #include "Core/Event.h"
+#include "World/World.h"
 
 namespace KuchCraft {
 
@@ -41,6 +42,12 @@ namespace KuchCraft {
 		/// This function is called to perform fixed updates, allowing for consistent 
 		/// game mechanics that are independent of the frame rate.
 		void OnTick();
+
+		std::shared_ptr<World> GetWorld() { return m_World; }
+
+	private:
+		std::shared_ptr<World> m_World;
+
 	};
 
 }

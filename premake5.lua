@@ -45,7 +45,8 @@ project "KuchCraft2"
         "%{wks.location}/KuchCraft2/vendor/glfw/include",
         "%{wks.location}/KuchCraft2/vendor/glad/include",
         "%{wks.location}/KuchCraft2/vendor/imgui",
-        "%{wks.location}/KuchCraft2/vendor/nlohmann_json"
+        "%{wks.location}/KuchCraft2/vendor/nlohmann_json",
+        "%{wks.location}/KuchCraft2/vendor/entt",
     }
 
     links
