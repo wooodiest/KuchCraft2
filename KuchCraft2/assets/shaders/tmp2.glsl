@@ -19,5 +19,5 @@ uniform vec4 u_Color;
 
 void main()
 {
-    oColor = vec4(RED(), ##TMP, 0.0, 1.0);
+    oColor = vec4(RED(), 0.0, 0.0, 1.0);
 }

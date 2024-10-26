@@ -1,0 +1,25 @@
+{
+    "Logs": {
+        "File": "KuchCraft.log",
+        "Name": "KuchCraft2",
+        "Pattern": "[%Y-%m-%d %H:%M:%S] [%l] : %v"
+    },
+    "Renderer": {
+        "Logs": true,
+        "ShaderVersion": "460 core"
+    },
+    "Window": {
+        "FullScreen": false,
+        "Height": 801,
+        "HeightBeforeFullscreen": 801,
+        "PositionBeforeFullscreenX": 459,
+        "PositionBeforeFullscreenY": 118,
+        "PositionX": 459,
+        "PositionY": 118,
+        "Resizable": true,
+        "ShowCursor": true,
+        "Vsync": false,
+        "Width": 1237,
+        "WidthBeforeFullscreen": 1237
+    }
+}

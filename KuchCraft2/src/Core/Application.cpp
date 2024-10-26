@@ -19,7 +19,6 @@
 	#include <backends/imgui_impl_opengl3.h>
 #endif
 
-
 namespace KuchCraft {
 
 	void Application::Init()
@@ -62,6 +61,7 @@ namespace KuchCraft {
 	void Application::OnShutdown()
 	{
 		Renderer::Shutdown();
+		ApplicationConfig::Save();
 
 #ifdef  INCLUDE_IMGUI
 
@@ -256,7 +256,10 @@ namespace KuchCraft {
 				ImGui::TableSetColumnIndex(1);
 				bool vsync = windowConfig.Vsync;
 				if (ImGui::Checkbox("##Vsync", &vsync))
+				{
 					window.SetVsync(vsync);
+					ApplicationConfig::Save();
+				}
 
 				ImGui::TableNextRow();
 				ImGui::TableSetColumnIndex(0);
@@ -264,7 +267,10 @@ namespace KuchCraft {
 				ImGui::TableSetColumnIndex(1);
 				bool resizable = windowConfig.Resizable;
 				if (ImGui::Checkbox("##Resizable", &resizable))
+				{
 					window.SetResizable(resizable);
+					ApplicationConfig::Save();
+				}
 
 				ImGui::TableNextRow();
 				ImGui::TableSetColumnIndex(0);
@@ -272,7 +278,10 @@ namespace KuchCraft {
 				ImGui::TableSetColumnIndex(1);
 				bool fullScreen = windowConfig.FullScreen;
 				if (ImGui::Checkbox("##FullScreen", &fullScreen))
+				{
 					window.SetFullScreen(fullScreen);
+					ApplicationConfig::Save();
+				}
 
 				ImGui::TableNextRow();
 				ImGui::TableSetColumnIndex(0);
@@ -280,7 +289,10 @@ namespace KuchCraft {
 				ImGui::TableSetColumnIndex(1);
 				bool showCursor = windowConfig.ShowCursor;
 				if (ImGui::Checkbox("##ShowCursor", &showCursor))
+				{
 					window.ShowCursor(showCursor);
+					ApplicationConfig::Save();
+				}
 
 				ImGui::TableNextRow();
 				ImGui::TableSetColumnIndex(0);
