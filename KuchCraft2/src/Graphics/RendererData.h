@@ -12,6 +12,7 @@
 #include "Graphics/Data/ShaderLibrary.h"
 #include "Graphics/Data/VertexBuffer.h"
 #include "Graphics/Data/VertexArray.h"
+#include "Graphics/Data/Camera.h"
 
 namespace KuchCraft {
 
@@ -30,6 +31,8 @@ namespace KuchCraft {
 		std::shared_ptr<Shader> Shader2;
 		VertexArray VertexArray;
 		VertexBuffer VertexBuffer;
+
+		Camera Camera;
 	};
 
 }

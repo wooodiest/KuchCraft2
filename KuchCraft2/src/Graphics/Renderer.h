@@ -65,9 +65,9 @@ namespace KuchCraft {
 
 	private:
 		/// Adds shader substitutions.
-		/// @details This function adds key-value pairs to the shader substitution map, which allows
-		///          dynamic replacements of placeholders in the shader code. It is used to inject
-		///          values like constants or configuration options into shaders.
+		/// This function adds key-value pairs to the shader substitution map, which allows
+		/// dynamic replacements of placeholders in the shader code. It is used to inject
+		/// values like constants or configuration options into shaders.
 		static void AddSubstitutions();
 
 	private:

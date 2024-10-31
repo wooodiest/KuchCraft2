@@ -71,6 +71,8 @@ namespace KuchCraft {
 
 			s_TMPData.Shader1 = s_Data.ShaderLibrary.Load("assets/shaders/tmp.glsl");
 			s_TMPData.Shader2 = s_Data.ShaderLibrary.Load("assets/shaders/tmp2.glsl");
+
+			s_TMPData.Camera.SetPosition({ 0.0f, 0.0f, 4.0f });
 		}
 		
 	}
@@ -84,6 +86,9 @@ namespace KuchCraft {
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		s_TMPData.Shader1->Bind();
+		s_TMPData.Shader1->SetMat4("u_ViewProjection", s_TMPData.Camera.GetViewProjection());
 	}
 
 	void Renderer::EndFrame()
@@ -293,6 +298,16 @@ namespace KuchCraft {
 				ImGui::EndTable();
 			}
 		}
+
+		glm::vec3 pos = s_TMPData.Camera.GetPosition();
+		glm::vec3 rot = glm::degrees(s_TMPData.Camera.GetRotation());
+
+		if (ImGui::SliderFloat3("Camera position##1", glm::value_ptr(pos), - 10.0f, 10.0f))
+			s_TMPData.Camera.SetPosition(pos);
+
+		if (ImGui::SliderFloat3("Camera rotation##2", glm::value_ptr(rot), -180.0f, 180.0f))
+			s_TMPData.Camera.SetRotation(glm::radians(rot));
+		
 #endif
 	}
 
