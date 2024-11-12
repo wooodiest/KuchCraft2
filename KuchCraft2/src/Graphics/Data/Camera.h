@@ -54,6 +54,14 @@ namespace KuchCraft {
 		/// @return The field of view of the camera in radians.
 		inline [[nodiscard]] float GetFov() const { return m_Fov; }
 
+		/// Gets the camera's near clip.
+		/// @return The near clip of the camera.
+		inline [[nodiscard]] float GetNearClip() const { return m_NearClip; }
+
+		/// Gets the camera's far clip.
+		/// @return The far clip of the camera.
+		inline [[nodiscard]] float GetFarClip() const { return m_FarClip; }
+
 		/// Gets the camera's up direction vector based on its rotation.
 		/// @return The up direction vector.
 		inline [[nodiscard]] glm::vec3 GetUpDirection() const { return glm::quat(m_Rotation) * glm::vec3(0.0f, 1.0f, 0.0f); }
