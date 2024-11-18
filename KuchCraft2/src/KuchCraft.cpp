@@ -19,6 +19,11 @@ namespace KuchCraft {
 		auto e2 = m_World->CreateEntity("Marysia");
 		auto e3 = m_World->CreateEntity("Piotr");
 
+		auto camera = m_World->CreateEntity("Camera");
+		auto& cameraComponent = camera.AddComponent<CameraComponent>();
+		cameraComponent.Primary = true;
+		auto& transformComponent = camera.AddComponent<TransformComponent>();
+		transformComponent.Translation = { 0.0f, 0.0f, 4.0f };
 	}
 
 	KuchCraft::~KuchCraft()

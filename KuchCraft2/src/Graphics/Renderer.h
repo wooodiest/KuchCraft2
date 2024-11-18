@@ -40,6 +40,13 @@ namespace KuchCraft {
 		/// the display
 		static void EndFrame();
 
+		/// Begins rendering a new world scene.
+		/// @param camera - pointer to the camera to be used for rendering the world.
+		static void BeginWorld(Camera* camera);
+
+		/// Finalizes the rendering of the world scene.
+		static void EndWorld();
+
 		/// Renders ImGui components specific to the renderer.
 		/// This function contains renderer-specific ImGui rendering logic and is used to
 		/// add UI components or debug information related to the rendering system.

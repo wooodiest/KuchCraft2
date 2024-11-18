@@ -118,7 +118,7 @@ namespace KuchCraft {
 
 		/// Sets the camera's aspect ratio and updates the projection matrix.
 		/// @param aspectRatio - the aspect ratio of the camera (width/height).
-		inline void SetAspectRation(float aspectRatio) {
+		inline void SetAspectRatio(float aspectRatio) {
 			m_AspectRatio = aspectRatio;
 			UpdateProjection(); 
 		}

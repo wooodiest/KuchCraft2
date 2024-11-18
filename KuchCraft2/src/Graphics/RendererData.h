@@ -31,8 +31,6 @@ namespace KuchCraft {
 		std::shared_ptr<Shader> Shader2;
 		VertexArray VertexArray;
 		VertexBuffer VertexBuffer;
-
-		Camera Camera;
 	};
 
 }

@@ -11,6 +11,8 @@
 #include "Core/UUID.h"
 #include "Core/Event.h"
 
+#include "Graphics/Data/Camera.h"
+
 namespace KuchCraft {
 	
 	/// Forward declaration of the Entity class.
@@ -67,10 +69,6 @@ namespace KuchCraft {
 		/// @return The entity with the specified UUID.
 		Entity GetEntityByUUID(UUID uuid);
 
-		/// @brief Retrieves the primary camera entity in the world.
-	    /// @return The primary camera entity.
-		Entity GetPrimaryCameraEntity();
-
 		/// Retrieves a view of all entities that have the specified components.
 		/// @tparam Components - the component types to filter entities by.
 		/// @return A view of entities that have the specified component types.
@@ -92,14 +90,10 @@ namespace KuchCraft {
 		template<typename T>
 		void OnComponentAdded(Entity entity, T& component);
 
-		/// Renders the world
-		/// @param camera - the camera used for rendering the scene.
-		void RenderWorld(/* Camera*/);
-
 		/// Handles the window resize event.
 		/// @param e - the window resize event.
 		/// @return Returns true if the event has been handled and should stop being propagated further
-		static [[nodiscard]] bool OnWindowResize(WindowResizeEvent& e);
+		[[nodiscard]] bool OnWindowResize(WindowResizeEvent& e);
 
 	private:
 		/// The registry managing all entities and their components.

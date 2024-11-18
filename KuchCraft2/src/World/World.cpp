@@ -10,6 +10,10 @@
 #include "World/Entity.h"
 #include "World/Components.h"
 
+#include "Core/Application.h"
+
+#include "Graphics/Renderer.h"
+
 #ifdef  INCLUDE_IMGUI
 	#include <imgui.h>
 #endif
@@ -87,11 +91,28 @@ namespace KuchCraft {
 
 	void World::OnUpdate(float dt)
 	{
-		RenderWorld();
+		if (!m_IsPaused)
+		{
+			///...
+		}
 
-		if (m_IsPaused)
-			return;
+		Camera* mainCamera = nullptr;
+		m_Registry.view<TransformComponent, CameraComponent>().each([&](auto entity, auto& transformComponent, auto& cameraComponent) {
+			if (cameraComponent.Primary) {
+				mainCamera = &cameraComponent.Camera;
+				mainCamera->SetData(transformComponent.Translation, transformComponent.Rotation);
+				return;
+			}
+		});
+	
+		if (mainCamera)
+		{
+			Renderer::BeginWorld(mainCamera);
 
+			Log::Info("Jak sie wyswietli to znaczy ze dziala!!!");
+
+			Renderer::EndWorld();
+		}
 	}
 
 	void World::OnEvent(Event& e)
@@ -105,7 +126,7 @@ namespace KuchCraft {
 		if (ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			constexpr float entities_list_height = 250.0f;
-			static UUID selected     = 0;
+			static UUID selected = 0;
 
 			ImGui::Text("Total number of entities: %llu", m_EntityCount);
 			ImGui::SeparatorText("EntitiesList");
@@ -140,6 +161,7 @@ namespace KuchCraft {
 
 				ImGui::SeparatorText("Entity info");
 				ImGui::Text("Name: %s", entity.GetName());
+
 				ImGui::Text("UUID: %llu", entity.GetUUID());
 				
 				ImGui::SeparatorText("Actions");
@@ -150,6 +172,70 @@ namespace KuchCraft {
 				}
 				if (ImGui::Button("Duplicate", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 					DuplicateEntity(entity);	
+
+				if (entity.HasComponent<TransformComponent>())
+				{
+					ImGui::SeparatorText("Transform");
+					auto& transformComponent = entity.GetComponent<TransformComponent>();
+
+					glm::vec3 translation = transformComponent.Translation;
+					glm::vec3 rotation    = glm::degrees(transformComponent.Rotation);
+					glm::vec3 scale       = transformComponent.Scale;
+
+					constexpr float dragSpeed = 0.5f;
+					if (ImGui::DragFloat3("Position##TransformComponent", glm::value_ptr(translation), dragSpeed))
+						transformComponent.Translation = translation;			
+					if (ImGui::DragFloat3("Rotation##TransformComponent", glm::value_ptr(rotation), dragSpeed))
+						transformComponent.Rotation = glm::radians(rotation);
+					if (ImGui::DragFloat3("Scale##TransformComponent", glm::value_ptr(transformComponent.Scale), dragSpeed))
+						transformComponent.Scale = scale;
+				}
+
+				if (entity.HasComponent<CameraComponent>())
+				{
+					ImGui::SeparatorText("Camera");
+					auto& cameraComponent = entity.GetComponent<CameraComponent>();
+					auto& camera = cameraComponent.Camera;
+
+					if (ImGui::Checkbox("Primary##CameraComponent", &cameraComponent.Primary))
+					{
+						if (cameraComponent.Primary)
+						{
+							m_Registry.view<CameraComponent>().each([&](auto entity, auto& cameraComponent) {
+								cameraComponent.Primary = false;		
+							});
+							cameraComponent.Primary = true;
+						}
+					}
+
+					ImGui::Checkbox("Fixed aspect ratio##CameraComponent", &cameraComponent.FixedAspectRatio);
+
+					if (cameraComponent.FixedAspectRatio)
+					{
+						float aspectRatio = camera.GetAspectRatio();
+						if (ImGui::DragFloat("Aspect ratio##CameraComponent", &aspectRatio, 0.05f))
+							camera.SetAspectRatio(aspectRatio);
+					}
+
+					float fov = glm::degrees(camera.GetFov());
+					if (ImGui::DragFloat("Fov##CameraComponent", &fov, 0.5f))
+						camera.SetFov(glm::radians(fov));
+					
+					float nearClip = camera.GetNearClip();
+					if (ImGui::DragFloat("Near clip##CameraComponent", &nearClip, 0.1f))
+						camera.SetNearClip(nearClip);
+
+					float farClip = camera.GetFarClip();
+					if (ImGui::DragFloat("Far clip##CameraComponent", &farClip, 1.0f))
+						camera.SetFarClip(farClip);
+
+					glm::vec3 upDirection      = camera.GetUpDirection();
+					glm::vec3 rightDirection   = camera.GetUpDirection();
+					glm::vec3 forwardDirection = camera.GetUpDirection();
+					ImGui::Text("Up:      %f, %f, %f", upDirection.x, upDirection.y, upDirection.z);
+					ImGui::Text("Right:   %f, %f, %f", rightDirection.x, rightDirection.y, rightDirection.z);
+					ImGui::Text("Forward: %f, %f, %f", forwardDirection.x, forwardDirection.y, forwardDirection.z);
+				}
 			}
 		}
 		
@@ -207,19 +293,15 @@ namespace KuchCraft {
 		return {};
 	}
 
-	Entity World::GetPrimaryCameraEntity()
-	{
-		/// TODO: Add camera component
-		return Entity();
-	}
-
-	void World::RenderWorld()
-	{
-	}
-
 	bool World::OnWindowResize(WindowResizeEvent& e)
 	{
-		/// TODO: Check camera components
+		auto [width, height] = Application::GetWindow().GetSize();
+		float aspectRatio = width / height;
+
+		m_Registry.view<CameraComponent>().each([&](auto entity, auto& cameraComponent) {
+			if (!cameraComponent.FixedAspectRatio)
+				cameraComponent.Camera.SetAspectRatio(aspectRatio);
+		});
 
 		return false;
 	}
@@ -243,6 +325,18 @@ namespace KuchCraft {
 	template<>
 	void World::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
 	{
+	}
+
+	template<>
+	void World::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	{	
+		if (component.FixedAspectRatio)
+		{
+			auto [width, height] = Application::GetWindow().GetSize();
+			float aspectRatio = width / height;
+		
+			component.Camera.SetAspectRatio(aspectRatio);
+		}
 	}
 
 }

@@ -83,4 +83,75 @@ namespace std {
 		if constexpr (N == 3) return v.w;
 	}
 
+	/// Specialization of tuple_size for glm::ivec2.
+	template <>
+	struct tuple_size<glm::ivec2> : std::integral_constant<std::size_t, 2> {};
+
+	/// Specialization of tuple_size for glm::ivec3.
+	template <>
+	struct tuple_size<glm::ivec3> : std::integral_constant<std::size_t, 3> {};
+
+	/// Specialization of tuple_size for glm::ivec4.
+	template <>
+	struct tuple_size<glm::ivec4> : std::integral_constant<std::size_t, 4> {};
+
+	/// Specialization of tuple_element for glm::ivec2, defining the type for each index.
+	template <std::size_t N>
+	struct tuple_element<N, glm::ivec2> {
+		using type = int;
+	};
+
+	/// Specialization of tuple_element for glm::ivec3, defining the type for each index.
+	template <std::size_t N>
+	struct tuple_element<N, glm::ivec3> {
+		using type = int;
+	};
+
+	/// Specialization of tuple_element for glm::ivec4, defining the type for each index.
+	template <std::size_t N>
+	struct tuple_element<N, glm::ivec4> {
+		using type = int;
+	};
+
+	/// Retrieves the N-th element of a glm::ivec2 using std::get.
+	/// N must be less than 2, otherwise a static assertion will trigger.
+	/// @tparam N - the index of the element to retrieve.
+	/// @param v - the glm::ivec2 vector.
+	/// @return The N-th element of the vector.
+	template <std::size_t N>
+	int get(const glm::ivec2& v) {
+		static_assert(N < 2, "Index out of bounds for glm::ivec2");
+		if constexpr (N == 0) return v.x;
+		if constexpr (N == 1) return v.y;
+	}
+
+	/// Retrieves the N-th element of a glm::ivec3 using std::get.
+	/// N must be less than 3, otherwise a static assertion will trigger.
+	/// @tparam N - the index of the element to retrieve.
+	/// @param v - the glm::ivec3 vector.
+	/// @return The N-th element of the vector.
+	template <std::size_t N>
+	int get(const glm::ivec3& v) {
+		static_assert(N < 3, "Index out of bounds for glm::ivec3");
+		if constexpr (N == 0) return v.x;
+		if constexpr (N == 1) return v.y;
+		if constexpr (N == 2) return v.z;
+	}
+
+	/// Retrieves the N-th element of a glm::ivec4 using std::get.
+	/// N must be less than 4, otherwise a static assertion will trigger.
+	/// @tparam N - the index of the element to retrieve.
+	/// @param v - the glm::ivec4 vector.
+	/// @return The N-th element of the vector.
+	template <std::size_t N>
+	int get(const glm::ivec4& v) {
+		static_assert(N < 4, "Index out of bounds for glm::ivec4");
+		if constexpr (N == 0) return v.x;
+		if constexpr (N == 1) return v.y;
+		if constexpr (N == 2) return v.z;
+		if constexpr (N == 3) return v.w;
+	}
+
+	
+
 }

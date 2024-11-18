@@ -2,6 +2,8 @@
 
 #include "Core/UUID.h"
 
+#include "Graphics/Data/Camera.h"
+
 namespace KuchCraft {
 	
     /// Represents a unique identifier for each entity.
@@ -52,6 +54,21 @@ namespace KuchCraft {
 		}
 	};
 
+	/// Represents the camera properties of an entity.
+	/// The CameraComponent stores the camera object and its related settings, such as 
+	/// whether it's the primary camera and if it has a fixed aspect ratio. This component
+	/// enables entities to function as cameras in the game world.
+	struct CameraComponent
+	{
+		Camera Camera;
+		bool Primary = false;
+		bool FixedAspectRatio = false;
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent& other)
+			: Primary(false), FixedAspectRatio(other.FixedAspectRatio) {}
+	};
+
 	/// Template struct for grouping multiple component types together.
 	/// This can be used to manage a collection of component types more easily 
 	/// when performing operations such as copying components between entities.
@@ -62,8 +79,8 @@ namespace KuchCraft {
 
 	/// A predefined group containing all core component types.
 	/// Used for easy components copy, all entities by deafult has tag and id
-	using AllComponents = ComponentGroup<TransformComponent>;
+	using AllComponents = ComponentGroup<TransformComponent, CameraComponent>;
 
 	/// A predefined group containing all used component types.
-	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent>;
+	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent, CameraComponent>;
 }
