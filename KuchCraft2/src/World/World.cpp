@@ -16,6 +16,7 @@
 
 #ifdef  INCLUDE_IMGUI
 	#include <imgui.h>
+	#include <misc/cpp/imgui_stdlib.h>
 #endif
 
 namespace KuchCraft {
@@ -155,14 +156,28 @@ namespace KuchCraft {
 			}
 			ImGui::EndChild();
 
+			ImGui::SeparatorText("Create entity");
+			static std::string newEntityName = "Entity";
+			ImGui::InputText("Entity name##CreateEntity", &newEntityName);
+			if (ImGui::Button("Create entity", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+			{
+				auto entity = CreateEntity(newEntityName);
+				newEntityName = "Entity";
+			}
+
 			if (selected)
 			{
 				Entity entity = GetEntityByUUID(selected);
 
 				ImGui::SeparatorText("Entity info");
-				ImGui::Text("Name: %s", entity.GetName());
-
 				ImGui::Text("UUID: %llu", entity.GetUUID());
+
+				std::string entityName = entity.GetName();
+				if (ImGui::InputText("Name", &entityName))
+				{
+					auto& tag = entity.GetComponent<TagComponent>();
+					tag.Tag = entityName;
+				}
 				
 				ImGui::SeparatorText("Actions");
 				if (ImGui::Button("Destroy", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
