@@ -120,6 +120,32 @@ namespace KuchCraft {
 	{
 	}
 
+	template<typename T>
+	static void AddComponentLabel(Entity& entity, const char* label)
+	{
+		if (!entity.HasComponent<T>())
+		{
+			if (ImGui::Button(label, ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+			{
+				entity.AddComponent<T>();
+				ImGui::CloseCurrentPopup();
+			}
+		}
+	}
+
+	template<typename T>
+	static void RemoveComponentLabel(Entity& entity, const char* label)
+	{
+		if (entity.HasComponent<T>())
+		{
+			if (ImGui::Button(label, ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+			{
+				entity.RemoveComponent<T>();
+				ImGui::CloseCurrentPopup();
+			}
+		}
+	}
+
 	void World::OnImGuiRender()
 	{
 #ifdef  INCLUDE_IMGUI
@@ -157,12 +183,16 @@ namespace KuchCraft {
 			ImGui::EndChild();
 
 			ImGui::SeparatorText("Create entity");
-			static std::string newEntityName = "Entity";
+			static const char* default_entity_name = "Entity";
+			static std::string newEntityName = default_entity_name;
 			ImGui::InputText("Entity name##CreateEntity", &newEntityName);
 			if (ImGui::Button("Create entity", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 			{
 				auto entity = CreateEntity(newEntityName);
-				newEntityName = "Entity";
+				if (entity.HasComponent<IDComponent>())
+					selected = entity.GetComponent<IDComponent>().ID;
+
+				newEntityName = default_entity_name;
 			}
 
 			if (selected)
@@ -188,6 +218,28 @@ namespace KuchCraft {
 				if (ImGui::Button("Duplicate", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 					DuplicateEntity(entity);	
 
+				if (ImGui::Button("Add Component##btn", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+					ImGui::OpenPopup("Add Component");
+
+				if (ImGui::Button("Remove Component##btn", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+					ImGui::OpenPopup("Remove Component");
+
+				if (ImGui::BeginPopup("Add Component"))
+				{
+					AddComponentLabel<TransformComponent>(entity, "Transform Component##AddComponent");
+					AddComponentLabel<CameraComponent>(entity, "CameraComponentt##AddComponent");
+
+					ImGui::EndPopup();
+				}
+
+				if (ImGui::BeginPopup("Remove Component"))
+				{
+					RemoveComponentLabel<TransformComponent>(entity, "Transform Component##RemoveComponent");
+					RemoveComponentLabel<CameraComponent>(entity, "CameraComponentt##RemoveComponent");
+
+					ImGui::EndPopup();
+				}
+ 
 				if (entity.HasComponent<TransformComponent>())
 				{
 					ImGui::SeparatorText("Transform");
@@ -245,8 +297,8 @@ namespace KuchCraft {
 						camera.SetFarClip(farClip);
 
 					glm::vec3 upDirection      = camera.GetUpDirection();
-					glm::vec3 rightDirection   = camera.GetUpDirection();
-					glm::vec3 forwardDirection = camera.GetUpDirection();
+					glm::vec3 rightDirection   = camera.GetRightDirection();
+					glm::vec3 forwardDirection = camera.GetForwardDirection();
 					ImGui::Text("Up:      %f, %f, %f", upDirection.x, upDirection.y, upDirection.z);
 					ImGui::Text("Right:   %f, %f, %f", rightDirection.x, rightDirection.y, rightDirection.z);
 					ImGui::Text("Forward: %f, %f, %f", forwardDirection.x, forwardDirection.y, forwardDirection.z);
