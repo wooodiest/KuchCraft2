@@ -8,7 +8,7 @@
 #include "Graphics/Renderer.h"
 #include "Graphics/Data/ShaderLibrary.h"
 
-#include "Core/Config.h"
+#include "Core/Application.h"
 #include "Core/Config.h"
 
 #include <glad/glad.h>
@@ -54,6 +54,9 @@ namespace KuchCraft {
 		/// Add custom shader substitutions
 		AddSubstitutions();
 
+		/// Create uniform buffers
+		s_Data.CameraDataUniformBuffer.Create(sizeof(CameraDataUniformBuffer));
+
 		/// tmp
 		{
 			float vertices[] = {
@@ -94,6 +97,11 @@ namespace KuchCraft {
 	void Renderer::BeginWorld(Camera* camera)
 	{
 		Camera* currentCamera = camera; // camera ? camera : defaultCamera
+
+		CameraDataUniformBuffer cameraBuffer;
+		cameraBuffer.ViewProjection  = currentCamera->GetViewProjection();
+		cameraBuffer.OrthoProjection = glm::ortho(0.0f, (float)Application::GetWindow().GetHeigth(), 0.0f , (float)Application::GetWindow().GetHeigth());
+		s_Data.CameraDataUniformBuffer.SetData(&cameraBuffer, sizeof(cameraBuffer));
 
 		s_TMPData.Shader1->Bind();
 		s_TMPData.Shader1->SetMat4("u_ViewProjection", currentCamera->GetViewProjection());
@@ -327,6 +335,7 @@ namespace KuchCraft {
 	void Renderer::AddSubstitutions()
 	{
 		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("SHADER_VERSION", ApplicationConfig::GetRendererData().ShaderVersion));
+		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("UNIFORM_CAMERA_DATA_BINDING", std::to_string(s_Data.CameraDataUniformBuffer.GetBinding())));
 	}
 
 }

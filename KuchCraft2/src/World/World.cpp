@@ -109,9 +109,6 @@ namespace KuchCraft {
 		if (mainCamera)
 		{
 			Renderer::BeginWorld(mainCamera);
-
-			Log::Info("Jak sie wyswietli to znaczy ze dziala!!!");
-
 			Renderer::EndWorld();
 		}
 	}

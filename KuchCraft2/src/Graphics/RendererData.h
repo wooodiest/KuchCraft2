@@ -12,6 +12,7 @@
 #include "Graphics/Data/ShaderLibrary.h"
 #include "Graphics/Data/VertexBuffer.h"
 #include "Graphics/Data/VertexArray.h"
+#include "Graphics/Data/UniformBuffer.h"
 #include "Graphics/Data/Camera.h"
 
 namespace KuchCraft {
@@ -22,6 +23,9 @@ namespace KuchCraft {
 		/// Manages the collection of shaders used by the renderer.
 		/// It holds all shaders utilized in the rendering process, providing easy access and management.
 		ShaderLibrary ShaderLibrary;
+
+		/// Uniform buffer used to store camera data.
+		UniformBuffer CameraDataUniformBuffer;
 	};
 
 	/// Holds temporary data for a simple rendering operation.
@@ -33,4 +37,10 @@ namespace KuchCraft {
 		VertexBuffer VertexBuffer;
 	};
 
+	/// Stores data related to camera transformations
+	struct CameraDataUniformBuffer
+	{
+		glm::mat4 ViewProjection;
+		glm::mat4 OrthoProjection;
+	};
 }

@@ -3,7 +3,11 @@
 
 layout (location = 0) in vec3 aPos;
 
-uniform mat4 u_ViewProjection;
+layout (std140, binding = ##UNIFORM_CAMERA_DATA_BINDING) uniform UniformCameraData
+{
+	mat4 u_ViewProjection;
+	mat4 u_OrthoProjection;
+};
 
 void main()
 {
