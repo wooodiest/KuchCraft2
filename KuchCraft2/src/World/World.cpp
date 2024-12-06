@@ -115,6 +115,11 @@ namespace KuchCraft {
 
 	void World::OnEvent(Event& e)
 	{
+		/// Create an event dispatcher for the current event
+		EventDispatcher dispatcher(e);
+
+		/// Dispatch events to appropriate handlers
+		dispatcher.Dispatch<WindowResizeEvent>(KC_BIND_EVENT_FN(World::OnWindowResize));
 	}
 
 	template<typename T>
@@ -272,7 +277,15 @@ namespace KuchCraft {
 						}
 					}
 
-					ImGui::Checkbox("Fixed aspect ratio##CameraComponent", &cameraComponent.FixedAspectRatio);
+					if (ImGui::Checkbox("Fixed aspect ratio##CameraComponent", &cameraComponent.FixedAspectRatio))
+					{
+						if (!cameraComponent.FixedAspectRatio)
+						{
+							auto [width, height] = Application::GetWindow().GetSize();
+							float aspectRatio = width / height;
+							camera.SetAspectRatio(aspectRatio);
+						}
+					}
 
 					if (cameraComponent.FixedAspectRatio)
 					{
@@ -331,7 +344,7 @@ namespace KuchCraft {
 
 	Entity World::DuplicateEntity(Entity entity)
 	{
-		std::string name = entity.GetName();
+		std::string name = entity.GetName() + " (copy)";
 		Entity newEntity = CreateEntity(name);
 		CopyComponentIfExists(AllComponents{}, newEntity, entity);
 		return newEntity;
@@ -394,7 +407,7 @@ namespace KuchCraft {
 	template<>
 	void World::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 	{	
-		if (component.FixedAspectRatio)
+		if (!component.FixedAspectRatio)
 		{
 			auto [width, height] = Application::GetWindow().GetSize();
 			float aspectRatio = width / height;

@@ -51,7 +51,7 @@ namespace KuchCraft {
 		/// Styles
 		ImGui::StyleColorsDark();
 		ImGuiStyle& style = ImGui::GetStyle();
-		style.Colors[ImGuiCol_WindowBg].w = 0.5f;
+		style.Colors[ImGuiCol_WindowBg].w = 0.65f;
 
 #endif
 

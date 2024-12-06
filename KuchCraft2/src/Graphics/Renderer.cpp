@@ -96,11 +96,11 @@ namespace KuchCraft {
 
 	void Renderer::BeginWorld(Camera* camera)
 	{
-		Camera* currentCamera = camera; // camera ? camera : defaultCamera
+		Camera* currentCamera = camera;
 
 		CameraDataUniformBuffer cameraBuffer;
 		cameraBuffer.ViewProjection  = currentCamera->GetViewProjection();
-		cameraBuffer.OrthoProjection = glm::ortho(0.0f, (float)Application::GetWindow().GetHeigth(), 0.0f , (float)Application::GetWindow().GetHeigth());
+		cameraBuffer.OrthoProjection = glm::ortho(0.0f, (float)Application::GetWindow().GetWidth(), 0.0f , (float)Application::GetWindow().GetHeigth());
 		s_Data.CameraDataUniformBuffer.SetData(&cameraBuffer, sizeof(cameraBuffer));
 
 		s_TMPData.Shader1->Bind();
