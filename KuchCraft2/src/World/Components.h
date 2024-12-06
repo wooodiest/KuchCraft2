@@ -11,6 +11,7 @@ namespace KuchCraft {
     /// an entity within the game world.
 	struct IDComponent
 	{
+		/// The UUID representing the unique identifier for the entity.
 		UUID ID;
 
 		IDComponent() = default;
@@ -19,9 +20,11 @@ namespace KuchCraft {
 	};
 
 	/// Represents a textual tag or name for an entity.
-	/// The TagComponent allows entities to be given a human-readable name or tag.
+	/// The TagComponent allows each entity to have a label, which is primarily used for debugging,
+	/// identification in the editor, or categorization purposes.
 	struct TagComponent
 	{
+		/// The name or tag assigned to the entity.
 		std::string Tag;
 
 		TagComponent() = default;
@@ -34,9 +37,14 @@ namespace KuchCraft {
     /// an entity, allowing for positioning and orientation in the 3D world. 
 	struct TransformComponent
 	{
+		/// Position of the entity in 3D space.
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Rotation    = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Scale       = { 1.0f, 1.0f, 1.0f };
+
+		/// Rotation of the entity in radians along the X, Y, and Z axes.
+		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
+
+		/// Scale of the entity along the X, Y, and Z axes.
+		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
@@ -60,13 +68,31 @@ namespace KuchCraft {
 	/// enables entities to function as cameras in the game world.
 	struct CameraComponent
 	{
+		/// Camera object
 		Camera Camera;
+
+		/// Flag indicating if this is the primary camera in the scene.
 		bool Primary = false;
+
+		/// Flag indicating if the camera's aspect ratio should remain fixed.
 		bool FixedAspectRatio = false;
 
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent& other)
 			: Primary(false), FixedAspectRatio(other.FixedAspectRatio) {}
+	};
+
+	/// Represents the visual appearance of an entity as a 2D sprite.
+    /// This component defines the color tint of a sprite.
+	struct SpriteRendererComponent
+	{
+		/// RGBA color of the sprite
+		glm::vec4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		SpriteRendererComponent() = default;
+		SpriteRendererComponent(const SpriteRendererComponent&) = default;
+		SpriteRendererComponent(const glm::vec4& color)
+			: Color(color) {}
 	};
 
 	/// Template struct for grouping multiple component types together.
@@ -79,8 +105,8 @@ namespace KuchCraft {
 
 	/// A predefined group containing all core component types.
 	/// Used for easy components copy, all entities by deafult has tag and id
-	using AllComponents = ComponentGroup<TransformComponent, CameraComponent>;
+	using AllComponents = ComponentGroup<TransformComponent, CameraComponent, SpriteRendererComponent>;
 
 	/// A predefined group containing all used component types.
-	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent, CameraComponent>;
+	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent, CameraComponent, SpriteRendererComponent>;
 }

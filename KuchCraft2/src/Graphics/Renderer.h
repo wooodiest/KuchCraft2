@@ -19,10 +19,11 @@ namespace KuchCraft {
 
 	class Renderer
 	{
+	#pragma region Lifecycle 
 	public:
 		/// Initializes the rendering system.
 		/// This function sets up necessary resources and configurations for rendering,
-		/// including graphics context creation and shader initialization.
+		/// including graphics context creation, shader initialization, and buffer allocation.
 		static void Init();
 
 		/// Shuts down the rendering system.
@@ -44,7 +45,8 @@ namespace KuchCraft {
 		/// @param camera - pointer to the camera to be used for rendering the world.
 		static void BeginWorld(Camera* camera);
 
-		/// Finalizes the rendering of the world scene.
+		/// This function concludes the world rendering process, ensuring that any pending
+		/// rendering operations, such as batched 2D quads, are completed and rendered.
 		static void EndWorld();
 
 		/// Renders ImGui components specific to the renderer.
@@ -52,6 +54,18 @@ namespace KuchCraft {
 		/// add UI components or debug information related to the rendering system.
 		static void OnImGuiRender();
 
+	#pragma endregion 
+	#pragma region DrawCommands
+	public:
+		/// Draws a single 2D quad with a given transformation and color.
+		/// This function adds a 2D quad to the rendering queue, applying the specified
+		/// transformation matrix and color. It is used for rendering basic 2D graphics elements.
+		/// @param transform A 4x4 transformation matrix to position, scale, or rotate the quad.
+		/// @param color A vec4 representing the RGBA color of the quad.
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
+
+	#pragma endregion
+	#pragma region Shaders
 	public:
 		/// Recompiles all shaders.
 		/// This function triggers the recompilation of all shaders in the shader library,
@@ -64,7 +78,6 @@ namespace KuchCraft {
 		/// @param name - the name of the shader to be recompiled.
 		static void ReCompileShader(const std::string& name);
 
-	public:
 		/// Retrieves the current shader substitution map.
 		/// @return A const reference to the shader substitution map, containing key-value pairs
 		///         used for dynamic shader configurations.
@@ -77,12 +90,54 @@ namespace KuchCraft {
 		/// values like constants or configuration options into shaders.
 		static void AddSubstitutions();
 
+	#pragma endregion
+	#pragma region Quads2D
 	private:
-		/// This structure contains essential data for rendering and renderer working process
+		/// Initializes resources required for rendering 2D quads.
+		/// Sets up vertex buffers, defines the layou, index buffers, and shaders
+		/// required for batched rendering of 2D quads
+		static void InitQuads2D();
+
+		/// Begins a new batch for 2D quad rendering.
+		/// Prepares the renderer to accumulate a new set of quads for rendering.
+		static void StartQuadsBatch2D();
+
+		/// Completes the current batch and starts a new one.
+		/// Finalizes the current batch of 2D quads by rendering it and then resets the
+		/// batch to prepare for the next set of quads
+		static void NextQuadsBatch2D();
+
+		/// Processes and renders accumulated 2D quads.
+		/// This function handles the batched rendering of 2D quads. It binds the necessary
+		/// buffers and shaders, processes the vertex data, and issues draw calls to render
+		/// the quads on screen.
+		static void RenderQuads2D();
+
+		/// Sends the current batch of 2D quads to the GPU for rendering.
+		/// Finalizes and renders the current batch of 2D quads.
+		static void FlushQuads2D();
+
+	#pragma endregion
+	#pragma region RendererCommands
+	private:
+		/// Issues a draw call for rendering indexed elements.
+	    /// Wraps the OpenGL `glDrawElements` function to render a specified number of indexed elements.
+	    /// @param count - the number of indices to render.
+		static void DrawElemnts(uint32_t count);
+
+	#pragma endregion
+	#pragma region Data
+	private:
+		/// Holds global renderer state and resources.
+		/// Contains data necessary for the operation of the renderer, such as shader libraries,
+		/// buffers, and configuration options.
 		static inline RendererData s_Data;
 
-		/// Holds temporary data for a simple rendering operation.
-		static inline RendererTMPData s_TMPData;
+		/// Contains data specific to 2D quad rendering.
+	    /// Includes buffers, shaders, and configuration parameters used exclusively for
+	    /// rendering 2D quads in a batched manner.
+		static inline Quad2DRendererData s_Quad2DData;
 
+	#pragma endregion
 	};
 }

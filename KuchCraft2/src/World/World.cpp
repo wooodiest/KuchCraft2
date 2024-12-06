@@ -109,6 +109,12 @@ namespace KuchCraft {
 		if (mainCamera)
 		{
 			Renderer::BeginWorld(mainCamera);
+
+			/// Render 2D quads
+			m_Registry.view<TransformComponent, SpriteRendererComponent>().each([&](auto entity, auto& transformComponent, auto& spriteComponent) {
+				Renderer::DrawQuad(transformComponent.GetTransform(), spriteComponent.Color);
+			});
+
 			Renderer::EndWorld();
 		}
 	}
@@ -230,6 +236,7 @@ namespace KuchCraft {
 				{
 					AddComponentLabel<TransformComponent>(entity, "Transform Component##AddComponent");
 					AddComponentLabel<CameraComponent>(entity, "CameraComponentt##AddComponent");
+					AddComponentLabel<SpriteRendererComponent>(entity, "SpriteRendererComponent##AddComponent");
 
 					ImGui::EndPopup();
 				}
@@ -238,6 +245,7 @@ namespace KuchCraft {
 				{
 					RemoveComponentLabel<TransformComponent>(entity, "Transform Component##RemoveComponent");
 					RemoveComponentLabel<CameraComponent>(entity, "CameraComponentt##RemoveComponent");
+					RemoveComponentLabel<SpriteRendererComponent>(entity, "SpriteRendererComponent##RemoveComponent");
 
 					ImGui::EndPopup();
 				}
@@ -256,7 +264,7 @@ namespace KuchCraft {
 						transformComponent.Translation = translation;			
 					if (ImGui::DragFloat3("Rotation##TransformComponent", glm::value_ptr(rotation), dragSpeed))
 						transformComponent.Rotation = glm::radians(rotation);
-					if (ImGui::DragFloat3("Scale##TransformComponent", glm::value_ptr(transformComponent.Scale), dragSpeed))
+					if (ImGui::DragFloat3("Scale##TransformComponent", glm::value_ptr(scale), dragSpeed))
 						transformComponent.Scale = scale;
 				}
 
@@ -312,6 +320,17 @@ namespace KuchCraft {
 					ImGui::Text("Up:      %f, %f, %f", upDirection.x, upDirection.y, upDirection.z);
 					ImGui::Text("Right:   %f, %f, %f", rightDirection.x, rightDirection.y, rightDirection.z);
 					ImGui::Text("Forward: %f, %f, %f", forwardDirection.x, forwardDirection.y, forwardDirection.z);
+				}
+
+				if (entity.HasComponent<SpriteRendererComponent>())
+				{
+					ImGui::SeparatorText("Sprite renderer");
+					auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
+
+					if (ImGui::ColorPicker4("Color", glm::value_ptr(spriteRendererComponent.Color)))
+					{
+
+					}
 				}
 			}
 		}
@@ -414,6 +433,11 @@ namespace KuchCraft {
 		
 			component.Camera.SetAspectRatio(aspectRatio);
 		}
+	}
+
+	template<>
+	void World::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	{
 	}
 
 }

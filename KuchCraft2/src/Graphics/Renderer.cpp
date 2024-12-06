@@ -51,31 +51,14 @@ namespace KuchCraft {
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		}
 
-		/// Add custom shader substitutions
+		/// Adds dynamic substitutions for shaders (constants and configurations)
 		AddSubstitutions();
 
 		/// Create uniform buffers
 		s_Data.CameraDataUniformBuffer.Create(sizeof(CameraDataUniformBuffer));
 
-		/// tmp
-		{
-			float vertices[] = {
-				-0.5f, -0.5f, 0.0f,
-				 0.5f, -0.5f, 0.0f,
-				 0.0f,  0.5f, 0.0f
-			};
-
-			s_TMPData.VertexArray.Create();
-			s_TMPData.VertexBuffer.Create(VertexBufferDataUsage::STATIC, sizeof(vertices), vertices);
-			s_TMPData.VertexBuffer.SetBufferLayout({
-				{ ShaderDataType::Float3, "aPos" }
-			});
-			s_TMPData.VertexArray.SetVertexBuffer(s_TMPData.VertexBuffer);
-
-			s_TMPData.Shader1 = s_Data.ShaderLibrary.Load("assets/shaders/tmp.glsl");
-			s_TMPData.Shader2 = s_Data.ShaderLibrary.Load("assets/shaders/tmp2.glsl");
-		}
-		
+		/// Initializes resources
+		InitQuads2D();
 	}
 
 	void Renderer::Shutdown()
@@ -85,8 +68,14 @@ namespace KuchCraft {
 
 	void Renderer::BeginFrame()
 	{
+		/// tmp
+		auto [width, height] = Application::GetWindow().GetSize();
+		glViewport(0, 0, width, height);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+		/// Clear data
+		s_Quad2DData.Vertices.clear();
 	}
 
 	void Renderer::EndFrame()
@@ -98,20 +87,16 @@ namespace KuchCraft {
 	{
 		Camera* currentCamera = camera;
 
+		/// Updates the uniform buffer
 		CameraDataUniformBuffer cameraBuffer;
 		cameraBuffer.ViewProjection  = currentCamera->GetViewProjection();
 		cameraBuffer.OrthoProjection = glm::ortho(0.0f, (float)Application::GetWindow().GetWidth(), 0.0f , (float)Application::GetWindow().GetHeigth());
 		s_Data.CameraDataUniformBuffer.SetData(&cameraBuffer, sizeof(cameraBuffer));
-
-		s_TMPData.Shader1->Bind();
-		s_TMPData.Shader1->SetMat4("u_ViewProjection", currentCamera->GetViewProjection());
 	}
 
 	void Renderer::EndWorld()
 	{
-		s_TMPData.Shader1->Bind();
-		s_TMPData.VertexArray.Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		RenderQuads2D();
 	}
 
 	void Renderer::OnImGuiRender()
@@ -148,6 +133,7 @@ namespace KuchCraft {
 
 			ImGui::EndChild();
 
+			/// Displays details of the selected shader.
 			if (selected != -1)
 			{
 				ImGui::SeparatorText("Shader info");
@@ -318,6 +304,19 @@ namespace KuchCraft {
 #endif
 	}
 
+	void Renderer::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	{
+		for (uint32_t i = 0; i < quad_vertex_count; i++)
+		{
+			s_Quad2DData.Vertices.emplace_back(
+				transform * quad2D_vertex_positions[i],
+				color,
+				quad2D_vertex_texture_coords[i],
+				0.0f
+			);
+		}
+	}
+
 	void Renderer::ReCompileShaders()
 	{
 		AddSubstitutions();
@@ -336,6 +335,115 @@ namespace KuchCraft {
 	{
 		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("SHADER_VERSION", ApplicationConfig::GetRendererData().ShaderVersion));
 		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("UNIFORM_CAMERA_DATA_BINDING", std::to_string(s_Data.CameraDataUniformBuffer.GetBinding())));
+		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("MAX_TEXTURES_SLOTS", std::to_string(ApplicationConfig::GetRendererData().MaxTextureSlots)));
+	}
+
+	void Renderer::InitQuads2D()
+	{
+		s_Quad2DData.MaxQuads    = ApplicationConfig::GetRendererData().Renderer2DMaxQuads;
+		s_Quad2DData.MaxVertices = s_Quad2DData.MaxQuads * quad_vertex_count;
+		s_Quad2DData.MaxIndices  = s_Quad2DData.MaxQuads * quad_index_count;
+
+		s_Quad2DData.VertexArray .Create();
+		s_Quad2DData.VertexBuffer.Create(VertexBufferDataUsage::DYNAMIC, s_Quad2DData.MaxVertices * sizeof(Primitives::_2D::QuadVertex));
+		s_Quad2DData.VertexBuffer.SetBufferLayout({
+			{ ShaderDataType::Float3, "a_Position"      },
+			{ ShaderDataType::Float4, "a_Color"         },
+			{ ShaderDataType::Float2, "a_TextureCoord"  },
+			{ ShaderDataType::Float,  "a_TextureIndex"  }
+		});
+		s_Quad2DData.VertexArray.SetVertexBuffer(s_Quad2DData.VertexBuffer);
+
+		uint32_t* indices = new uint32_t[s_Quad2DData.MaxIndices];
+		uint32_t  offset = 0;
+		for (uint32_t i = 0; i < s_Quad2DData.MaxIndices; i += quad_index_count)
+		{
+			indices[i + 0] = offset + 0;
+			indices[i + 1] = offset + 1;
+			indices[i + 2] = offset + 2;
+			indices[i + 3] = offset + 2;
+			indices[i + 4] = offset + 3;
+			indices[i + 5] = offset + 0;
+
+			offset += quad_vertex_count;
+		}
+		s_Quad2DData.IndexBuffer.Create(IndexBufferDataUsage::STATIC, s_Quad2DData.MaxIndices, indices);
+		delete[] indices;
+		s_Quad2DData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/quad2D.glsl");
+		s_Quad2DData.Shader->Bind();
+
+		s_Quad2DData.Shader     ->Unbind();
+		s_Quad2DData.VertexArray .Unbind();
+		s_Quad2DData.IndexBuffer .Unbind();
+		s_Quad2DData.VertexBuffer.Unbind();
+	}
+
+	void Renderer::StartQuadsBatch2D()
+	{
+		s_Quad2DData.IndexCount       = 0;
+		s_Quad2DData.TextureSlotIndex = 1;
+	}
+
+	void Renderer::NextQuadsBatch2D()
+	{
+		FlushQuads2D();
+		StartQuadsBatch2D();
+	}
+
+	void Renderer::RenderQuads2D()
+	{
+		if (!s_Quad2DData.Vertices.size())
+			return;
+
+		s_Quad2DData.Shader     ->Bind();
+		s_Quad2DData.VertexArray .Bind();
+		s_Quad2DData.VertexBuffer.Bind();
+		s_Quad2DData.IndexBuffer .Bind();
+		s_Quad2DData.VertexOffset = 0;
+
+		StartQuadsBatch2D();
+		for (uint32_t i = 0; i < s_Quad2DData.Vertices.size(); i += quad_vertex_count)
+		{
+			if (s_Quad2DData.IndexCount == s_Quad2DData.MaxIndices)
+				NextQuadsBatch2D();
+
+			if (s_Quad2DData.Vertices[i].TextureIndex == 0.0f)
+			{
+				s_Quad2DData.Vertices[i + 0].TextureIndex = 0.0f;
+				s_Quad2DData.Vertices[i + 1].TextureIndex = 0.0f;
+				s_Quad2DData.Vertices[i + 2].TextureIndex = 0.0f;
+				s_Quad2DData.Vertices[i + 3].TextureIndex = 0.0f;
+
+				s_Quad2DData.IndexCount += quad_index_count;
+			}
+			else
+			{
+				/// TODO: Textures
+			}
+		}
+
+		FlushQuads2D();
+	}
+
+	void Renderer::FlushQuads2D()
+	{
+		if (s_Quad2DData.IndexCount == 0)
+			return;
+
+		uint32_t vertexCount = s_Quad2DData.IndexCount / quad_index_count * quad_vertex_count;
+		s_Quad2DData.VertexBuffer.SetData(vertexCount * sizeof(Primitives::_2D::QuadVertex), &s_Quad2DData.Vertices[s_Quad2DData.VertexOffset]);
+		s_Quad2DData.VertexOffset += vertexCount;
+
+		/// TODO: Bind textures
+
+		///
+
+		DrawElemnts(s_Quad2DData.IndexCount);
+	}
+
+	void Renderer::DrawElemnts(uint32_t count)
+	{
+		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 	}
 
 }

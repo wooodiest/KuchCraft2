@@ -98,8 +98,16 @@ namespace KuchCraft {
 
     struct RendererConfigData
     {
+        /// Flag to enable or disable rendering-related log messages.
         bool Logs = true;
 
+        /// Maximum number of texture slots available in the GPU.
+        uint32_t MaxTextureSlots = 64;
+
+        /// Maximum number of 2D quads that can be rendered in a single batch.
+        uint32_t Renderer2DMaxQuads = 20'000;
+
+        /// GLSL shader version string to use in shader source files.
         std::string ShaderVersion = "460 core";
     };
 

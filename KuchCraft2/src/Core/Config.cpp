@@ -48,8 +48,10 @@ namespace KuchCraft {
 					s_WindowConfig = windowConfig;
 
 					RendererConfigData rendererConfig;
-					rendererConfig.Logs          = json["Renderer"]["Logs"].get<bool>();
-					rendererConfig.ShaderVersion = json["Renderer"]["ShaderVersion"].get<std::string>();
+					rendererConfig.Logs               = json["Renderer"]["Logs"].get<bool>();
+					rendererConfig.ShaderVersion      = json["Renderer"]["ShaderVersion"].get<std::string>();
+					rendererConfig.MaxTextureSlots    = json["Renderer"]["MaxTextureSlots"].get<uint32_t>();
+					rendererConfig.Renderer2DMaxQuads = json["Renderer"]["Renderer2DMaxQuads"].get<uint32_t>();
 					s_RendererConfig = rendererConfig;
 
 				}
@@ -96,8 +98,10 @@ namespace KuchCraft {
 		};
 
 		json["Renderer"] = {
-			{ "Logs",          s_RendererConfig.Logs },
-			{ "ShaderVersion", s_RendererConfig.ShaderVersion }
+			{ "Logs",               s_RendererConfig.Logs },
+			{ "ShaderVersion",      s_RendererConfig.ShaderVersion },
+			{ "MaxTextureSlots",    s_RendererConfig.MaxTextureSlots },
+			{ "Renderer2DMaxQuads", s_RendererConfig.Renderer2DMaxQuads }
 		};
 
 		std::ofstream file(s_ConfigPath);
