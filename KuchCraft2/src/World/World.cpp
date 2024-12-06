@@ -163,7 +163,30 @@ namespace KuchCraft {
 			constexpr float entities_list_height = 250.0f;
 			static UUID selected = 0;
 
-			ImGui::Text("Total number of entities: %llu", m_EntityCount);
+			if (ImGui::Button("Filters##OpenFilterPopup", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				ImGui::OpenPopup("FilterPopup");
+
+			static std::string nameFilter;
+			static bool filterByTransform      = false;
+			static bool filterByCamera         = false;
+			static bool filterBySpriteRenderer = false;
+			uint64_t    filterMatchCount       = 0;
+
+			if (ImGui::BeginPopup("FilterPopup"))
+			{
+				ImGui::SeparatorText("Filters");
+
+				ImGui::InputText("Name##FilterByName", &nameFilter);
+				ImGui::Checkbox("Transform Component##FilterByTransform", &filterByTransform);
+				ImGui::Checkbox("Camera Component##FilterByCamera", &filterByCamera);
+				ImGui::Checkbox("Sprite Renderer Component##FilterBySpriteRenderer", &filterBySpriteRenderer);
+
+				if (ImGui::Button("Close##FilterPopup", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+					ImGui::CloseCurrentPopup();
+
+				ImGui::EndPopup();
+			}
+
 			ImGui::SeparatorText("EntitiesList");
 			ImGui::BeginChild("EntitiesList", ImVec2(0.0f, entities_list_height), true);
 
@@ -177,9 +200,19 @@ namespace KuchCraft {
 				{
 					auto& tag  = entity.GetComponent<TagComponent>().Tag;
 					auto& uuid = entity.GetComponent<IDComponent>().ID;
+					
+					/// Filters
+					if (!nameFilter.empty() && tag.find(nameFilter) == std::string::npos)
+						continue;
+					if (filterByTransform && !entity.HasComponent<TransformComponent>())
+						continue;
+					if (filterByCamera && !entity.HasComponent<CameraComponent>())
+						continue;
+					if (filterBySpriteRenderer && !entity.HasComponent<SpriteRendererComponent>())
+						continue;
 
+					filterMatchCount++;
 					bool isSelected = (selected == uuid);
-
 					std::string imguiName = tag + "##" + std::to_string(uuid);
 					if (ImGui::Selectable(imguiName.c_str(), isSelected))
 						selected = uuid;
@@ -189,6 +222,9 @@ namespace KuchCraft {
 				}
 			}
 			ImGui::EndChild();
+			ImGui::Text("Total number of entities: %llu", m_EntityCount);
+			if (m_EntityCount != filterMatchCount)
+				ImGui::Text("Entities matching filter: %llu", filterMatchCount);
 
 			ImGui::SeparatorText("Create entity");
 			static const char* default_entity_name = "Entity";
