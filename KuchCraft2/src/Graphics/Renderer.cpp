@@ -75,12 +75,13 @@ namespace KuchCraft {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		/// Clear data
+		s_Stats.Reset();
 		s_Quad2DData.Vertices.clear();
 	}
 
 	void Renderer::EndFrame()
 	{
-		
+		s_Stats.fpsTracker.AddValue(1.0f / Application::GetWindow().GetRawDeltaTime());
 	}
 
 	void Renderer::BeginWorld(Camera* camera)
@@ -103,6 +104,13 @@ namespace KuchCraft {
 	{
 #ifdef  INCLUDE_IMGUI
 		
+		if (ImGui::CollapsingHeader("Statistics##Renderer", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			s_Stats.fpsTracker      .RenderImGui("Fps");
+			s_Stats.drawCallsTracker.RenderImGui("Draw calls");
+			s_Stats.verticesTracker .RenderImGui("Vertices");
+		}
+
 		if (ImGui::CollapsingHeader("Shaders", ImGuiTreeNodeFlags_DefaultOpen) && !s_Data.ShaderLibrary.GetShaders().empty())
 		{
 			if (ImGui::Button("Recompile all", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
@@ -439,6 +447,9 @@ namespace KuchCraft {
 		///
 
 		DrawElemnts(s_Quad2DData.IndexCount);
+
+		s_Stats.DrawCalls++;
+		s_Stats.Vertices += vertexCount;
 	}
 
 	void Renderer::DrawElemnts(uint32_t count)

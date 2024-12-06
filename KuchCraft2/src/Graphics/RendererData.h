@@ -19,6 +19,7 @@
 #include "Graphics/Data/UniformBuffer.h"
 #include "Graphics/Data/Camera.h"
 #include "Graphics/Data/Primitives.h"
+#include "Core/MetricTracker.h"
 
 namespace KuchCraft {
 
@@ -31,6 +32,31 @@ namespace KuchCraft {
 
 		/// Uniform buffer used to store camera data.
 		UniformBuffer CameraDataUniformBuffer;
+	};
+
+	/// Structure to track and store statistics related to the renderer's performance and usage.
+	struct RendererStatistics
+	{
+		/// Number of draw calls made in the current frame.
+		uint32_t DrawCalls = 0;
+
+		/// Number of vertices processed in the current frame.
+		uint32_t Vertices = 0;
+
+		/// Trackers
+		MetricTracker<float, 500>    fpsTracker;
+		MetricTracker<uint32_t, 500> drawCallsTracker;
+		MetricTracker<uint32_t, 500> verticesTracker;
+
+		/// Resets the statistics for the current frame and updates the historical trackers.
+		void Reset()
+		{
+			drawCallsTracker.AddValue(DrawCalls);
+			verticesTracker .AddValue(Vertices);
+
+			DrawCalls = 0;
+			Vertices  = 0;
+		}
 	};
 
 	/// Stores data specific to 2D quad rendering operations.

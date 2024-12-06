@@ -133,6 +133,9 @@ namespace KuchCraft {
 		/// buffers, and configuration options.
 		static inline RendererData s_Data;
 
+		/// Holds renderer statistics and informations
+		static inline RendererStatistics s_Stats;
+
 		/// Contains data specific to 2D quad rendering.
 	    /// Includes buffers, shaders, and configuration parameters used exclusively for
 	    /// rendering 2D quads in a batched manner.

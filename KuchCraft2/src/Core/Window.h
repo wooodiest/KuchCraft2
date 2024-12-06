@@ -98,9 +98,17 @@ namespace KuchCraft {
 		/// @return true if the cursor is shown, false otherwise.
 		inline [[nodiscard]] bool GetShowCursorStatus() const noexcept { return m_Data.Config.ShowCursor; }
 
-		/// Retrieves the time interval between the current frame and the last frame.
-		/// @return The delta time in seconds, representing the time elapsed since the last frame.
+		/// Retrieves the delta time for the current frame.
+		/// Delta time is the time elapsed between the current frame and the last frame.
+		/// It is clamped to a maximum value (`max_delta_time`) to prevent spikes in frame time.
+		/// @return The clamped delta time in seconds.
 		inline [[nodiscard]] float GetDeltaTime() const noexcept { return m_TimeData.DeltaTime; }
+
+		/// Retrieves the raw delta time for the current frame.
+		/// Raw delta time is the actual time elapsed between the current frame and the last frame
+		/// without clamping. This is useful for scenarios where precise timing is needed.
+		/// @return The unclamped delta time in seconds.
+		inline [[nodiscard]] float GetRawDeltaTime() const noexcept { return m_TimeData.RawDeltaTime; }
 
 		/// Retrieves the raw pointer to the underlying GLFW window.
 		/// This function provides direct access to the internal GLFW window pointer (`GLFWwindow*`). 
@@ -191,6 +199,9 @@ namespace KuchCraft {
 		{
 			/// Time interval between the current frame and the last frame.
 			float DeltaTime = 0.0f;
+
+			///
+			float RawDeltaTime = 0.0f;
 
 			/// Time of the last frame, used for calculating the delta time.
 			float LastFrameTime = 0.0f;
