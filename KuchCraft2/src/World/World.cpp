@@ -175,11 +175,19 @@ namespace KuchCraft {
 			if (ImGui::BeginPopup("FilterPopup"))
 			{
 				ImGui::SeparatorText("Filters");
-
+				
 				ImGui::InputText("Name##FilterByName", &nameFilter);
 				ImGui::Checkbox("Transform Component##FilterByTransform", &filterByTransform);
 				ImGui::Checkbox("Camera Component##FilterByCamera", &filterByCamera);
 				ImGui::Checkbox("Sprite Renderer Component##FilterBySpriteRenderer", &filterBySpriteRenderer);
+
+				if (ImGui::Button("Clear##FilterPopup", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				{
+					nameFilter             = "";
+					filterByTransform      = false;
+					filterByCamera         = false;
+					filterBySpriteRenderer = false;
+				}
 
 				if (ImGui::Button("Close##FilterPopup", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 					ImGui::CloseCurrentPopup();
