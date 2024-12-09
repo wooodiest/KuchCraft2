@@ -125,6 +125,69 @@ namespace KuchCraft {
 	    /// @param count - the number of indices to render.
 		static void DrawElemnts(uint32_t count);
 
+		/// Issues a draw call for rendering non-indexed elements.
+		/// Wraps the OpenGL `glDrawArrays` function to render a specified number of vertices starting at a given offset.
+		/// @param count - the number of vertices to render.
+		/// @param offset - the starting index of the vertex data.
+		static void DrawArrays(uint32_t count, uint32_t offset);
+		
+		/// Issues a draw call for rendering instanced triangle strip arrays.
+		/// Wraps the OpenGL `glDrawArraysInstanced` function to render instances of a triangle strip.
+		/// @param count - the number of vertices per instance.
+		/// @param instanceCount - the number of instances to render.
+		/// @param offset - the starting index of the vertex data.
+		static void DrawStripArraysInstanced(uint32_t count, uint32_t instanceCount, uint32_t offset);
+
+		/// Enables blending in OpenGL.
+		/// Configures the blend function to handle transparency using source alpha.
+		static void EnableBlending();
+
+		/// Disables blending in OpenGL.
+		/// Turns off blending to prevent combining colors of overlapping elements.
+		static void DisableBlending();
+
+		/// Enables face culling in OpenGL.
+		/// Configures OpenGL to cull (discard) back faces of polygons during rendering.
+		static void EnableFaceCulling();
+
+		/// Enables face culling for front faces in OpenGL.
+		/// Configures OpenGL to cull (discard) front faces of polygons during rendering.
+		static void EnableFrontFaceCulling();
+
+		/// Disables face culling in OpenGL.
+		/// Prevents OpenGL from discarding any polygon faces during rendering.
+		static void DisableFaceCulling();
+
+		/// Enables depth testing in OpenGL.
+		/// Configures OpenGL to discard fragments that fail the depth test (based on `GL_LESS` function).
+		static void EnableDepthTesting();
+
+		/// Enables depth testing in OpenGL with `GL_LEQUAL` function.
+		/// Configures OpenGL to pass fragments that are less than or equal to the current depth value.
+		static void EnableLessEqualDepthTesting();
+
+		/// Disables depth testing in OpenGL.
+		/// Prevents OpenGL from discarding fragments based on depth.
+		static void DisableDepthTesting();
+
+		/// Enables writing to the depth buffer in OpenGL.
+		/// Configures OpenGL to allow modifications to the depth buffer during rendering.
+		static void EnableDepthMask();
+
+		/// Disables writing to the depth buffer in OpenGL.
+		/// Configures OpenGL to prevent modifications to the depth buffer during rendering.
+		static void DisableDepthMask();
+
+		/// Enables polygon offset in OpenGL.
+		/// Configures OpenGL to add an offset to the depth values of polygons to prevent z-fighting.
+		/// @param factor - scale factor for variable depth offset.
+		/// @param units - constant depth offset added to each polygon.
+		static void EnablePolygonOffset(float factor, float units);
+
+		/// Disables polygon offset in OpenGL.
+		/// Configures OpenGL to stop applying depth offsets to polygons.
+		static void DisablePolygonOffset();
+
 	#pragma endregion
 	#pragma region Data
 	private:

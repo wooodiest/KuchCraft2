@@ -452,9 +452,89 @@ namespace KuchCraft {
 		s_Stats.Vertices += vertexCount;
 	}
 
+#pragma region RendererCommands
+
 	void Renderer::DrawElemnts(uint32_t count)
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 	}
+
+	void Renderer::DrawArrays(uint32_t count, uint32_t offset)
+	{
+		glDrawArrays(GL_TRIANGLES, offset, count);
+	}
+
+	void Renderer::DrawStripArraysInstanced(uint32_t count, uint32_t instanceCount, uint32_t offset)
+	{
+		glDrawArraysInstanced(GL_TRIANGLE_STRIP, offset, count, instanceCount);
+	}
+
+	void Renderer::EnableBlending()
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	void Renderer::DisableBlending()
+	{
+		glDisable(GL_BLEND);
+	}
+
+	void Renderer::EnableFaceCulling()
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+	}
+
+	void Renderer::EnableFrontFaceCulling()
+	{
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+	}
+
+	void Renderer::DisableFaceCulling()
+	{
+		glDisable(GL_CULL_FACE);
+	}
+
+	void Renderer::EnableDepthTesting()
+	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+	}
+
+	void Renderer::EnableLessEqualDepthTesting()
+	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+	}
+
+	void Renderer::DisableDepthTesting()
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+
+	void Renderer::EnableDepthMask()
+	{
+		glDepthMask(GL_TRUE);
+	}
+
+	void Renderer::DisableDepthMask()
+	{
+		glDepthMask(GL_FALSE);
+	}
+
+	void Renderer::EnablePolygonOffset(float factor, float units)
+	{
+		glEnable(GL_POLYGON_OFFSET_FILL);
+		glPolygonOffset(factor, units);
+	}
+
+	void Renderer::DisablePolygonOffset()
+	{
+		glDisable(GL_POLYGON_OFFSET_FILL);
+	}
+
+#pragma endregion
 
 }
