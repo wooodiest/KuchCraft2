@@ -20,6 +20,7 @@
 
 namespace KuchCraft {
 
+#pragma region Lifecycle 
 	void Renderer::Init()
 	{
 		/// Check if logging for OpenGL is enabled.
@@ -72,7 +73,7 @@ namespace KuchCraft {
 		auto [width, height] = Application::GetWindow().GetSize();
 		glViewport(0, 0, width, height);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		/// Clear data
 		s_Stats.Reset();
@@ -97,6 +98,7 @@ namespace KuchCraft {
 
 	void Renderer::EndWorld()
 	{
+		EnableDepthTesting();
 		RenderQuads2D();
 	}
 
@@ -312,6 +314,9 @@ namespace KuchCraft {
 #endif
 	}
 
+#pragma endregion 
+#pragma region DrawCommands
+
 	void Renderer::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
 	{
 		for (uint32_t i = 0; i < quad_vertex_count; i++)
@@ -324,6 +329,23 @@ namespace KuchCraft {
 			);
 		}
 	}
+
+	void Renderer::DrawQuad(const glm::mat4& transform, const std::shared_ptr<Texture>& texture, const glm::vec4& tint)
+	{
+		float textureID = static_cast<float>(texture->GetRendererID());
+		for (uint32_t i = 0; i < quad_vertex_count; i++)
+		{
+			s_Quad2DData.Vertices.emplace_back(
+				transform * quad2D_vertex_positions[i],
+				tint,
+				quad2D_vertex_texture_coords[i],
+				textureID /// Texture index temporarily holds the texture rendererID
+			);
+		}
+	}
+
+#pragma endregion
+#pragma region Shaders
 
 	void Renderer::ReCompileShaders()
 	{
@@ -345,6 +367,9 @@ namespace KuchCraft {
 		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("UNIFORM_CAMERA_DATA_BINDING", std::to_string(s_Data.CameraDataUniformBuffer.GetBinding())));
 		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("MAX_TEXTURES_SLOTS", std::to_string(ApplicationConfig::GetRendererData().MaxTextureSlots)));
 	}
+
+#pragma endregion
+#pragma region Quads2D
 
 	void Renderer::InitQuads2D()
 	{
@@ -379,6 +404,24 @@ namespace KuchCraft {
 		delete[] indices;
 		s_Quad2DData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/quad2D.glsl");
 		s_Quad2DData.Shader->Bind();
+
+		TextureSpecification whiteTextureSpec;
+		whiteTextureSpec.Width  = 1;
+		whiteTextureSpec.Height = 1;
+		s_Quad2DData.WhiteTexture = std::make_shared<Texture2D>(whiteTextureSpec);
+		uint32_t whiteColor = 0xffffffff;
+		s_Quad2DData.WhiteTexture->SetData(&whiteColor, sizeof(whiteColor));
+
+		int* samplers = new int[ApplicationConfig::GetRendererData().MaxTextureSlots];
+		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxTextureSlots; i++)
+			samplers[i] = i;
+		s_Quad2DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxTextureSlots);
+		delete[] samplers;
+
+		s_Quad2DData.TextureSlots = new uint32_t[ApplicationConfig::GetRendererData().MaxTextureSlots];
+		s_Quad2DData.TextureSlots[0] = s_Quad2DData.WhiteTexture->GetRendererID();
+
+		s_Quad2DData.Vertices.reserve(s_Quad2DData.MaxVertices);
 
 		s_Quad2DData.Shader     ->Unbind();
 		s_Quad2DData.VertexArray .Unbind();
@@ -426,7 +469,32 @@ namespace KuchCraft {
 			}
 			else
 			{
-				/// TODO: Textures
+				float textureIndex = 0.0f;
+				for (uint32_t j = 1; j < s_Quad2DData.TextureSlotIndex; j++)
+				{
+					if (s_Quad2DData.TextureSlots[j] == s_Quad2DData.Vertices[i].TextureIndex) // TexIndex temporarily holds the texture rendererID
+					{
+						textureIndex = (float)j;
+						break;
+					}
+				}
+
+				if (textureIndex == 0.0f)
+				{
+					if (s_Quad2DData.TextureSlotIndex >= ApplicationConfig::GetRendererData().MaxTextureSlots)
+						NextQuadsBatch2D();
+
+					textureIndex = static_cast<float>(s_Quad2DData.TextureSlotIndex);
+					s_Quad2DData.TextureSlots[s_Quad2DData.TextureSlotIndex] = s_Quad2DData.Vertices[i].TextureIndex;
+					s_Quad2DData.TextureSlotIndex++;
+				}
+
+				s_Quad2DData.Vertices[i + 0].TextureIndex = textureIndex;
+				s_Quad2DData.Vertices[i + 1].TextureIndex = textureIndex;
+				s_Quad2DData.Vertices[i + 2].TextureIndex = textureIndex;
+				s_Quad2DData.Vertices[i + 3].TextureIndex = textureIndex;
+
+				s_Quad2DData.IndexCount += quad_index_count;
 			}
 		}
 
@@ -442,9 +510,8 @@ namespace KuchCraft {
 		s_Quad2DData.VertexBuffer.SetData(vertexCount * sizeof(Primitives::_2D::QuadVertex), &s_Quad2DData.Vertices[s_Quad2DData.VertexOffset]);
 		s_Quad2DData.VertexOffset += vertexCount;
 
-		/// TODO: Bind textures
-
-		///
+		for (uint32_t i = 0; i < s_Quad2DData.TextureSlotIndex; i++)
+			Texture::Bind(s_Quad2DData.TextureSlots[i], i);
 
 		DrawElemnts(s_Quad2DData.IndexCount);
 
@@ -452,6 +519,7 @@ namespace KuchCraft {
 		s_Stats.Vertices += vertexCount;
 	}
 
+#pragma endregion
 #pragma region RendererCommands
 
 	void Renderer::DrawElemnts(uint32_t count)

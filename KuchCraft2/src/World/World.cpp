@@ -112,7 +112,10 @@ namespace KuchCraft {
 
 			/// Render 2D quads
 			m_Registry.view<TransformComponent, SpriteRendererComponent>().each([&](auto entity, auto& transformComponent, auto& spriteComponent) {
-				Renderer::DrawQuad(transformComponent.GetTransform(), spriteComponent.Color);
+				if (spriteComponent.Texture)
+					Renderer::DrawQuad(transformComponent.GetTransform(), spriteComponent.Texture, spriteComponent.Color);
+				else
+					Renderer::DrawQuad(transformComponent.GetTransform(), spriteComponent.Color);
 			});
 
 			Renderer::EndWorld();
@@ -131,6 +134,7 @@ namespace KuchCraft {
 	template<typename T>
 	static void AddComponentLabel(Entity& entity, const char* label)
 	{
+#ifdef INCLUDE_IMGUI
 		if (!entity.HasComponent<T>())
 		{
 			if (ImGui::Button(label, ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
@@ -139,11 +143,13 @@ namespace KuchCraft {
 				ImGui::CloseCurrentPopup();
 			}
 		}
+#endif
 	}
 
 	template<typename T>
 	static void RemoveComponentLabel(Entity& entity, const char* label)
 	{
+#ifdef INCLUDE_IMGUI
 		if (entity.HasComponent<T>())
 		{
 			if (ImGui::Button(label, ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
@@ -152,6 +158,7 @@ namespace KuchCraft {
 				ImGui::CloseCurrentPopup();
 			}
 		}
+#endif
 	}
 
 	void World::OnImGuiRender()
@@ -334,7 +341,7 @@ namespace KuchCraft {
 						if (!cameraComponent.FixedAspectRatio)
 						{
 							auto [width, height] = Application::GetWindow().GetSize();
-							float aspectRatio = width / height;
+							float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 							camera.SetAspectRatio(aspectRatio);
 						}
 					}
@@ -436,7 +443,7 @@ namespace KuchCraft {
 	bool World::OnWindowResize(WindowResizeEvent& e)
 	{
 		auto [width, height] = Application::GetWindow().GetSize();
-		float aspectRatio = width / height;
+		float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
 		m_Registry.view<CameraComponent>().each([&](auto entity, auto& cameraComponent) {
 			if (!cameraComponent.FixedAspectRatio)
@@ -473,7 +480,7 @@ namespace KuchCraft {
 		if (!component.FixedAspectRatio)
 		{
 			auto [width, height] = Application::GetWindow().GetSize();
-			float aspectRatio = width / height;
+			float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 		
 			component.Camera.SetAspectRatio(aspectRatio);
 		}

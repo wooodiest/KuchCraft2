@@ -3,6 +3,7 @@
 #include "Core/UUID.h"
 
 #include "Graphics/Data/Camera.h"
+#include "Graphics/Data/Texture.h"
 
 namespace KuchCraft {
 	
@@ -82,12 +83,17 @@ namespace KuchCraft {
 			: Primary(false), FixedAspectRatio(other.FixedAspectRatio) {}
 	};
 
-	/// Represents the visual appearance of an entity as a 2D sprite.
-    /// This component defines the color tint of a sprite.
+	/// A component that represents the visual appearance of an entity as a 2D sprite.
+	/// This component allows customization of the sprite's color tint and texture.
 	struct SpriteRendererComponent
 	{
-		/// RGBA color of the sprite
+		/// The color tint of the sprite, represented as an RGBA vector.
+		/// Each channel ranges from 0.0 (minimum intensity) to 1.0 (maximum intensity).
 		glm::vec4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		/// A shared pointer to the texture associated with the sprite.
+		/// If no texture is set, the sprite will render as a solid color using the `Color` property.
+		std::shared_ptr<Texture> Texture;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(const SpriteRendererComponent&) = default;

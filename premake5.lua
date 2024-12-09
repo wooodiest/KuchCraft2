@@ -34,7 +34,9 @@ project "KuchCraft2"
         "%{wks.location}/KuchCraft2/src/**.h",
         "%{wks.location}/KuchCraft2/src/**.cpp",
         "%{wks.location}/KuchCraft2/vendor/glm/glm/**.hpp",
-        "%{wks.location}/KuchCraft2/vendor/glm/glm/**.inl"
+        "%{wks.location}/KuchCraft2/vendor/glm/glm/**.inl",
+        "%{wks.location}/KuchCraft2/vendor/stb_image/**.h",
+		"%{wks.location}/KuchCraft2/vendor/stb_image/**.cpp",
     }
 
     includedirs
@@ -47,6 +49,7 @@ project "KuchCraft2"
         "%{wks.location}/KuchCraft2/vendor/imgui",
         "%{wks.location}/KuchCraft2/vendor/nlohmann_json",
         "%{wks.location}/KuchCraft2/vendor/entt",
+        "%{wks.location}/KuchCraft2/vendor/stb_image"
     }
 
     links

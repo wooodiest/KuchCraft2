@@ -19,6 +19,8 @@
 #include "Graphics/Data/UniformBuffer.h"
 #include "Graphics/Data/Camera.h"
 #include "Graphics/Data/Primitives.h"
+#include "Graphics/Data/Texture.h"
+#include "Graphics/Data/Texture2D.h"
 #include "Core/MetricTracker.h"
 
 namespace KuchCraft {
@@ -83,6 +85,9 @@ namespace KuchCraft {
 		/// Offset for vertex data in the buffer.
 	    /// Used to track the starting position for new vertices in the vertex buffer.
 		uint32_t VertexOffset = 0;
+
+		/// 1x1 pixel white texture to be used when rendering just color without texture qued
+		std::shared_ptr<Texture> WhiteTexture;
 
 		/// Index of the current texture slot in use.
 		/// Starts at 1 because slot 0 is reserved for a default white texture.

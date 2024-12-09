@@ -64,6 +64,14 @@ namespace KuchCraft {
 		/// @param color A vec4 representing the RGBA color of the quad.
 		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
 
+		/// Draws a single 2D quad with a given transformation, texture and tint.
+		/// This function adds a 2D quad to the rendering queue, applying the specified
+		/// transformation matrix, texture and tint. It is used for rendering basic 2D graphics elements.
+		/// @param transform A 4x4 transformation matrix to position, scale, or rotate the quad.
+		/// @param texture A shared pointer to texture instance to be used to texture quad
+		/// @param tint A vec4 representing the RGBA tint of the quad texture.
+		static void DrawQuad(const glm::mat4& transform, const std::shared_ptr<Texture>& texture, const glm::vec4& tint);
+
 	#pragma endregion
 	#pragma region Shaders
 	public:

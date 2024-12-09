@@ -34,7 +34,14 @@ in vec4 v_Color;
 in vec2 v_TextureCoord;
 in flat float v_TextureIndex;
 
+uniform sampler2D u_Textures[##MAX_TEXTURES_SLOTS];
+
 void main()
 {
-    o_Color = v_Color;
+   vec4 color = v_Color * texture(u_Textures[int(v_TextureIndex)], v_TextureCoord);
+   if (color.a == 0.0)
+		discard;
+
+	o_Color = color;
+
 }

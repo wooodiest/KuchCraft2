@@ -6,20 +6,22 @@
     },
     "Renderer": {
         "Logs": true,
+        "MaxTextureSlots": 64,
+        "Renderer2DMaxQuads": 20000,
         "ShaderVersion": "460 core"
     },
     "Window": {
         "FullScreen": false,
-        "Height": 801,
-        "HeightBeforeFullscreen": 801,
-        "PositionBeforeFullscreenX": 459,
-        "PositionBeforeFullscreenY": 118,
-        "PositionX": 459,
-        "PositionY": 118,
+        "Height": 765,
+        "HeightBeforeFullscreen": 765,
+        "PositionBeforeFullscreenX": 227,
+        "PositionBeforeFullscreenY": 122,
+        "PositionX": 227,
+        "PositionY": 122,
         "Resizable": true,
         "ShowCursor": true,
         "Vsync": false,
-        "Width": 1237,
-        "WidthBeforeFullscreen": 1237
+        "Width": 1450,
+        "WidthBeforeFullscreen": 1450
     }
 }
