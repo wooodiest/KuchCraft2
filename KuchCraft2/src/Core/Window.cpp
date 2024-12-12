@@ -195,6 +195,17 @@ namespace KuchCraft {
 			MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
 			data.EventCallback(event);
 		});
+
+		glfwSetDropCallback(m_Window, [](GLFWwindow* window, int count, const char** paths) {
+			for (int i = 0; i < count; ++i)
+			{
+				WindowData& data = *static_cast<WindowData*>(glfwGetWindowUserPointer(window));
+
+				/// Create and dispatch the file drop event to notify the application.
+				FileDropEvent event(paths[i]);
+				data.EventCallback(event);
+			}
+		});
 	}
 
 	Window::~Window()

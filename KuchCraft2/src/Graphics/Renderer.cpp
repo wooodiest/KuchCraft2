@@ -67,6 +67,11 @@ namespace KuchCraft {
 
 	}
 
+	void Renderer::OnEvent(Event& e)
+	{
+
+	}
+
 	void Renderer::BeginFrame()
 	{
 		/// tmp

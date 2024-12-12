@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include "Core/Event.h"
 #include "Graphics/RendererData.h"
 
 namespace KuchCraft {
@@ -30,6 +31,10 @@ namespace KuchCraft {
 		/// This function cleans up resources used during rendering, ensuring proper
 		/// deallocation of memory and closing of graphics contexts.
 		static void Shutdown();
+
+		/// This method is responsible for handling various events by delegating them to the appropriate handlers.
+		/// @param e - the event to process.
+		static void OnEvent(Event& e);
 
 		/// Begins the rendering process for a new frame.
 		/// This function prepares the rendering context for drawing, clears the screen,

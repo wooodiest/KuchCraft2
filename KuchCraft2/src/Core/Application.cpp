@@ -125,6 +125,7 @@ namespace KuchCraft {
 		dispatcher.Dispatch<WindowCloseEvent>(KC_BIND_STATIC_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(KC_BIND_STATIC_EVENT_FN(Application::OnWindowResize));
 
+		Renderer::OnEvent(e);
 		s_Data.Game->OnEvent(e);
 	}
 

@@ -97,6 +97,9 @@ namespace KuchCraft {
 	{
 		None = 0,
 
+		/// Associated with files
+		FileDrop,
+
 		/// Associated with window
 		WindowClose, WindowResize, WindowMoved,
 
@@ -115,7 +118,8 @@ namespace KuchCraft {
 		EventCategoryInput       = 1 << 1,
 		EventCategoryKeyboard    = 1 << 2,
 		EventCategoryMouse       = 1 << 3,
-		EventCategoryMouseButton = 1 << 4
+		EventCategoryMouseButton = 1 << 4,
+		EventCategoryFile        = 1 << 5
 	};
 
 	/// Base class for all events in the application. The Event class is designed to be inherited
@@ -183,6 +187,36 @@ namespace KuchCraft {
 	///
 	/// Events...
 	///
+	
+	class FileDropEvent : public Event
+	{
+	public:
+		/// Constructor for FileDropEvent.
+		/// @param filePath - The path of the dropped file.
+		explicit FileDropEvent(std::string filePath)
+			: m_FilePath(std::move(filePath)) {}
+
+		/// Retrieves the static event type for file drop events.
+		/// @return The static event type.
+		static inline [[nodiscard]] EventType GetStaticType() noexcept { return EventType::FileDrop; }
+
+		/// Retrieves the event type.
+		/// @return The type of the event.
+		virtual [[nodiscard]] EventType GetEventType() const noexcept override { return GetStaticType(); }
+
+		/// Retrieves the event category flags.
+		/// @return The category flags for this event.
+		virtual [[nodiscard]] int GetCategoryFlags() const noexcept override { return EventCategoryFile; }
+
+		/// Retrieves the path of the dropped file.
+		/// @return The file path as a string.
+		inline [[nodiscard]] const std::string& GetFilePath() const noexcept { return m_FilePath; }
+
+	private:
+		/// Path of the dropped file.
+		std::string m_FilePath;
+
+	};
 
 	/// Event class for window resizing events.
 	/// This event is triggered when the window is resized.
