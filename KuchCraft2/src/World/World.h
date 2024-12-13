@@ -35,6 +35,11 @@ namespace KuchCraft {
 		/// @param e - the event to process.
 		void OnEvent(Event& e);
 
+		/// Handles the file drop event.
+		/// @param e - the window resize event.
+		/// @return Returns true if the event has been handled and should stop being propagated further
+		bool OnFileDrop(FileDropEvent& e);
+
 		/// Renders ImGui-specific components for the world.
 		/// This method handles the application's custom ImGui rendering logic.
 		void OnImGuiRender();

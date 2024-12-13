@@ -17,6 +17,8 @@
 #ifdef  INCLUDE_IMGUI
 	#include <imgui.h>
 	#include <misc/cpp/imgui_stdlib.h>
+
+	static std::pair<bool, std::filesystem::path> s_TextureToLoad;	
 #endif
 
 namespace KuchCraft {
@@ -129,6 +131,26 @@ namespace KuchCraft {
 
 		/// Dispatch events to appropriate handlers
 		dispatcher.Dispatch<WindowResizeEvent>(KC_BIND_EVENT_FN(World::OnWindowResize));
+		dispatcher.Dispatch<FileDropEvent>(KC_BIND_EVENT_FN(World::OnFileDrop));
+	}
+
+	bool World::OnFileDrop(FileDropEvent& e)
+	{
+#ifdef  INCLUDE_IMGUI
+		
+		auto& [toLoad, path] = s_TextureToLoad;
+
+		toLoad = true;
+		std::filesystem::path workingDirectory = std::filesystem::current_path();
+		std::filesystem::path texturePath = std::filesystem::absolute(std::filesystem::path(e.GetFilePath()));
+
+		if (texturePath.string().find(workingDirectory.string()) == 0)
+			path = std::filesystem::relative(texturePath, workingDirectory);
+		else
+			path = texturePath;
+#endif
+
+		return false;
 	}
 
 	template<typename T>
@@ -378,10 +400,44 @@ namespace KuchCraft {
 					ImGui::SeparatorText("Sprite renderer");
 					auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
 
-					if (ImGui::ColorPicker4("Color", glm::value_ptr(spriteRendererComponent.Color)))
-					{
+					ImGui::ColorPicker4("Color", glm::value_ptr(spriteRendererComponent.Color));
+					ImGui::Button("Drag texture and click here!", ImVec2(ImGui::GetContentRegionAvail().x, 75.0f));
+					if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+					{					
+						auto& [toLoad, path] = s_TextureToLoad;
+						if (toLoad)
+						{
+							toLoad = false;
 
+							auto texture = std::make_shared<Texture2D>(TextureSpecification{}, path);
+							if (texture->IsLoaded())
+							{
+								spriteRendererComponent.Texture = texture;
+								Log::Info("Loaded texture: {}", path.string());
+							}
+							else
+							{
+								Log::Error("Failed to load texture: {}", path.string());
+							}
+						}									
 					}
+
+					if (spriteRendererComponent.Texture && spriteRendererComponent.Texture->IsLoaded())
+					{
+						ImVec2 size = { ImGui::GetContentRegionAvail().x , (float)spriteRendererComponent.Texture->GetHeight() * ImGui::GetContentRegionAvail().x / (float)spriteRendererComponent.Texture->GetWidth() };				
+
+						ImGui::Image(
+							(ImTextureID)(spriteRendererComponent.Texture->GetRendererID()),
+							size,
+							ImVec2{ 0, 1 },
+							ImVec2{ 1, 0 }
+						);
+					}
+					else
+					{
+						ImGui::Text("No texture loaded.");
+					}
+
 				}
 			}
 		}
