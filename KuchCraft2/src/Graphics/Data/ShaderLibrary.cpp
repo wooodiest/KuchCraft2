@@ -22,7 +22,7 @@ namespace KuchCraft {
 		const auto& name = shader->GetName();
 		s_Shaders[name] = shader;
 
-		Log::Info("Added '{}' to shader library", name);
+		Log::Info("[Shader Library] : Loaded shader : {}", name);
 	}
 
 	std::shared_ptr<Shader> ShaderLibrary::Get(const std::string& name)
@@ -30,7 +30,7 @@ namespace KuchCraft {
 		if (Exists(name))
 			return s_Shaders[name];
 
-		Log::Error("Shader '{}' not found in library", name);
+		Log::Error("[Shader Library] : Shader {} : Not found", name);
 		return nullptr;
 	}
 
@@ -44,10 +44,10 @@ namespace KuchCraft {
 		if (Exists(name))
 		{
 			s_Shaders[name]->ReCompile();
-			Log::Info("Recompiled shader '{}'", name);
+			Log::Info("[Shader Library] : Recompiled shader : {}", name);
 		}
 		else
-			Log::Error("Shader '{}' does not exist", name);
+			Log::Error("[Shader Library] : Shader '{}' : Does not exist", name);
 	}
 
 	void ShaderLibrary::ReCompileAll()
@@ -55,7 +55,7 @@ namespace KuchCraft {
 		for (auto& [name, shader] : s_Shaders)
 		{
 			shader->ReCompile();
-			Log::Info("Recompiled shader '{}'", name);
+			Log::Info("[Shader Library] : Recompiled shader : {}", name);
 		}
 	}
 
