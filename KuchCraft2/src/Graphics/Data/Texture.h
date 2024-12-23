@@ -37,6 +37,12 @@ namespace KuchCraft {
 
 	};
 
+	/// Specifies texture type.
+	enum class TextureType
+	{
+		_2D
+	};
+
 	/// Describes the properties and configuration of a texture.
 	struct TextureSpecification
 	{
@@ -49,8 +55,11 @@ namespace KuchCraft {
 		/// The color format of the texture
 		ImageFormat Format = ImageFormat::RGBA8;
 
-		/// he filtering method for sampling the texture
+		/// The filtering method for sampling the texture
 		ImageFilter Filter = ImageFilter::LINEAR;
+
+		/// The type of the texture to be created
+		TextureType Type = TextureType::_2D;
 
 		/// Whether to generate mipmaps for the texture
 		bool GenerateMips = true;

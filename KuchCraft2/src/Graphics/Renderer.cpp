@@ -7,6 +7,7 @@
 #include "kcpch.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/Data/ShaderLibrary.h"
+#include "Graphics/TextureManager.h"
 
 #include "Core/Application.h"
 #include "Core/Config.h"
@@ -118,7 +119,7 @@ namespace KuchCraft {
 			s_Stats.verticesTracker .RenderImGui("Vertices");
 		}
 
-		if (ImGui::CollapsingHeader("Shaders", ImGuiTreeNodeFlags_DefaultOpen) && !s_Data.ShaderLibrary.GetShaders().empty())
+		if (ImGui::CollapsingHeader("Shaders") && !s_Data.ShaderLibrary.GetShaders().empty())
 		{
 			if (ImGui::Button("Recompile all", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 				ReCompileShaders();
@@ -297,7 +298,7 @@ namespace KuchCraft {
 			
 		}
 
-		if (ImGui::CollapsingHeader("Shader substitutions", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::CollapsingHeader("Shader substitutions"))
 		{
 			if (ImGui::BeginTable("TwoColumnTable", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
 			{
@@ -314,6 +315,67 @@ namespace KuchCraft {
 				}
 				ImGui::EndTable();
 			}
+		}
+
+		if (ImGui::CollapsingHeader("Textures") && !s_Data.ShaderLibrary.GetShaders().empty())
+		{
+			constexpr float textures_list_height = 150.0f;
+			static int selected = -1;
+			static std::string selectedTexture = "NONE";
+
+			if (ImGui::Button("Reload all", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				TextureManager::ReloadAll();
+
+			ImGui::SeparatorText("TexturesList");
+			ImGui::BeginChild("TexturesList", ImVec2(0.0f, textures_list_height), true);
+
+			int index = 0;
+			for (const auto& [path, texture] : TextureManager::GetData())
+			{
+				bool isSelected = (selected == index);
+				if (ImGui::Selectable(path.string().c_str(), isSelected))
+				{
+					selected = index;
+					selectedTexture = path.string();
+				}
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+
+				index++;
+			}
+
+			ImGui::EndChild();
+
+			/// Displays details of the selected texture.
+			if (selected != -1)
+			{
+				ImGui::SeparatorText("Texture info");
+
+				auto texture = TextureManager::Get(selectedTexture);
+				ImGui::Text("Path: %s", texture->GetPath().string().c_str());
+				ImGui::Text("RendererID: %d", texture->GetRendererID());
+
+				if (texture && texture->IsLoaded())
+				{
+					ImVec2 size = { ImGui::GetContentRegionAvail().x , (float)texture->GetHeight() * ImGui::GetContentRegionAvail().x / (float)texture->GetWidth() };
+
+					ImGui::Image(
+						(ImTextureID)(texture->GetRendererID()),
+						size,
+						ImVec2{ 0, 1 },
+						ImVec2{ 1, 0 }
+					);
+				}
+				else
+				{
+					ImGui::Text("No texture loaded.");
+				}
+
+				if (ImGui::Button("Reload##Texture", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+					TextureManager::Reload(texture->GetPath());
+			}
+
 		}
 	
 #endif

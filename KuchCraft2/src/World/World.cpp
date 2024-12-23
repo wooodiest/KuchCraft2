@@ -13,6 +13,7 @@
 #include "Core/Application.h"
 
 #include "Graphics/Renderer.h"
+#include "Graphics/TextureManager.h"
 
 #ifdef  INCLUDE_IMGUI
 	#include <imgui.h>
@@ -409,16 +410,10 @@ namespace KuchCraft {
 						{
 							toLoad = false;
 
-							auto texture = std::make_shared<Texture2D>(TextureSpecification{}, path);
-							if (texture->IsLoaded())
-							{
+							auto texture = TextureManager::Load(path);
+							if (texture)
 								spriteRendererComponent.Texture = texture;
-								Log::Info("Loaded texture: {}", path.string());
-							}
-							else
-							{
-								Log::Error("Failed to load texture: {}", path.string());
-							}
+
 						}									
 					}
 

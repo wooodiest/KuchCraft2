@@ -9,6 +9,7 @@
 #include "World/Entity.h"
 
 #include "Graphics/Data/Texture2D.h"
+#include "Graphics/TextureManager.h"
 
 namespace KuchCraft {
 
@@ -36,7 +37,7 @@ namespace KuchCraft {
 		auto texturedEntity = m_World->CreateEntity("Textured entity");
 		texturedEntity.AddComponent<TransformComponent>(glm::vec3{ 200.0f, 200.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 100.0f, 100.0f, 0.0f });
 		auto& texturedEntitySpriteComponent = texturedEntity.AddComponent<SpriteRendererComponent>();
-		texturedEntitySpriteComponent.Texture = std::make_shared<Texture2D>(TextureSpecification{.Filter = ImageFilter::NEAREST}, std::filesystem::path("assets/textures/poppy.png"));
+		texturedEntitySpriteComponent.Texture = TextureManager::Load(std::filesystem::path("assets/textures/poppy.png"), TextureSpecification{ .Filter = ImageFilter::NEAREST });
 
 		auto cameraEntity = m_World->CreateEntity("Camera");
 		auto& cameraEntityCameraComponent    = cameraEntity.AddComponent<CameraComponent>();    cameraEntityCameraComponent.Primary = true;

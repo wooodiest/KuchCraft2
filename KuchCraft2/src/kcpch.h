@@ -22,6 +22,8 @@
 #include <iomanip>
 #include <thread>
 #include <mutex>
+#include <shared_mutex>
+#include <queue>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
