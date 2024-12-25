@@ -8,6 +8,12 @@ namespace KuchCraft {
 	class TextureManager
 	{
 	public:
+		/// Initializes the texture manager system.
+		static void Init();
+
+		/// Shuts down the texture manager system.
+		static void Shutdown();
+
 		/// Loads a texture from the given file path.
 		/// If the texture is already loaded, it returns the cached texture.
 		/// @param path - the file path of the texture to load.
@@ -25,16 +31,23 @@ namespace KuchCraft {
 
 		/// Retrieves a texture from the cache.
 		/// @param path - the file path of the texture to retrieve.
-		/// @return A reference to the shared pointer of the texture.
-		static std::shared_ptr<Texture>& Get(const std::filesystem::path& path) { return s_Data[path]; }
+		/// @return A constant reference to the shared pointer of the texture.
+		static const std::shared_ptr<Texture>& Get(const std::filesystem::path& path) { return s_Data[path]; }
 
 		/// Provides access to all cached textures.
 		/// @return A constant reference to the texture cache.
 		static const auto& GetData() { return s_Data; }
 
+		/// Retrieves a white texture from.
+		/// @return A constant reference to the texture.
+		static const auto& GetWhiteTexture() { return s_WhiteTexture; }
+
 	private:
 		/// Stores the mapping between file paths and their corresponding loaded textures.
 		inline static std::unordered_map<std::filesystem::path, std::shared_ptr<Texture>> s_Data;
+
+		/// 1x1 pixel white texture to be used when rendering just color without texture qued
+		inline static std::shared_ptr<Texture> s_WhiteTexture;
 
 	private:
 		TextureManager() = delete;

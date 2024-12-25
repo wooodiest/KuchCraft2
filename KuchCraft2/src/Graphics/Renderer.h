@@ -15,6 +15,7 @@
 
 #include "Core/Event.h"
 #include "Graphics/RendererData.h"
+#include "World/Components.h"
 
 namespace KuchCraft {
 
@@ -62,20 +63,15 @@ namespace KuchCraft {
 	#pragma endregion 
 	#pragma region DrawCommands
 	public:
-		/// Draws a single 2D quad with a given transformation and color.
-		/// This function adds a 2D quad to the rendering queue, applying the specified
-		/// transformation matrix and color. It is used for rendering basic 2D graphics elements.
-		/// @param transform A 4x4 transformation matrix to position, scale, or rotate the quad.
-		/// @param color A vec4 representing the RGBA color of the quad.
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4& color);
+		/// Draws a single 2D quad. This function adds a 2D quad to the rendering queue. It is used for rendering basic 2D graphics elements.
+		/// @param transformComponent - includes translation, rotation and scale
+		/// @param spriteComponent - includes texture or color information
+		static void DrawQuad(const TransformComponent& transformComponent, const Sprite2DRendererComponent& spriteComponent);
 
-		/// Draws a single 2D quad with a given transformation, texture and tint.
-		/// This function adds a 2D quad to the rendering queue, applying the specified
-		/// transformation matrix, texture and tint. It is used for rendering basic 2D graphics elements.
-		/// @param transform A 4x4 transformation matrix to position, scale, or rotate the quad.
-		/// @param texture A shared pointer to texture instance to be used to texture quad
-		/// @param tint A vec4 representing the RGBA tint of the quad texture.
-		static void DrawQuad(const glm::mat4& transform, const std::shared_ptr<Texture>& texture, const glm::vec4& tint);
+		/// Draws a single 3D quad. This function adds a 3D quad to the rendering queue. It is used for rendering basic 3D graphics elements.
+		/// @param transformComponent - includes translation, rotation and scale
+		/// @param spriteComponent - includes texture or color information
+		static void DrawQuad(const TransformComponent& transformComponent, const Sprite3DRendererComponent& spriteComponent);
 
 	#pragma endregion
 	#pragma region Shaders
@@ -129,6 +125,33 @@ namespace KuchCraft {
 		/// Sends the current batch of 2D quads to the GPU for rendering.
 		/// Finalizes and renders the current batch of 2D quads.
 		static void FlushQuads2D();
+
+	#pragma endregion
+	#pragma region Quads3D
+	private:
+		/// Initializes resources required for rendering 3D quads.
+		/// Sets up vertex buffers, defines the layout, index buffers, and shaders
+		/// required for batched rendering of 3D quads
+		static void InitQuads3D();
+
+		/// Begins a new batch for 3D quad rendering.
+		/// Prepares the renderer to accumulate a new set of quads for rendering.
+		static void StartQuadsBatch3D();
+
+		/// Completes the current batch and starts a new one.
+		/// Finalizes the current batch of 3D quads by rendering it and then resets the
+		/// batch to prepare for the next set of quads
+		static void NextQuadsBatch3D();
+
+		/// Processes and renders accumulated 3D quads.
+		/// This function handles the batched rendering of 3D quads. It binds the necessary
+		/// buffers and shaders, processes the vertex data, and issues draw calls to render
+		/// the quads on screen.
+		static void RenderQuads3D();
+
+		/// Sends the current batch of 3D quads to the GPU for rendering.
+		/// Finalizes and renders the current batch of 3D quads.
+		static void FlushQuads3D();
 
 	#pragma endregion
 	#pragma region RendererCommands
@@ -216,6 +239,11 @@ namespace KuchCraft {
 	    /// Includes buffers, shaders, and configuration parameters used exclusively for
 	    /// rendering 2D quads in a batched manner.
 		static inline Quad2DRendererData s_Quad2DData;
+
+		/// Contains data specific to 3D quad rendering.
+		/// Includes buffers, shaders, and configuration parameters used exclusively for
+		/// rendering 3D quads in a batched manner.
+		static inline Quad3DRendererData s_Quad3DData;
 
 	#pragma endregion
 	};

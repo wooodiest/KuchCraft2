@@ -107,6 +107,9 @@ namespace KuchCraft {
         /// Maximum number of 2D quads that can be rendered in a single batch.
         uint32_t Renderer2DMaxQuads = 20'000;
 
+        /// Maximum number of 3D quads that can be rendered in a single batch.
+        uint32_t Renderer3DMaxQuads = 20'000;
+
         /// GLSL shader version string to use in shader source files.
         std::string ShaderVersion = "460 core";
     };

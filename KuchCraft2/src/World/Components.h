@@ -85,7 +85,7 @@ namespace KuchCraft {
 
 	/// A component that represents the visual appearance of an entity as a 2D sprite.
 	/// This component allows customization of the sprite's color tint and texture.
-	struct SpriteRendererComponent
+	struct Sprite2DRendererComponent
 	{
 		/// The color tint of the sprite, represented as an RGBA vector.
 		/// Each channel ranges from 0.0 (minimum intensity) to 1.0 (maximum intensity).
@@ -95,9 +95,27 @@ namespace KuchCraft {
 		/// If no texture is set, the sprite will render as a solid color using the `Color` property.
 		std::shared_ptr<Texture> Texture;
 
-		SpriteRendererComponent() = default;
-		SpriteRendererComponent(const SpriteRendererComponent&) = default;
-		SpriteRendererComponent(const glm::vec4& color)
+		Sprite2DRendererComponent() = default;
+		Sprite2DRendererComponent(const Sprite2DRendererComponent&) = default;
+		Sprite2DRendererComponent(const glm::vec4& color)
+			: Color(color) {}
+	};
+
+	/// A component that represents the visual appearance of an entity as a 3D sprite.
+	/// This component allows customization of the sprite's color tint and texture.
+	struct Sprite3DRendererComponent
+	{
+		/// The color tint of the sprite, represented as an RGBA vector.
+		/// Each channel ranges from 0.0 (minimum intensity) to 1.0 (maximum intensity).
+		glm::vec4 Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		/// A shared pointer to the texture associated with the sprite.
+		/// If no texture is set, the sprite will render as a solid color using the `Color` property.
+		std::shared_ptr<Texture> Texture;
+
+		Sprite3DRendererComponent() = default;
+		Sprite3DRendererComponent(const Sprite3DRendererComponent&) = default;
+		Sprite3DRendererComponent(const glm::vec4& color)
 			: Color(color) {}
 	};
 
@@ -111,8 +129,8 @@ namespace KuchCraft {
 
 	/// A predefined group containing all core component types.
 	/// Used for easy components copy, all entities by deafult has tag and id
-	using AllComponents = ComponentGroup<TransformComponent, CameraComponent, SpriteRendererComponent>;
+	using AllComponents = ComponentGroup<TransformComponent, CameraComponent, Sprite2DRendererComponent, Sprite3DRendererComponent>;
 
 	/// A predefined group containing all used component types.
-	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent, CameraComponent, SpriteRendererComponent>;
+	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent, CameraComponent, Sprite2DRendererComponent, Sprite3DRendererComponent>;
 }

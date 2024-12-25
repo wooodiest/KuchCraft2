@@ -21,22 +21,14 @@ namespace KuchCraft {
 		/// Load entities
 
 		/// tmp
-		for (float y = 100.0f; y <= 700.0f; y += 50.0f)
-		{ 
-			for (float x = 100.0f; x <= 1400.0f; x += 50.0f)
-			{
-				auto entity = m_World->CreateEntity("Quad: (" + std::to_string(x) + ", " + std::to_string(y) + ")");
-				glm::vec3 position = { x, y, 0.0f };
-				glm::vec3 rotation = { 0.0f, 0.0f, 0.0f };
-				glm::vec3 scale    = { 25.0f, 25.0f, 1.0f };
-				entity.AddComponent<TransformComponent>(position, rotation, scale);
-				entity.AddComponent<SpriteRendererComponent>(glm::vec4{ x / 1400.0f, y / 700.0f, (x + y) / 2100.0f, 1.0f});
-			}
-		}
+		auto entity3D = m_World->CreateEntity("3D entity");
+		entity3D.AddComponent<TransformComponent>();
+		auto& entity3SpriteComponent = entity3D.AddComponent<Sprite3DRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
+		entity3SpriteComponent.Texture = TextureManager::Load(std::filesystem::path("assets/textures/grid.png"), TextureSpecification{ .Filter = ImageFilter::NEAREST });
 
 		auto texturedEntity = m_World->CreateEntity("Textured entity");
 		texturedEntity.AddComponent<TransformComponent>(glm::vec3{ 200.0f, 200.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 100.0f, 100.0f, 0.0f });
-		auto& texturedEntitySpriteComponent = texturedEntity.AddComponent<SpriteRendererComponent>();
+		auto& texturedEntitySpriteComponent = texturedEntity.AddComponent<Sprite2DRendererComponent>();
 		texturedEntitySpriteComponent.Texture = TextureManager::Load(std::filesystem::path("assets/textures/poppy.png"), TextureSpecification{ .Filter = ImageFilter::NEAREST });
 
 		auto cameraEntity = m_World->CreateEntity("Camera");

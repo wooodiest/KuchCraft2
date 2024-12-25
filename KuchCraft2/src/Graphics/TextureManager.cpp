@@ -5,6 +5,18 @@
 
 namespace KuchCraft {
 
+	void TextureManager::Init()
+	{
+		s_WhiteTexture = std::make_shared<Texture2D>(TextureSpecification{ .Width = 1, .Height = 1 });
+		uint32_t whiteColor = 0xffffffff;
+		s_WhiteTexture->SetData(&whiteColor, sizeof(whiteColor));
+	}
+
+	void TextureManager::Shutdown()
+	{
+
+	}
+
 	std::shared_ptr<Texture> TextureManager::Load(const std::filesystem::path& path, const TextureSpecification& specification)
 	{	
 		auto found = s_Data.find(path);

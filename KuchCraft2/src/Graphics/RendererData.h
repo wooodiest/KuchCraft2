@@ -86,8 +86,46 @@ namespace KuchCraft {
 	    /// Used to track the starting position for new vertices in the vertex buffer.
 		uint32_t VertexOffset = 0;
 
-		/// 1x1 pixel white texture to be used when rendering just color without texture qued
-		std::shared_ptr<Texture> WhiteTexture;
+		/// Index of the current texture slot in use.
+		/// Starts at 1 because slot 0 is reserved for a default white texture.
+		uint32_t TextureSlotIndex = 1;
+
+		/// Array of texture slots used for binding textures during rendering.
+		/// Dynamically allocated based on the maximum number of texture slots supported.
+		uint32_t* TextureSlots = nullptr;
+
+		///...
+		std::shared_ptr<Shader> Shader;
+		IndexBuffer  IndexBuffer;
+		VertexArray  VertexArray;
+		VertexBuffer VertexBuffer;
+
+	};
+
+	/// Stores data specific to 3D quad rendering operations.
+	/// This structure manages the resources and state required for rendering 3D quads in batches.
+	struct Quad3DRendererData
+	{
+		/// Maximum number of quads that can be rendered in a single batch.
+		uint32_t MaxQuads;
+
+		/// Maximum number of vertices that can be rendered in a single batch.
+		/// Computed as `MaxQuads * 4` since each quad has 4 vertices.
+		uint32_t MaxVertices;
+
+		/// Maximum number of indices that can be rendered in a single batch.
+		/// Computed as `MaxQuads * 6` since each quad requires 6 indices.
+		uint32_t MaxIndices;
+
+		/// Holds the vertices of all quads in the current batch before rendering.
+		std::vector<Primitives::_3D::QuadVertex> Vertices;
+
+		/// Current count of indices in the batch, resets when a new batch begins.
+		uint32_t IndexCount = 0;
+
+		/// Offset for vertex data in the buffer.
+		/// Used to track the starting position for new vertices in the vertex buffer.
+		uint32_t VertexOffset = 0;
 
 		/// Index of the current texture slot in use.
 		/// Starts at 1 because slot 0 is reserved for a default white texture.

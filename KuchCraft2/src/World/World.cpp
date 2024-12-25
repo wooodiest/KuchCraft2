@@ -98,6 +98,19 @@ namespace KuchCraft {
 		if (!m_IsPaused)
 		{
 			///...
+
+			/// tmp
+			static float t = 0.0f; t += dt;
+			float r = (glm::cos(t) + 1.0f) / 2.0f;
+			float g = (glm::sin(t) + 1.0f) / 2.0f;
+			float b = (glm::sin(t) + 1.0f) * (glm::sin(t) + 1.0f) / 4;
+
+			m_Registry.view<TransformComponent, Sprite3DRendererComponent>().each([&](auto entity, auto& transformComponent, auto& spriteComponent) {
+				transformComponent.Rotation.x += glm::radians(30.0f) * dt;
+				transformComponent.Rotation.z += glm::radians(50.0f) * dt;
+				spriteComponent.Color = { r, g, b, 1.0f};
+			});
+
 		}
 
 		Camera* mainCamera = nullptr;
@@ -113,12 +126,14 @@ namespace KuchCraft {
 		{
 			Renderer::BeginWorld(mainCamera);
 
+			/// Render 3D quads
+			m_Registry.view<TransformComponent, Sprite3DRendererComponent>().each([&](auto entity, auto& transformComponent, auto& spriteComponent) {
+				Renderer::DrawQuad(transformComponent, spriteComponent);
+			});
+
 			/// Render 2D quads
-			m_Registry.view<TransformComponent, SpriteRendererComponent>().each([&](auto entity, auto& transformComponent, auto& spriteComponent) {
-				if (spriteComponent.Texture)
-					Renderer::DrawQuad(transformComponent.GetTransform(), spriteComponent.Texture, spriteComponent.Color);
-				else
-					Renderer::DrawQuad(transformComponent.GetTransform(), spriteComponent.Color);
+			m_Registry.view<TransformComponent, Sprite2DRendererComponent>().each([&](auto entity, auto& transformComponent, auto& spriteComponent) {
+				Renderer::DrawQuad(transformComponent, spriteComponent);
 			});
 
 			Renderer::EndWorld();
@@ -197,10 +212,11 @@ namespace KuchCraft {
 				ImGui::OpenPopup("FilterPopup");
 
 			static std::string nameFilter;
-			static bool filterByTransform      = false;
-			static bool filterByCamera         = false;
-			static bool filterBySpriteRenderer = false;
-			uint64_t    filterMatchCount       = 0;
+			static bool filterByTransform        = false;
+			static bool filterByCamera           = false;
+			static bool filterBySprite2DRenderer = false;
+			static bool filterBySprite3DRenderer = false;
+			uint64_t    filterMatchCount         = 0;
 
 			if (ImGui::BeginPopup("FilterPopup"))
 			{
@@ -209,14 +225,16 @@ namespace KuchCraft {
 				ImGui::InputText("Name##FilterByName", &nameFilter);
 				ImGui::Checkbox("Transform Component##FilterByTransform", &filterByTransform);
 				ImGui::Checkbox("Camera Component##FilterByCamera", &filterByCamera);
-				ImGui::Checkbox("Sprite Renderer Component##FilterBySpriteRenderer", &filterBySpriteRenderer);
+				ImGui::Checkbox("Sprite2D Renderer Component##FilterBySpriteRenderer", &filterBySprite2DRenderer);
+				ImGui::Checkbox("Sprite3D Renderer Component##FilterBySpriteRenderer", &filterBySprite3DRenderer);
 
 				if (ImGui::Button("Clear##FilterPopup", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 				{
-					nameFilter             = "";
-					filterByTransform      = false;
-					filterByCamera         = false;
-					filterBySpriteRenderer = false;
+					nameFilter               = "";
+					filterByTransform        = false;
+					filterByCamera           = false;
+					filterBySprite2DRenderer = false;
+					filterBySprite3DRenderer = false;
 				}
 
 				if (ImGui::Button("Close##FilterPopup", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
@@ -246,7 +264,9 @@ namespace KuchCraft {
 						continue;
 					if (filterByCamera && !entity.HasComponent<CameraComponent>())
 						continue;
-					if (filterBySpriteRenderer && !entity.HasComponent<SpriteRendererComponent>())
+					if (filterBySprite2DRenderer && !entity.HasComponent<Sprite2DRendererComponent>())
+						continue;
+					if (filterBySprite3DRenderer && !entity.HasComponent<Sprite3DRendererComponent>())
 						continue;
 
 					filterMatchCount++;
@@ -310,7 +330,8 @@ namespace KuchCraft {
 				{
 					AddComponentLabel<TransformComponent>(entity, "Transform Component##AddComponent");
 					AddComponentLabel<CameraComponent>(entity, "CameraComponentt##AddComponent");
-					AddComponentLabel<SpriteRendererComponent>(entity, "SpriteRendererComponent##AddComponent");
+					AddComponentLabel<Sprite2DRendererComponent>(entity, "Sprite2DRendererComponent##AddComponent");
+					AddComponentLabel<Sprite3DRendererComponent>(entity, "Sprite3DRendererComponent##AddComponent");
 
 					ImGui::EndPopup();
 				}
@@ -319,7 +340,8 @@ namespace KuchCraft {
 				{
 					RemoveComponentLabel<TransformComponent>(entity, "Transform Component##RemoveComponent");
 					RemoveComponentLabel<CameraComponent>(entity, "CameraComponentt##RemoveComponent");
-					RemoveComponentLabel<SpriteRendererComponent>(entity, "SpriteRendererComponent##RemoveComponent");
+					RemoveComponentLabel<Sprite2DRendererComponent>(entity, "Sprite2DRendererComponent##RemoveComponent");
+					RemoveComponentLabel<Sprite3DRendererComponent>(entity, "Sprite3DRendererComponent##RemoveComponent");
 
 					ImGui::EndPopup();
 				}
@@ -396,10 +418,10 @@ namespace KuchCraft {
 					ImGui::Text("Forward: %f, %f, %f", forwardDirection.x, forwardDirection.y, forwardDirection.z);
 				}
 
-				if (entity.HasComponent<SpriteRendererComponent>())
+				if (entity.HasComponent<Sprite2DRendererComponent>())
 				{
 					ImGui::SeparatorText("Sprite renderer");
-					auto& spriteRendererComponent = entity.GetComponent<SpriteRendererComponent>();
+					auto& spriteRendererComponent = entity.GetComponent<Sprite2DRendererComponent>();
 
 					ImGui::ColorPicker4("Color", glm::value_ptr(spriteRendererComponent.Color));
 					ImGui::Button("Drag texture and click here!", ImVec2(ImGui::GetContentRegionAvail().x, 75.0f));
@@ -420,6 +442,45 @@ namespace KuchCraft {
 					if (spriteRendererComponent.Texture && spriteRendererComponent.Texture->IsLoaded())
 					{
 						ImVec2 size = { ImGui::GetContentRegionAvail().x , (float)spriteRendererComponent.Texture->GetHeight() * ImGui::GetContentRegionAvail().x / (float)spriteRendererComponent.Texture->GetWidth() };				
+
+						ImGui::Image(
+							(ImTextureID)(spriteRendererComponent.Texture->GetRendererID()),
+							size,
+							ImVec2{ 0, 1 },
+							ImVec2{ 1, 0 }
+						);
+					}
+					else
+					{
+						ImGui::Text("No texture loaded.");
+					}
+
+				}
+
+				if (entity.HasComponent<Sprite3DRendererComponent>())
+				{
+					ImGui::SeparatorText("Sprite renderer");
+					auto& spriteRendererComponent = entity.GetComponent<Sprite3DRendererComponent>();
+
+					ImGui::ColorPicker4("Color", glm::value_ptr(spriteRendererComponent.Color));
+					ImGui::Button("Drag texture and click here!", ImVec2(ImGui::GetContentRegionAvail().x, 75.0f));
+					if (ImGui::IsItemHovered() && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+					{
+						auto& [toLoad, path] = s_TextureToLoad;
+						if (toLoad)
+						{
+							toLoad = false;
+
+							auto texture = TextureManager::Load(path);
+							if (texture)
+								spriteRendererComponent.Texture = texture;
+
+						}
+					}
+
+					if (spriteRendererComponent.Texture && spriteRendererComponent.Texture->IsLoaded())
+					{
+						ImVec2 size = { ImGui::GetContentRegionAvail().x , (float)spriteRendererComponent.Texture->GetHeight() * ImGui::GetContentRegionAvail().x / (float)spriteRendererComponent.Texture->GetWidth() };
 
 						ImGui::Image(
 							(ImTextureID)(spriteRendererComponent.Texture->GetRendererID()),
@@ -538,8 +599,14 @@ namespace KuchCraft {
 	}
 
 	template<>
-	void World::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	void World::OnComponentAdded<Sprite2DRendererComponent>(Entity entity, Sprite2DRendererComponent& component)
 	{
 	}
+
+	template<>
+	void World::OnComponentAdded<Sprite3DRendererComponent>(Entity entity, Sprite3DRendererComponent& component)
+	{
+	}
+
 
 }

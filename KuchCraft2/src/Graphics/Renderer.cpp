@@ -40,10 +40,6 @@ namespace KuchCraft {
 						case GL_DEBUG_SEVERITY_LOW:
 							Log::Warn("[OpenGL] : {0}", (char*)message);
 							break;
-
-				   /// case GL_DEBUG_SEVERITY_NOTIFICATION:
-						/// Log::Info("[OpenGL] : {0}", (char*)message);
-						/// break;
 					}
 				},
 				nullptr
@@ -52,6 +48,8 @@ namespace KuchCraft {
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 		}
+		/// Init texture manager
+		TextureManager::Init();
 
 		/// Adds dynamic substitutions for shaders (constants and configurations)
 		AddSubstitutions();
@@ -61,11 +59,12 @@ namespace KuchCraft {
 
 		/// Initializes resources
 		InitQuads2D();
+		InitQuads3D();
 	}
 
 	void Renderer::Shutdown()
 	{
-
+		TextureManager::Shutdown();
 	}
 
 	void Renderer::OnEvent(Event& e)
@@ -84,6 +83,7 @@ namespace KuchCraft {
 		/// Clear data
 		s_Stats.Reset();
 		s_Quad2DData.Vertices.clear();
+		s_Quad3DData.Vertices.clear();
 	}
 
 	void Renderer::EndFrame()
@@ -105,6 +105,7 @@ namespace KuchCraft {
 	void Renderer::EndWorld()
 	{
 		EnableDepthTesting();
+		RenderQuads3D();
 		RenderQuads2D();
 	}
 
@@ -384,27 +385,34 @@ namespace KuchCraft {
 #pragma endregion 
 #pragma region DrawCommands
 
-	void Renderer::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer::DrawQuad(const TransformComponent& transformComponent, const Sprite2DRendererComponent& spriteComponent)
 	{
+		const glm::mat4 transform = transformComponent.GetTransform();
+		float textureID = spriteComponent.Texture ? static_cast<float>(spriteComponent.Texture->GetRendererID()) : 0.0f;
+
 		for (uint32_t i = 0; i < quad_vertex_count; i++)
 		{
 			s_Quad2DData.Vertices.emplace_back(
-				transform * quad2D_vertex_positions[i],
-				color,
+				glm::vec3(transform * quad2D_vertex_positions[i]),
+				spriteComponent.Color,
 				quad2D_vertex_texture_coords[i],
-				0.0f
+				textureID /// Texture index temporarily holds the texture rendererID
 			);
 		}
 	}
 
-	void Renderer::DrawQuad(const glm::mat4& transform, const std::shared_ptr<Texture>& texture, const glm::vec4& tint)
+	void Renderer::DrawQuad(const TransformComponent& transformComponent, const Sprite3DRendererComponent& spriteComponent)
 	{
-		float textureID = static_cast<float>(texture->GetRendererID());
+		const glm::mat4 transform = transformComponent.GetTransform();
+		const glm::vec3 normal = glm::vec3(glm::toMat4(glm::quat(transformComponent.Rotation)) * glm::vec4(0.0f, 0.0f, 1.0f, 0.0f));
+		float textureID = spriteComponent.Texture ? static_cast<float>(spriteComponent.Texture->GetRendererID()) : 0.0f;
+		
 		for (uint32_t i = 0; i < quad_vertex_count; i++)
 		{
-			s_Quad2DData.Vertices.emplace_back(
-				transform * quad2D_vertex_positions[i],
-				tint,
+			s_Quad3DData.Vertices.emplace_back(
+				glm::vec3(transform * quad3D_vertex_positions[i]),
+				normal,
+				spriteComponent.Color,
 				quad2D_vertex_texture_coords[i],
 				textureID /// Texture index temporarily holds the texture rendererID
 			);
@@ -472,13 +480,6 @@ namespace KuchCraft {
 		s_Quad2DData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/quad2D.glsl");
 		s_Quad2DData.Shader->Bind();
 
-		TextureSpecification whiteTextureSpec;
-		whiteTextureSpec.Width  = 1;
-		whiteTextureSpec.Height = 1;
-		s_Quad2DData.WhiteTexture = std::make_shared<Texture2D>(whiteTextureSpec);
-		uint32_t whiteColor = 0xffffffff;
-		s_Quad2DData.WhiteTexture->SetData(&whiteColor, sizeof(whiteColor));
-
 		int* samplers = new int[ApplicationConfig::GetRendererData().MaxTextureSlots];
 		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxTextureSlots; i++)
 			samplers[i] = i;
@@ -486,7 +487,7 @@ namespace KuchCraft {
 		delete[] samplers;
 
 		s_Quad2DData.TextureSlots = new uint32_t[ApplicationConfig::GetRendererData().MaxTextureSlots];
-		s_Quad2DData.TextureSlots[0] = s_Quad2DData.WhiteTexture->GetRendererID();
+		s_Quad2DData.TextureSlots[0] = TextureManager::GetWhiteTexture()->GetRendererID();
 
 		s_Quad2DData.Vertices.reserve(s_Quad2DData.MaxVertices);
 
@@ -581,6 +582,150 @@ namespace KuchCraft {
 			Texture::Bind(s_Quad2DData.TextureSlots[i], i);
 
 		DrawElemnts(s_Quad2DData.IndexCount);
+
+		s_Stats.DrawCalls++;
+		s_Stats.Vertices += vertexCount;
+	}
+
+#pragma endregion
+#pragma region Quads3D
+	void Renderer::InitQuads3D()
+	{
+		s_Quad3DData.MaxQuads    = ApplicationConfig::GetRendererData().Renderer3DMaxQuads;
+		s_Quad3DData.MaxVertices = s_Quad3DData.MaxQuads * quad_vertex_count;
+		s_Quad3DData.MaxIndices  = s_Quad3DData.MaxQuads * quad_index_count;
+
+		s_Quad3DData.VertexArray.Create();
+		s_Quad3DData.VertexBuffer.Create(VertexBufferDataUsage::DYNAMIC, s_Quad3DData.MaxVertices * sizeof(Primitives::_3D::QuadVertex));
+		s_Quad3DData.VertexBuffer.SetBufferLayout({
+			{ ShaderDataType::Float3, "a_Position"      },
+			{ ShaderDataType::Float3, "a_Normal"        },
+			{ ShaderDataType::Float4, "a_Color"         },
+			{ ShaderDataType::Float2, "a_TextureCoord"  },
+			{ ShaderDataType::Float,  "a_TextureIndex"  }
+			});
+		s_Quad3DData.VertexArray.SetVertexBuffer(s_Quad3DData.VertexBuffer);
+
+		uint32_t* indices = new uint32_t[s_Quad3DData.MaxIndices];
+		uint32_t  offset = 0;
+		for (uint32_t i = 0; i < s_Quad3DData.MaxIndices; i += quad_index_count)
+		{
+			indices[i + 0] = offset + 0;
+			indices[i + 1] = offset + 1;
+			indices[i + 2] = offset + 2;
+			indices[i + 3] = offset + 2;
+			indices[i + 4] = offset + 3;
+			indices[i + 5] = offset + 0;
+
+			offset += quad_vertex_count;
+		}
+		s_Quad3DData.IndexBuffer.Create(IndexBufferDataUsage::STATIC, s_Quad3DData.MaxIndices, indices);
+		delete[] indices;
+		s_Quad3DData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/quad3D.glsl");
+		s_Quad3DData.Shader->Bind();
+
+		int* samplers = new int[ApplicationConfig::GetRendererData().MaxTextureSlots];
+		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxTextureSlots; i++)
+			samplers[i] = i;
+		s_Quad3DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxTextureSlots);
+		delete[] samplers;
+
+		s_Quad3DData.TextureSlots    = new uint32_t[ApplicationConfig::GetRendererData().MaxTextureSlots];
+		s_Quad3DData.TextureSlots[0] = TextureManager::GetWhiteTexture()->GetRendererID();
+
+		s_Quad3DData.Vertices.reserve(s_Quad3DData.MaxVertices);
+
+		s_Quad3DData.Shader     ->Unbind();
+		s_Quad3DData.VertexArray .Unbind();
+		s_Quad3DData.IndexBuffer .Unbind();
+		s_Quad3DData.VertexBuffer.Unbind();
+	}
+
+	void Renderer::StartQuadsBatch3D()
+	{
+		s_Quad3DData.IndexCount       = 0;
+		s_Quad3DData.TextureSlotIndex = 1;
+	}
+
+	void Renderer::NextQuadsBatch3D()
+	{
+		FlushQuads3D();
+		StartQuadsBatch3D();
+	}
+
+	void Renderer::RenderQuads3D()
+	{
+		if (!s_Quad3DData.Vertices.size())
+			return;
+
+		s_Quad3DData.Shader     ->Bind();
+		s_Quad3DData.VertexArray .Bind();
+		s_Quad3DData.VertexBuffer.Bind();
+		s_Quad3DData.IndexBuffer .Bind();
+		s_Quad3DData.VertexOffset = 0;
+
+		StartQuadsBatch3D();
+		for (uint32_t i = 0; i < s_Quad3DData.Vertices.size(); i += quad_vertex_count)
+		{
+			if (s_Quad3DData.IndexCount == s_Quad3DData.MaxIndices)
+				NextQuadsBatch2D();
+
+			if (s_Quad3DData.Vertices[i].TextureIndex == 0.0f)
+			{
+				s_Quad3DData.Vertices[i + 0].TextureIndex = 0.0f;
+				s_Quad3DData.Vertices[i + 1].TextureIndex = 0.0f;
+				s_Quad3DData.Vertices[i + 2].TextureIndex = 0.0f;
+				s_Quad3DData.Vertices[i + 3].TextureIndex = 0.0f;
+
+				s_Quad3DData.IndexCount += quad_index_count;
+			}
+			else
+			{
+				float textureIndex = 0.0f;
+				for (uint32_t j = 1; j < s_Quad3DData.TextureSlotIndex; j++)
+				{
+					if (s_Quad3DData.TextureSlots[j] == s_Quad3DData.Vertices[i].TextureIndex) // TexIndex temporarily holds the texture rendererID
+					{
+						textureIndex = (float)j;
+						break;
+					}
+				}
+
+				if (textureIndex == 0.0f)
+				{
+					if (s_Quad3DData.TextureSlotIndex >= ApplicationConfig::GetRendererData().MaxTextureSlots)
+						NextQuadsBatch3D();
+
+					textureIndex = static_cast<float>(s_Quad3DData.TextureSlotIndex);
+					s_Quad3DData.TextureSlots[s_Quad3DData.TextureSlotIndex] = s_Quad3DData.Vertices[i].TextureIndex;
+					s_Quad3DData.TextureSlotIndex++;
+				}
+
+				s_Quad3DData.Vertices[i + 0].TextureIndex = textureIndex;
+				s_Quad3DData.Vertices[i + 1].TextureIndex = textureIndex;
+				s_Quad3DData.Vertices[i + 2].TextureIndex = textureIndex;
+				s_Quad3DData.Vertices[i + 3].TextureIndex = textureIndex;
+
+				s_Quad3DData.IndexCount += quad_index_count;
+			}
+		}
+
+		FlushQuads3D();
+	}
+
+	void Renderer::FlushQuads3D()
+	{
+		if (s_Quad3DData.IndexCount == 0)
+			return;
+
+		uint32_t vertexCount = s_Quad3DData.IndexCount / quad_index_count * quad_vertex_count;
+		s_Quad3DData.VertexBuffer.SetData(vertexCount * sizeof(Primitives::_3D::QuadVertex), &s_Quad3DData.Vertices[s_Quad3DData.VertexOffset]);
+		s_Quad3DData.VertexOffset += vertexCount;
+
+		for (uint32_t i = 0; i < s_Quad3DData.TextureSlotIndex; i++)
+			Texture::Bind(s_Quad3DData.TextureSlots[i], i);
+
+		DrawElemnts(s_Quad3DData.IndexCount);
 
 		s_Stats.DrawCalls++;
 		s_Stats.Vertices += vertexCount;
