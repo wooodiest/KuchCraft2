@@ -57,7 +57,7 @@ namespace KuchCraft {
 			ImGui::SeparatorText("Create new world");
 			static const char* default_world_name = "New World";
 			static std::string newWorldName = default_world_name;
-			ImGui::InputText("Entity name##CreateEntity", &newWorldName);
+			ImGui::InputText("World name##CreateEntity", &newWorldName);
 
 			if (ImGui::Button("Create world", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 			{
@@ -81,14 +81,14 @@ namespace KuchCraft {
 				if (ImGui::Button(worldName.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 80.0f, 0.0f)))
 				{
 					m_World = std::make_shared<World>(entry.path());
-					Log::Info("Loaded world: {}", entry.path().string());
+					Log::Info("[World Selector] : Loaded world : {}", entry.path().string());
 				}
 
 				ImGui::SameLine();
 				if (ImGui::Button(std::string("Delete##" + worldName).c_str(), ImVec2(70.0f, 0.0f)))
 				{
 					std::filesystem::remove_all(entry.path());
-					Log::Info("Deleted world: {}", entry.path().string());
+					Log::Info("[World Selector] : Deleted world : {}", entry.path().string());
 				}
 			}
 			

@@ -95,6 +95,9 @@ namespace KuchCraft {
 		/// A file sink for logging to a file.
 		static inline spdlog::sink_ptr s_FileSink;
 
+		/// A console sink for logging to the console
+		static inline spdlog::sink_ptr s_ConsoleSink;
+
 	private:
 		/// The Log class is a static utility class and cannot be instantiated.
 		/// Constructors, destructors, and assignment operators are deleted to

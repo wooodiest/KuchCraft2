@@ -211,6 +211,7 @@ namespace KuchCraft {
 	{
 #ifdef  INCLUDE_IMGUI
 		
+		ImGui::Text("World name: %s", m_Path.filename().string());
 		if (ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			constexpr float entities_list_height = 250.0f;
