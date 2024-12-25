@@ -14,14 +14,18 @@
         "FullScreen": false,
         "Height": 765,
         "HeightBeforeFullscreen": 765,
-        "PositionBeforeFullscreenX": 227,
-        "PositionBeforeFullscreenY": 122,
-        "PositionX": 227,
-        "PositionY": 122,
+        "PositionBeforeFullscreenX": 162,
+        "PositionBeforeFullscreenY": 212,
+        "PositionX": 162,
+        "PositionY": 212,
         "Resizable": true,
         "ShowCursor": true,
         "Vsync": false,
         "Width": 1450,
         "WidthBeforeFullscreen": 1450
+    },
+    "World": {
+        "WorldDataFile": "world_data.kc",
+        "WorldsDirectory": "worlds"
     }
 }

@@ -54,6 +54,10 @@ namespace KuchCraft {
 					rendererConfig.Renderer2DMaxQuads = json["Renderer"]["Renderer2DMaxQuads"].get<uint32_t>();
 					s_RendererConfig = rendererConfig;
 
+					WorldConfigData worldConfig;
+					worldConfig.WorldsDirectory = json["World"]["WorldsDirectory"].get<std::string>();
+					worldConfig.WorldDataFile   = json["World"]["WorldDataFile"].get<std::string>();
+
 				}
 				catch (const std::exception& e)
 				{
@@ -102,6 +106,11 @@ namespace KuchCraft {
 			{ "ShaderVersion",      s_RendererConfig.ShaderVersion },
 			{ "MaxTextureSlots",    s_RendererConfig.MaxTextureSlots },
 			{ "Renderer2DMaxQuads", s_RendererConfig.Renderer2DMaxQuads }
+		};
+
+		json["World"] = {
+			{ "WorldsDirectory", s_WorldConfig.WorldsDirectory },
+			{ "WorldDataFile",   s_WorldConfig.WorldDataFile },
 		};
 
 		std::ofstream file(s_ConfigPath);

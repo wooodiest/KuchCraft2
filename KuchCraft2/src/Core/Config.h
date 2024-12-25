@@ -114,6 +114,16 @@ namespace KuchCraft {
         std::string ShaderVersion = "460 core";
     };
 
+    /// Struct to hold world configuration data.
+    struct WorldConfigData
+    {
+        /// In this directory worlds will be serialized and deserialized
+        std::string WorldsDirectory = "worlds";
+
+        /// Main world entities file
+        std::string WorldDataFile = "world_data.kc";
+    };
+
     class ApplicationConfig
     {
     public:
@@ -135,6 +145,10 @@ namespace KuchCraft {
         /// @return Reference to the renderer configuration data.
         static inline [[nodiscard]] const RendererConfigData& GetRendererData() noexcept { return s_RendererConfig; }
 
+        /// Retrieves world configuration data.
+        /// @return Reference to the world configuration data.
+        static inline [[nodiscard]] const WorldConfigData& GetWorldData() noexcept { return s_WorldConfig; }
+
     private:
         /// Log configuration data.
         static inline LogConfigData s_LogConfig;
@@ -144,6 +158,9 @@ namespace KuchCraft {
 
         /// Window configuration data.
         static inline RendererConfigData s_RendererConfig;
+
+        /// World configuration data.
+        static inline WorldConfigData s_WorldConfig;
 
     };
 }

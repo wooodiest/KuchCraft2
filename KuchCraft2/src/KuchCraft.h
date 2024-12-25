@@ -32,6 +32,10 @@ namespace KuchCraft {
 		/// @param dt - elapsed time between frames.
 		void OnUpdate(float dt);
 
+		/// Renders ImGui-specific components for the KuchCraft.
+		/// This method handles the application's custom ImGui rendering logic.
+		void OnImGuiRender();
+
 		/// Handles input events for the game.
 		/// This function processes events such as keyboard and mouse inputs, allowing
 		/// the game to respond to player interactions.
@@ -42,8 +46,6 @@ namespace KuchCraft {
 		/// This function is called to perform fixed updates, allowing for consistent 
 		/// game mechanics that are independent of the frame rate.
 		void OnTick();
-
-		std::shared_ptr<World> GetWorld() { return m_World; }
 
 	private:
 		std::shared_ptr<World> m_World;

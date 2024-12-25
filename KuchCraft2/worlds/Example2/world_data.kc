@@ -1,0 +1,65 @@
+{
+    "Entities": [
+        {
+            "Sprite3DRenderer": {
+                "Color": [
+                    0.029411226511001587,
+                    0.6689561605453491,
+                    0.44750234484672546,
+                    1.0
+                ],
+                "GenerateMips": true,
+                "ImageFilter": "Nearest",
+                "Texture": "assets/textures/grid.png",
+                "Type": "2D"
+            },
+            "Tag": "3D entity",
+            "Transform": {
+                "Rotation": [
+                    117.81707763671875,
+                    0.0,
+                    196.30885314941406
+                ],
+                "Scale": [
+                    0.5,
+                    2.5,
+                    1.0
+                ],
+                "Translation": [
+                    -0.5,
+                    0.5,
+                    0.0
+                ]
+            },
+            "UUID": 11730769102095435100
+        },
+        {
+            "Camera": {
+                "AspectRatio": 1.8954248428344727,
+                "FarClip": 1000.0,
+                "FixedAspectRatio": false,
+                "NearClip": 0.009999999776482582,
+                "Primary": true
+            },
+            "Tag": "Camera",
+            "Transform": {
+                "Rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Translation": [
+                    0.0,
+                    0.0,
+                    3.0
+                ]
+            },
+            "UUID": 17995104796623243843
+        }
+    ]
+}

@@ -175,18 +175,8 @@ namespace KuchCraft {
 			}
 			
 			if (s_Data.Game)
-			{
-				auto world = s_Data.Game->GetWorld();
-				if (world)
-				{
-					if (ImGui::BeginTabItem("World"))
-					{
-						world->OnImGuiRender();
-						ImGui::EndTabItem();
-					}
-				}
-			}
-	
+				s_Data.Game->OnImGuiRender();
+
 			ImGui::EndTabBar();
 		}
 #endif
@@ -206,7 +196,6 @@ namespace KuchCraft {
 	void Application::OnImGuiRender()
 	{
 #ifdef  INCLUDE_IMGUI
-
 		if (ImGui::CollapsingHeader("Window", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::SeparatorText("Window info");

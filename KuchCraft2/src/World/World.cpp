@@ -9,6 +9,7 @@
 
 #include "World/Entity.h"
 #include "World/Components.h"
+#include "World/WorldSerializer.h"
 
 #include "Core/Application.h"
 
@@ -29,9 +30,16 @@ namespace KuchCraft {
 
 	}
 
+	World::World(const std::filesystem::path& path)
+		: m_Path(path)
+	{
+		WorldSerializer serializer(this);
+		serializer.Deserialize();
+	}
+
 	World::~World()
 	{
-
+		Save();
 	}
 
 	/// Copies components from one registry to another based on a mapping of UUIDs to entity handles.
@@ -499,6 +507,12 @@ namespace KuchCraft {
 		}
 		
 #endif
+	}
+
+	bool World::Save()
+	{
+		WorldSerializer serializer(this);
+		return serializer.Serialize();
 	}
 
 	Entity World::CreateEntity(const std::string& name)

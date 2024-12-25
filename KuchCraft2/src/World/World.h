@@ -24,7 +24,14 @@ namespace KuchCraft {
 	class World
 	{
 	public:
+		/// Creates empty world
 		World();
+
+		/// Creates world based on given path
+		/// @param path - the path from which the world will be loaded and saved
+		World(const std::filesystem::path& path);
+
+		/// Free resources
 		~World();
 
 		/// Updates the world state for the current frame.
@@ -43,6 +50,9 @@ namespace KuchCraft {
 		/// Renders ImGui-specific components for the world.
 		/// This method handles the application's custom ImGui rendering logic.
 		void OnImGuiRender();
+
+		/// Saves world data to files
+		bool Save();
 
 		/// Creates a new entity with an optional name.
 	    /// @param name - the name to assign to the new entity.
@@ -87,6 +97,10 @@ namespace KuchCraft {
 	    /// @return True if the world is paused; false otherwise.
 		inline [[nodiscard]] bool IsPaused() const { return m_IsPaused; }
 
+		/// Retrieves world saving path
+		/// @return Save path
+		inline [[nodiscard]] const std::filesystem::path& GetPath() const { return m_Path; }
+
 	private:
 		/// Callback for when a component is added to an entity.
 	    /// @tparam T - the type of the component being added.
@@ -104,6 +118,9 @@ namespace KuchCraft {
 		/// The registry managing all entities and their components.
 		entt::registry m_Registry;
 
+		/// World saving path
+		const std::filesystem::path m_Path;
+
 		/// Maps UUIDs to entity handles for quick lookup.
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
 
@@ -113,9 +130,9 @@ namespace KuchCraft {
 		/// total number of entities
 		uint64_t m_EntityCount = 0;
 
-		/// Grants the Entity class access to private members of World.
+		/// Grants the Entity and WorldSerializer classes access to private members of World.
 		friend class Entity;
-
+		friend class WorldSerializer;
 	};
 
 }

@@ -8,32 +8,21 @@
 #include "KuchCraft.h"
 #include "World/Entity.h"
 
+#include "Core/Config.h"
+
 #include "Graphics/Data/Texture2D.h"
 #include "Graphics/TextureManager.h"
+
+#ifdef  INCLUDE_IMGUI
+	#include <imgui.h>
+	#include <misc/cpp/imgui_stdlib.h>
+#endif
 
 namespace KuchCraft {
 
 	KuchCraft::KuchCraft()
 	{
-		/// tmp, future in menu can pick world to load
-		m_World = std::make_shared<World>();
-
-		/// Load entities
-
-		/// tmp
-		auto entity3D = m_World->CreateEntity("3D entity");
-		entity3D.AddComponent<TransformComponent>();
-		auto& entity3SpriteComponent = entity3D.AddComponent<Sprite3DRendererComponent>(glm::vec4{1.0f, 0.0f, 0.0f, 1.0f});
-		entity3SpriteComponent.Texture = TextureManager::Load(std::filesystem::path("assets/textures/grid.png"), TextureSpecification{ .Filter = ImageFilter::NEAREST });
-
-		auto texturedEntity = m_World->CreateEntity("Textured entity");
-		texturedEntity.AddComponent<TransformComponent>(glm::vec3{ 200.0f, 200.0f, 0.0f }, glm::vec3{ 0.0f, 0.0f, 0.0f }, glm::vec3{ 100.0f, 100.0f, 0.0f });
-		auto& texturedEntitySpriteComponent = texturedEntity.AddComponent<Sprite2DRendererComponent>();
-		texturedEntitySpriteComponent.Texture = TextureManager::Load(std::filesystem::path("assets/textures/poppy.png"), TextureSpecification{ .Filter = ImageFilter::NEAREST });
-
-		auto cameraEntity = m_World->CreateEntity("Camera");
-		auto& cameraEntityCameraComponent    = cameraEntity.AddComponent<CameraComponent>();    cameraEntityCameraComponent.Primary = true;
-		auto& cameraEntityTransformComponent = cameraEntity.AddComponent<TransformComponent>(); cameraEntityTransformComponent.Translation = { 0.0f, 0.0f, 4.0f };
+		
 	}
 
 	KuchCraft::~KuchCraft()
@@ -45,6 +34,81 @@ namespace KuchCraft {
 	{
 		if (m_World)
 			m_World->OnUpdate(dt);
+	}
+
+	void KuchCraft::OnImGuiRender()
+	{
+#ifdef  INCLUDE_IMGUI
+
+		if (ImGui::BeginTabItem("World"))
+		{
+			if (m_World)
+				m_World->OnImGuiRender();
+			else
+				ImGui::Text("You need to load the world!!");
+
+			ImGui::EndTabItem();
+		}
+
+		if (!m_World)
+		{
+			ImGui::Begin("World Selector");
+
+			ImGui::SeparatorText("Create new world");
+			static const char* default_world_name = "New World";
+			static std::string newWorldName = default_world_name;
+			ImGui::InputText("Entity name##CreateEntity", &newWorldName);
+
+			if (ImGui::Button("Create world", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+			{
+				std::filesystem::path newWorldPath = ApplicationConfig::GetWorldData().WorldsDirectory / std::filesystem::path(newWorldName);
+				if (!std::filesystem::exists(newWorldPath))
+				{
+					std::filesystem::create_directory(newWorldPath);
+					m_World = std::make_shared<World>(newWorldPath);
+				}
+				else
+					Log::Error("[World Selector] : World already exists : {}", newWorldPath.string());
+
+				newWorldName = default_world_name;
+			}
+
+			ImGui::SeparatorText("Worlds:");
+			for (const auto& entry : std::filesystem::directory_iterator(ApplicationConfig::GetWorldData().WorldsDirectory))
+			{
+				std::string worldName = entry.path().filename().string();
+
+				if (ImGui::Button(worldName.c_str(), ImVec2(ImGui::GetContentRegionAvail().x - 80.0f, 0.0f)))
+				{
+					m_World = std::make_shared<World>(entry.path());
+					Log::Info("Loaded world: {}", entry.path().string());
+				}
+
+				ImGui::SameLine();
+				if (ImGui::Button(std::string("Delete##" + worldName).c_str(), ImVec2(70.0f, 0.0f)))
+				{
+					std::filesystem::remove_all(entry.path());
+					Log::Info("Deleted world: {}", entry.path().string());
+				}
+			}
+			
+			ImGui::End();
+		}
+
+		/// TODO: build custom UI and use it in OnUpdate when game is paused
+		if (m_World)
+		{
+			ImGui::Begin("Game menu");
+
+			if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				m_World->Save();
+
+			if (ImGui::Button("Quit", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				m_World.reset();	
+
+			ImGui::End();
+		}
+#endif
 	}
 
 	void KuchCraft::OnEvent(Event& e)
