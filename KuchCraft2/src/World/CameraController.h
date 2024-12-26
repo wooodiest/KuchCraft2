@@ -14,10 +14,6 @@ namespace KuchCraft {
 		/// @param dt The time elapsed since the last frame, used for frame-independent calculations.
 		virtual void OnUpdate(float dt) override;
 
-	private:
-		/// Stores the previous mouse position to calculate mouse movement.
-		glm::vec2 m_PrevMousePosition{ 0.0f };
-
 	};
 
 }

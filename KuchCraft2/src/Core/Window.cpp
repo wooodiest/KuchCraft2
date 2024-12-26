@@ -10,6 +10,7 @@
 #include <glad/glad.h>
 
 #include "Core/Config.h"
+#include "Core/Input.h"
 
 namespace KuchCraft {
 
@@ -229,6 +230,10 @@ namespace KuchCraft {
 
 		/// Update the last frame time to the current time for the next frame calculation.
 		m_TimeData.LastFrameTime = time;
+
+		glm::vec2 position             = Input::GetMousePosition();
+		m_MouseData.PositionDifference = position - m_MouseData.PreviousPosition;
+		m_MouseData.PreviousPosition   = position;
 	}
 
 	void Window::EndFrame()

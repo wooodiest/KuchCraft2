@@ -147,10 +147,11 @@ namespace KuchCraft {
 		m_Registry.view<TransformComponent, CameraComponent>().each([&](auto entity, auto& transformComponent, auto& cameraComponent) {
 			if (cameraComponent.Primary) {
 				mainCamera = &cameraComponent.Camera;
-				mainCamera->SetData(transformComponent.Translation, transformComponent.Rotation);
+				if (cameraComponent.UseTransformComponent)
+					mainCamera->SetData(transformComponent.Translation, transformComponent.Rotation);
 				return;
 			}
-			});
+		});
 
 		if (mainCamera)
 		{

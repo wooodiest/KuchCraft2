@@ -117,11 +117,12 @@ namespace KuchCraft {
 				auto& camera = entity.GetComponent<CameraComponent>();
 
 				ejson["Camera"] = {
-					{ "Primary",          camera.Primary                 },
-					{ "FixedAspectRatio", camera.FixedAspectRatio        },
-					{ "AspectRatio",      camera.Camera.GetAspectRatio() },
-					{ "NearClip",         camera.Camera.GetNearClip()    },
-					{ "FarClip",          camera.Camera.GetFarClip()     },
+					{ "Primary",               camera.Primary                 },
+					{ "FixedAspectRatio",      camera.FixedAspectRatio        },
+					{ "UseTransformComponent", camera.UseTransformComponent   },
+					{ "AspectRatio",		   camera.Camera.GetAspectRatio() },
+					{ "NearClip",			   camera.Camera.GetNearClip()    },
+					{ "FarClip",			   camera.Camera.GetFarClip()     },
 				};
 			}
 
@@ -225,14 +226,16 @@ namespace KuchCraft {
 			if (ejson.contains("Camera"))
 			{
 				auto& camera = entity.AddComponent<CameraComponent>();
-				const auto& primary          = ejson["Camera"]["Primary"];
-				const auto& fixedAspectRatio = ejson["Camera"]["FixedAspectRatio"];
-				const auto& aspectRatio      = ejson["Camera"]["AspectRatio"];
-				const auto& nearClip         = ejson["Camera"]["NearClip"];
-				const auto& farClip          = ejson["Camera"]["FarClip"];
+				const auto& primary               = ejson["Camera"]["Primary"];
+				const auto& fixedAspectRatio      = ejson["Camera"]["FixedAspectRatio"];
+				const auto& useTransformComponent = ejson["Camera"]["UseTransformComponent"];
+				const auto& aspectRatio           = ejson["Camera"]["AspectRatio"];
+				const auto& nearClip              = ejson["Camera"]["NearClip"];
+				const auto& farClip               = ejson["Camera"]["FarClip"];
 
-				camera.Primary          = primary;
-				camera.FixedAspectRatio = fixedAspectRatio;
+				camera.Primary               = primary;
+				camera.FixedAspectRatio      = fixedAspectRatio;
+				camera.UseTransformComponent = useTransformComponent;
 				camera.Camera.SetAspectRatio(aspectRatio);
 				camera.Camera.SetNearClip(nearClip);
 				camera.Camera.SetFarClip(farClip);

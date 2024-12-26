@@ -108,6 +108,9 @@ namespace KuchCraft {
 		/// Flag indicating if the camera's aspect ratio should remain fixed.
 		bool FixedAspectRatio = false;
 
+		/// Flag indicating if the camera automaticly should set position and rotation from transform component
+		bool UseTransformComponent = true;
+
 		CameraComponent() = default;
 		CameraComponent(const CameraComponent& other)
 			: Primary(false), FixedAspectRatio(other.FixedAspectRatio) {}

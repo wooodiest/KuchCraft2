@@ -110,6 +110,14 @@ namespace KuchCraft {
 		/// @return The unclamped delta time in seconds.
 		inline [[nodiscard]] float GetRawDeltaTime() const noexcept { return m_TimeData.RawDeltaTime; }
 
+		/// Retrieves the mouse position difference between frames.
+		/// @return The mouse position difference between frames.
+		inline [[nodiscard]] glm::vec2 GetMousePositionDifference() const noexcept { return m_MouseData.PositionDifference; }
+
+		/// Retrieves the mouse position in previous frame.
+		/// @return The mouse position in previous frame.
+		inline [[nodiscard]] glm::vec2 GetMousePreviousPosition() const noexcept { return m_MouseData.PreviousPosition; }
+
 		/// Retrieves the raw pointer to the underlying GLFW window.
 		/// This function provides direct access to the internal GLFW window pointer (`GLFWwindow*`). 
 		/// **Use with caution**, as modifying or directly interacting with this pointer can bypass 
@@ -197,16 +205,26 @@ namespace KuchCraft {
 		/// Structure for managing time-related data for the window's rendering loop.
 		struct TimeData
 		{
-			/// Time interval between the current frame and the last frame.
+			/// Time interval between the current frame and the last frame (clamped to max_delta_time).
 			float DeltaTime = 0.0f;
 
-			///
+			/// Time interval between the current frame and the last frame
 			float RawDeltaTime = 0.0f;
 
 			/// Time of the last frame, used for calculating the delta time.
 			float LastFrameTime = 0.0f;
 
 		} m_TimeData;
+
+		struct MouseData 
+		{
+			/// The mouse position difference between frames
+			glm::vec2 PositionDifference{ 0.0f };
+
+			/// The mouse position in previous frame
+			glm::vec2 PreviousPosition{ 0.0f };
+
+		} m_MouseData;
 
 	};
 

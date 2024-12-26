@@ -64,36 +64,55 @@ namespace KuchCraft {
 
 		/// Gets the camera's up direction vector based on its rotation.
 		/// @return The up direction vector.
-		inline [[nodiscard]] glm::vec3 GetUpDirection() const { return glm::quat(m_Rotation) * glm::vec3(0.0f, 1.0f, 0.0f); }
+		inline [[nodiscard]] glm::vec3 GetUpDirection() const { return m_Up; }
 
 		/// Gets the camera's right direction vector based on its rotation.
 		/// @return The right direction vector.
-		inline [[nodiscard]] glm::vec3 GetRightDirection() const { return glm::quat(m_Rotation) * glm::vec3(1.0f, 0.0f, 0.0f); }
+		inline [[nodiscard]] glm::vec3 GetRightDirection() const { return m_Right; }
 
 		/// Gets the camera's forward direction vector based on its rotation.
 		/// @return The forward direction vector.
-		inline [[nodiscard]] glm::vec3 GetForwardDirection() const { return glm::quat(m_Rotation) * glm::vec3(0.0f, 0.0f, -1.0f); }
+		inline [[nodiscard]] glm::vec3 GetForwardDirection() const { return m_Front; }
+
+		inline [[nodiscard]] glm::vec3 GetWorldAlignedRightDirection() const { return m_WorldAlignedRight; }
+
+		inline [[nodiscard]] glm::vec3 GetWorldAlignedForwardDirection() const { return m_WorldAlignedFront; }
 
 		/// Sets the camera's position and rotation.
 		/// This function updates the camera's position and rotation, then recalculates the view matrix.
 		/// @param position - the position of the camera in 3D space.
 		/// @param rotation - the rotation of the camera as a vec3 (Euler angles).
-		inline void SetData(const glm::vec3& position, const glm::vec3& rotation) { m_Position = position; m_Rotation = rotation; UpdateView(); }
+		inline void SetData(const glm::vec3& position, const glm::vec3& rotation)
+		{ 
+			m_Position = position;
+			m_Rotation = rotation; 
+
+			glm::vec3 front;
+			front.x = glm::cos(m_Rotation.x) * glm::cos(m_Rotation.y);
+			front.y = glm::sin(m_Rotation.y);
+			front.z = glm::sin(m_Rotation.x) * glm::cos(m_Rotation.y);
+
+			m_Front = glm::normalize(front);
+			m_Right = glm::normalize(glm::cross(m_Front, m_Up));
+
+			m_WorldAlignedFront = glm::normalize(glm::cross(m_Up, glm::cross(m_Front, m_Up)));
+			m_WorldAlignedRight = glm::normalize(glm::cross(m_Front, m_Up));
+
+			UpdateView();
+		}
 
 		/// Sets the camera's position
 		/// This function updates the camera's position, then recalculates the view matrix.
 		/// @param position - the position of the camera in 3D space.
 		inline void SetPosition(const glm::vec3& position) {
-			m_Position = position;
-			UpdateView();
+			SetData(position, m_Rotation);
 		}
 
 		/// Sets the camera's rotation
 		/// This function updates the camera's rotation, then recalculates the view matrix.
 		/// @param rotation - the rotation of the camera as a vec3 (Euler angles).
 		inline void SetRotation(const glm::vec3& rotation) {
-			m_Rotation = rotation;
-			UpdateView();
+			SetData(m_Position, rotation);
 		}
 
 		/// Sets the camera's projection parameters and updates the projection matrix.
@@ -177,6 +196,12 @@ namespace KuchCraft {
 
 		/// The combined view-projection matrix.
 		glm::mat4 m_ViewProjection = { 1.0f };
+
+		glm::vec3 m_Up{ 0.0f, 1.0f, 0.0f };
+		glm::vec3 m_Front{ 0.0f, 0.0f, -1.0f };
+		glm::vec3 m_Right{ 1.0f, 0.0f, 0.0f };
+		glm::vec3 m_WorldAlignedFront{ 0.0f, 0.0f, -1.0f };
+		glm::vec3 m_WorldAlignedRight{ 1.0f, 0.0f, 0.0f };
 
 	};
 

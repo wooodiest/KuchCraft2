@@ -2,6 +2,7 @@
 #include "CameraController.h"
 
 #include "Core/Input.h"
+#include "Core/Application.h"
 
 namespace KuchCraft {
 
@@ -12,9 +13,7 @@ namespace KuchCraft {
 
 		if (cameraComponent.Primary)
 		{
-			glm::vec2 position     = Input::GetMousePosition();
-			glm::vec2 positionDiff = position - m_PrevMousePosition;
-			m_PrevMousePosition    = position;
+			glm::vec2 positionDiff = Application::GetWindow().GetMousePositionDifference();
 
 			constexpr float camera_sensitivity = 0.25f;
 			transformComponent.Rotation.x += positionDiff.x * camera_sensitivity * 0.001f;
@@ -32,7 +31,6 @@ namespace KuchCraft {
 				transformComponent.Rotation.x -= yaw_boundary;
 			if (transformComponent.Rotation.x < 0.0f)
 				transformComponent.Rotation.x += yaw_boundary;
-
 
 			constexpr float movement_speed = 1.0f;
 			if (Input::IsKeyPressed(KeyCode::W))
