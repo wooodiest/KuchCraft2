@@ -307,10 +307,10 @@ namespace KuchCraft {
 			m_Data.Config.PositionBeforeFullscreenY = m_Data.Config.PositionY;
 			m_Data.Config.WidthBeforeFullscreen     = m_Data.Config.Width;
 			m_Data.Config.HeightBeforeFullscreen    = m_Data.Config.Height;
+			m_Data.Config.Width  = glfwGetVideoMode(glfwGetPrimaryMonitor())->width;
+			m_Data.Config.Height = glfwGetVideoMode(glfwGetPrimaryMonitor())->height;
 
-			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0,
-				glfwGetVideoMode(glfwGetPrimaryMonitor())->width, glfwGetVideoMode(glfwGetPrimaryMonitor())->height, GLFW_DONT_CARE);
-
+			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, m_Data.Config.Width, m_Data.Config.Height, GLFW_DONT_CARE);
 		}
 		else
 			glfwSetWindowMonitor(m_Window, nullptr, m_Data.Config.PositionBeforeFullscreenX , m_Data.Config.PositionBeforeFullscreenY,

@@ -38,6 +38,11 @@ namespace KuchCraft {
 		/// @param dt - the delta time since the last frame.
 		void OnUpdate(float dt);
 
+		/// Renders the current state of the world.
+		/// This method is responsible for drawing all visible entities and other elements 
+		/// in the world.
+		void Render();
+
 		/// This method is responsible for handling various events by delegating them to the appropriate handlers.
 		/// @param e - the event to process.
 		void OnEvent(Event& e);
@@ -96,6 +101,10 @@ namespace KuchCraft {
 		/// Checks if the world is currently paused.
 	    /// @return True if the world is paused; false otherwise.
 		inline [[nodiscard]] bool IsPaused() const { return m_IsPaused; }
+
+		/// Pauses or unpauses updating the world.
+		/// @param status - true to pause the world, false to resume it.
+		void Pause(bool status) { m_IsPaused = status; }
 
 		/// Retrieves world saving path
 		/// @return Save path

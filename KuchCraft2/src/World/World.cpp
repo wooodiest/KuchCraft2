@@ -119,8 +119,11 @@ namespace KuchCraft {
 				spriteComponent.Color = { r, g, b, 1.0f};
 			});
 
-		}
+		}		
+	}
 
+	void World::Render()
+	{
 		Camera* mainCamera = nullptr;
 		m_Registry.view<TransformComponent, CameraComponent>().each([&](auto entity, auto& transformComponent, auto& cameraComponent) {
 			if (cameraComponent.Primary) {
@@ -128,8 +131,8 @@ namespace KuchCraft {
 				mainCamera->SetData(transformComponent.Translation, transformComponent.Rotation);
 				return;
 			}
-		});
-	
+			});
+
 		if (mainCamera)
 		{
 			Renderer::BeginWorld(mainCamera);

@@ -39,6 +39,11 @@ namespace KuchCraft {
 		/// such as suspending rendering or other resource-heavy operations.
 		bool Minimized = false;
 
+		/// Indicates whether the application is in debug mode.
+		/// This flag is used to enable or disable debug-specific features, such as displaying additional information
+		/// or rendering debug UI elements.
+		bool DebugMode = false;
+
 		/// Holds the main application window.
 		/// This pointer manages the Window object, which represents the main interface of the application.
 		/// It is responsible for handling all window-related operations, such as creating, resizing, and closing 
@@ -99,6 +104,11 @@ namespace KuchCraft {
 		/// @param e - the window resize event.
 		/// @return Returns true if the event has been handled and should stop being propagated further
 		static [[nodiscard]] bool OnWindowResize(WindowResizeEvent& e);
+
+		/// Handles the key pressed event.
+		/// @param e - the key pressed event.
+		/// @return Returns true if the event has been handled and should stop being propagated further
+		static [[nodiscard]] bool OnKeyPressed(KeyPressedEvent& e);
 
 		/// Begins a new ImGui frame for rendering GUI elements.
 		/// This method initializes a new ImGui frame by setting up OpenGL and GLFW context-specific 

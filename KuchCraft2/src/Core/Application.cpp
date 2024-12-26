@@ -8,6 +8,7 @@
 #include "Core/Application.h"
 
 #include "Core/Log.h"
+#include "Core/Input.h"
 #include "Core/Config.h"
 #include "Core/Random.h"
 
@@ -30,6 +31,7 @@ namespace KuchCraft {
 
 		WindowData windowData;
 		windowData.Config = ApplicationConfig::GetWindowData();
+		windowData.Config.ShowCursor = s_Data.DebugMode;
 		windowData.EventCallback = KC_BIND_STATIC_EVENT_FN(Application::OnEvent);
 		s_Data.Window = std::make_unique<Window>(windowData);
 
@@ -124,6 +126,7 @@ namespace KuchCraft {
 		/// Dispatch events to appropriate handlers
 		dispatcher.Dispatch<WindowCloseEvent>(KC_BIND_STATIC_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(KC_BIND_STATIC_EVENT_FN(Application::OnWindowResize));
+		dispatcher.Dispatch<KeyPressedEvent>(KC_BIND_STATIC_EVENT_FN(Application::OnKeyPressed));
 
 		Renderer::OnEvent(e);
 		s_Data.Game->OnEvent(e);
@@ -150,6 +153,30 @@ namespace KuchCraft {
 		return false;
 	}
 
+	bool Application::OnKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.IsRepeat())
+			return false;
+
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift   = Input::IsKeyPressed(Key::LeftShift)   || Input::IsKeyPressed(Key::RightShift);
+
+		switch (e.GetKeyCode())
+		{
+			case Key::F11: 
+			{
+				if (control)
+				{
+					s_Data.DebugMode = !s_Data.DebugMode;
+					s_Data.Window->ShowCursor(s_Data.DebugMode);
+				}
+				break;
+			}
+		}
+
+		return false;
+	}
+
 	void Application::BeginImGuiFrame()
 	{
 #ifdef  INCLUDE_IMGUI
@@ -159,26 +186,31 @@ namespace KuchCraft {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		ImGui::Begin("Debug");
-		if (ImGui::BeginTabBar("DebugTabBar"))
+		if (s_Data.DebugMode)
 		{
-			if (ImGui::BeginTabItem("Application"))
+			ImGui::Begin("Debug");
+			if (ImGui::BeginTabBar("DebugTabBar"))
 			{
-				OnImGuiRender();
-				ImGui::EndTabItem();
+				if (ImGui::BeginTabItem("Application"))
+				{
+					OnImGuiRender();
+					ImGui::EndTabItem();
+				}
+
+				if (ImGui::BeginTabItem("Renderer"))
+				{
+					Renderer::OnImGuiRender();
+					ImGui::EndTabItem();
+				}
+
+				if (s_Data.Game)
+					s_Data.Game->OnImGuiRender();
+
+				ImGui::EndTabBar();
 			}
 
-			if (ImGui::BeginTabItem("Renderer"))
-			{
-				Renderer::OnImGuiRender();
-				ImGui::EndTabItem();
-			}
-			
-			if (s_Data.Game)
-				s_Data.Game->OnImGuiRender();
-
-			ImGui::EndTabBar();
-		}
+			ImGui::End();
+		}	
 #endif
 	}
 
@@ -187,7 +219,6 @@ namespace KuchCraft {
 #ifdef  INCLUDE_IMGUI
 
 		/// Render ImGui draw data
-		ImGui::End();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
