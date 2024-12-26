@@ -8,6 +8,8 @@
 #include "World/World.h"
 
 #include "World/Entity.h"
+#include "World/ScriptableEntity.h"
+#include "World/CameraController.h"
 #include "World/Components.h"
 #include "World/WorldSerializer.h"
 
@@ -40,6 +42,15 @@ namespace KuchCraft {
 	World::~World()
 	{
 		Save();
+
+		for (auto handle : m_Registry.view<entt::entity>())
+		{
+			Entity entity = { handle, this };
+			if (!entity)
+				continue;
+
+			DestroyEntity(entity);
+		}
 	}
 
 	/// Copies components from one registry to another based on a mapping of UUIDs to entity handles.
@@ -105,8 +116,16 @@ namespace KuchCraft {
 	{
 		if (!m_IsPaused)
 		{
-			///...
+			m_Registry.view<NativeScriptComponent>().each([&](auto entity, auto& script) {
+				if (!script.Instance)
+				{
+					script.Instance = script.InstantiateScript();
+					script.Instance->m_Entity = Entity{ entity, this };
+					script.Instance->OnCreate();
+				}
 
+				script.Instance->OnUpdate(dt);
+			});
 			/// tmp
 			static float t = 0.0f; t += dt;
 			float r = (glm::cos(t) + 1.0f) / 2.0f;
@@ -159,6 +178,11 @@ namespace KuchCraft {
 		/// Dispatch events to appropriate handlers
 		dispatcher.Dispatch<WindowResizeEvent>(KC_BIND_EVENT_FN(World::OnWindowResize));
 		dispatcher.Dispatch<FileDropEvent>(KC_BIND_EVENT_FN(World::OnFileDrop));
+
+		m_Registry.view<NativeScriptComponent>().each([&](auto entity, auto& script) {
+			if (script.Instance)
+				script.Instance->OnEvent(e);
+		});
 	}
 
 	bool World::OnFileDrop(FileDropEvent& e)
@@ -376,6 +400,11 @@ namespace KuchCraft {
 						transformComponent.Scale = scale;
 				}
 
+				if (entity.HasComponent<NativeScriptComponent>())
+				{
+					ImGui::SeparatorText("Native script");
+				}
+
 				if (entity.HasComponent<CameraComponent>())
 				{
 					ImGui::SeparatorText("Camera");
@@ -537,6 +566,15 @@ namespace KuchCraft {
 
 	void World::DestroyEntity(Entity entity)
 	{
+		if (entity.HasComponent<NativeScriptComponent>())
+		{
+			auto& script = entity.GetComponent<NativeScriptComponent>();
+			if (script.Instance)
+				script.Instance->OnDestroy();
+
+			script.DestroyScript(&script);
+		}
+
 		m_EntityMap.erase(entity.GetUUID());
 		m_Registry.destroy(entity);
 		m_EntityCount--;
@@ -605,6 +643,11 @@ namespace KuchCraft {
 	}
 
 	template<>
+	void World::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
+	}
+
+	template<>
 	void World::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 	{	
 		if (!component.FixedAspectRatio)
@@ -614,6 +657,9 @@ namespace KuchCraft {
 		
 			component.Camera.SetAspectRatio(aspectRatio);
 		}
+
+		Entity e = Entity{ entity, this };
+		e.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	}
 
 	template<>

@@ -63,6 +63,36 @@ namespace KuchCraft {
 		}
 	};
 
+	class ScriptableEntity;
+
+	/// Component for binding native C++ scripts to entities.
+	struct NativeScriptComponent
+	{
+		/// Pointer to the script instance.
+		ScriptableEntity* Instance = nullptr;
+
+		/// Function pointer for creating a script instance.
+		ScriptableEntity* (*InstantiateScript)();
+
+		/// Function pointer for destroying a script instance.
+		void (*DestroyScript)(NativeScriptComponent*);
+
+		/// Binds a script of type T to the component.
+		/// @tparam T - the type of the script to bind.
+		template<typename T>
+		void Bind()
+		{
+			InstantiateScript = []() {
+				return static_cast<ScriptableEntity*>(new T());
+			};
+
+			DestroyScript = [](NativeScriptComponent* nsc) {
+				delete nsc->Instance;
+				nsc->Instance = nullptr;
+			};
+		}
+	};
+
 	/// Represents the camera properties of an entity.
 	/// The CameraComponent stores the camera object and its related settings, such as 
 	/// whether it's the primary camera and if it has a fixed aspect ratio. This component
@@ -129,8 +159,8 @@ namespace KuchCraft {
 
 	/// A predefined group containing all core component types.
 	/// Used for easy components copy, all entities by deafult has tag and id
-	using AllComponents = ComponentGroup<TransformComponent, CameraComponent, Sprite2DRendererComponent, Sprite3DRendererComponent>;
+	using AllComponents = ComponentGroup<TransformComponent, NativeScriptComponent, CameraComponent, Sprite2DRendererComponent, Sprite3DRendererComponent>;
 
 	/// A predefined group containing all used component types.
-	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent, CameraComponent, Sprite2DRendererComponent, Sprite3DRendererComponent>;
+	using AllUsedComponents = ComponentGroup<IDComponent, TagComponent, TransformComponent, NativeScriptComponent, CameraComponent, Sprite2DRendererComponent, Sprite3DRendererComponent>;
 }
