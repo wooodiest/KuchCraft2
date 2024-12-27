@@ -77,11 +77,16 @@ namespace KuchCraft {
 		/// Function pointer for destroying a script instance.
 		void (*DestroyScript)(NativeScriptComponent*);
 
+		/// Script name used for serialization
+		std::string ScriptName;
+
 		/// Binds a script of type T to the component.
 		/// @tparam T - the type of the script to bind.
 		template<typename T>
 		void Bind()
 		{
+			ScriptName = typeid(T).name();
+
 			InstantiateScript = []() {
 				return static_cast<ScriptableEntity*>(new T());
 			};

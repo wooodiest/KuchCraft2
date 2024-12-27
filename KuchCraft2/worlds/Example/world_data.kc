@@ -1,77 +1,11 @@
 {
     "Entities": [
         {
-            "Sprite2DRenderer": {
-                "Color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "GenerateMips": true,
-                "ImageFilter": "Nearest",
-                "Texture": "assets/textures/poppy.png",
-                "Type": "2D"
-            },
-            "Tag": "Textured entity (copy) (copy)",
-            "Transform": {
-                "Rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "Scale": [
-                    100.0,
-                    100.0,
-                    0.0
-                ],
-                "Translation": [
-                    200.0,
-                    200.0,
-                    0.0
-                ]
-            },
-            "UUID": 14796385938399303403
-        },
-        {
-            "Sprite2DRenderer": {
-                "Color": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "GenerateMips": true,
-                "ImageFilter": "Nearest",
-                "Texture": "assets/textures/poppy.png",
-                "Type": "2D"
-            },
-            "Tag": "Textured entity (copy)",
-            "Transform": {
-                "Rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "Scale": [
-                    100.0,
-                    100.0,
-                    0.0
-                ],
-                "Translation": [
-                    93.5,
-                    200.0,
-                    0.0
-                ]
-            },
-            "UUID": 9895869331790298757
-        },
-        {
             "Sprite3DRenderer": {
                 "Color": [
-                    0.00012803077697753906,
-                    0.5113146901130676,
-                    0.26144272089004517,
+                    0.8829407095909119,
+                    0.8214908838272095,
+                    0.6748472452163696,
                     1.0
                 ],
                 "GenerateMips": true,
@@ -79,25 +13,57 @@
                 "Texture": "assets/textures/grid.png",
                 "Type": "2D"
             },
-            "Tag": "3D entity",
+            "Tag": "3D entity (copy)",
             "Transform": {
                 "Rotation": [
-                    751.4950561523438,
+                    777.25146484375,
                     0.0,
-                    1249.80126953125
+                    1291.6661376953125
                 ],
                 "Scale": [
-                    0.5,
+                    1.0,
                     1.0,
                     1.0
                 ],
                 "Translation": [
-                    0.0,
-                    0.5,
-                    0.0
+                    1.5,
+                    2.0,
+                    1.0
                 ]
             },
-            "UUID": 11730769102095435100
+            "UUID": 10587340450471792462
+        },
+        {
+            "Camera": {
+                "AspectRatio": 1.7777777910232544,
+                "FarClip": 1000.0,
+                "FixedAspectRatio": false,
+                "NearClip": 0.009999999776482582,
+                "Primary": true,
+                "UseTransformComponent": true
+            },
+            "NativeScript": {
+                "ScriptName": "class KuchCraft::CameraController"
+            },
+            "Tag": "Camera",
+            "Transform": {
+                "Rotation": [
+                    2.992877721786499,
+                    -0.13379086554050446,
+                    0.0
+                ],
+                "Scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "Translation": [
+                    4.52491569519043,
+                    2.063249349594116,
+                    -0.06727102398872375
+                ]
+            },
+            "UUID": 17995104796623243843
         },
         {
             "Sprite2DRenderer": {
@@ -133,40 +99,11 @@
             "UUID": 13280849221379826916
         },
         {
-            "Camera": {
-                "AspectRatio": 1.7777777910232544,
-                "FarClip": 1000.0,
-                "FixedAspectRatio": false,
-                "NearClip": 0.009999999776482582,
-                "Primary": true,
-                "UseTransformComponent": true
-            },
-            "Tag": "Camera",
-            "Transform": {
-                "Rotation": [
-                    1.1266207695007324,
-                    0.30071011185646057,
-                    0.0
-                ],
-                "Scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ],
-                "Translation": [
-                    0.5899413228034973,
-                    1.1808795928955078,
-                    -0.9329459071159363
-                ]
-            },
-            "UUID": 17995104796623243843
-        },
-        {
             "Sprite3DRenderer": {
                 "Color": [
-                    0.00012803077697753906,
-                    0.5113146901130676,
-                    0.26144272089004517,
+                    0.8829407095909119,
+                    0.8214908838272095,
+                    0.6748472452163696,
                     1.0
                 ],
                 "GenerateMips": true,
@@ -174,25 +111,91 @@
                 "Texture": "assets/textures/grid.png",
                 "Type": "2D"
             },
-            "Tag": "3D entity (copy)",
+            "Tag": "3D entity",
             "Transform": {
                 "Rotation": [
-                    751.4950561523438,
+                    777.25146484375,
                     0.0,
-                    1249.80126953125
+                    1291.6661376953125
                 ],
                 "Scale": [
-                    1.0,
+                    0.5,
                     1.0,
                     1.0
                 ],
                 "Translation": [
-                    1.5,
-                    2.0,
-                    1.0
+                    0.0,
+                    0.5,
+                    0.0
                 ]
             },
-            "UUID": 10587340450471792462
+            "UUID": 11730769102095435100
+        },
+        {
+            "Sprite2DRenderer": {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "GenerateMips": true,
+                "ImageFilter": "Nearest",
+                "Texture": "assets/textures/poppy.png",
+                "Type": "2D"
+            },
+            "Tag": "Textured entity (copy)",
+            "Transform": {
+                "Rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    100.0,
+                    100.0,
+                    0.0
+                ],
+                "Translation": [
+                    93.5,
+                    200.0,
+                    0.0
+                ]
+            },
+            "UUID": 9895869331790298757
+        },
+        {
+            "Sprite2DRenderer": {
+                "Color": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0
+                ],
+                "GenerateMips": true,
+                "ImageFilter": "Nearest",
+                "Texture": "assets/textures/poppy.png",
+                "Type": "2D"
+            },
+            "Tag": "Textured entity (copy) (copy)",
+            "Transform": {
+                "Rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "Scale": [
+                    100.0,
+                    100.0,
+                    0.0
+                ],
+                "Translation": [
+                    200.0,
+                    200.0,
+                    0.0
+                ]
+            },
+            "UUID": 14796385938399303403
         }
     ]
 }

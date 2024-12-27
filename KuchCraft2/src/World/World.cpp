@@ -9,7 +9,6 @@
 
 #include "World/Entity.h"
 #include "World/ScriptableEntity.h"
-#include "World/CameraController.h"
 #include "World/Components.h"
 #include "World/WorldSerializer.h"
 
@@ -658,9 +657,6 @@ namespace KuchCraft {
 		
 			component.Camera.SetAspectRatio(aspectRatio);
 		}
-
-		Entity e = Entity{ entity, this };
-		e.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 	}
 
 	template<>

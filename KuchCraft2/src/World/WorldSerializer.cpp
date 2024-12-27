@@ -2,6 +2,7 @@
 #include "World/WorldSerializer.h"
 
 #include "World/Entity.h"
+#include "World/CameraController.h"
 #include "Graphics/TextureManager.h"
 #include "Core/Config.h"
 
@@ -109,6 +110,14 @@ namespace KuchCraft {
 					{ "Translation", { transform.Translation.x, transform.Translation.y, transform.Translation.z }},
 					{ "Rotation",    { transform.Rotation.x,    transform.Rotation.y,    transform.Rotation.z    }},
 					{ "Scale",       { transform.Scale.x,       transform.Scale.y,       transform.Scale.z       }}
+				};
+			}
+
+			if (entity.HasComponent<NativeScriptComponent>())
+			{
+				auto& script = entity.GetComponent<NativeScriptComponent>();
+				ejson["NativeScript"] = {
+					{ "ScriptName", script.ScriptName }
 				};
 			}
 
@@ -221,6 +230,13 @@ namespace KuchCraft {
 				transform.Translation = { translation[0], translation[1], translation[2] };
 				transform.Rotation    = { rotation[0],    rotation[1],    rotation[2]    };
 				transform.Scale       = { scale[0],       scale[1],       scale[2]       };
+			}
+
+			if (ejson.contains("NativeScript"))
+			{
+				const auto& scriptName = ejson["NativeScript"]["ScriptName"];
+				if (scriptName == typeid(CameraController).name())
+					entity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
 			}
 
 			if (ejson.contains("Camera"))
