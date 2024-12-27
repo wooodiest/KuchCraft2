@@ -4,6 +4,10 @@
 #include "Core/Input.h"
 #include "Core/Application.h"
 
+#ifdef  INCLUDE_IMGUI
+	#include <imgui.h>
+#endif
+
 namespace KuchCraft {
 
 	void CameraController::OnUpdate(float dt)
@@ -15,9 +19,8 @@ namespace KuchCraft {
 		{
 			glm::vec2 positionDiff = Application::GetWindow().GetMousePositionDifference();
 
-			constexpr float camera_sensitivity = 0.25f;
-			transformComponent.Rotation.x += positionDiff.x * camera_sensitivity * 0.001f;
-			transformComponent.Rotation.y -= positionDiff.y * camera_sensitivity * 0.001f;
+			transformComponent.Rotation.x += positionDiff.x * m_MouseSensitivity * 0.001f;
+			transformComponent.Rotation.y -= positionDiff.y * m_MouseSensitivity * 0.001f;
 
 			constexpr float min_pitch = glm::radians(-89.9f);
 			constexpr float max_pitch = glm::radians(89.9f);
@@ -32,22 +35,44 @@ namespace KuchCraft {
 			if (transformComponent.Rotation.x < 0.0f)
 				transformComponent.Rotation.x += yaw_boundary;
 
-			constexpr float movement_speed = 1.0f;
 			if (Input::IsKeyPressed(KeyCode::W))
-				transformComponent.Translation += cameraComponent.Camera.GetForwardDirection() * movement_speed * dt;
+				transformComponent.Translation += cameraComponent.Camera.GetForwardDirection() * m_MovementSpeed * dt;
 			if (Input::IsKeyPressed(KeyCode::S))
-				transformComponent.Translation -= cameraComponent.Camera.GetForwardDirection() * movement_speed * dt;
+				transformComponent.Translation -= cameraComponent.Camera.GetForwardDirection() * m_MovementSpeed * dt;
 
 			if (Input::IsKeyPressed(KeyCode::A))
-				transformComponent.Translation -= cameraComponent.Camera.GetRightDirection() * movement_speed * dt;
+				transformComponent.Translation -= cameraComponent.Camera.GetRightDirection() * m_MovementSpeed * dt;
 			if (Input::IsKeyPressed(KeyCode::D))
-				transformComponent.Translation += cameraComponent.Camera.GetRightDirection() * movement_speed * dt;
+				transformComponent.Translation += cameraComponent.Camera.GetRightDirection() * m_MovementSpeed * dt;
 
 			if (Input::IsKeyPressed(KeyCode::LeftControl))
-				transformComponent.Translation -= cameraComponent.Camera.GetUpDirection() * movement_speed * dt;
+				transformComponent.Translation -= cameraComponent.Camera.GetUpDirection() * m_MovementSpeed * dt;
 			if (Input::IsKeyPressed(KeyCode::Space))
-				transformComponent.Translation += cameraComponent.Camera.GetUpDirection() * movement_speed * dt;
+				transformComponent.Translation += cameraComponent.Camera.GetUpDirection() * m_MovementSpeed * dt;
 		}
+	}
+
+	void CameraController::OnImGuiDebugRender()
+	{
+		ImGui::DragFloat("Mouse sensitivity", &m_MouseSensitivity, 0.05f);
+		ImGui::DragFloat("Movement speed", &m_MovementSpeed, 0.5f);
+	}
+
+	nlohmann::json CameraController::Serialize()
+	{
+		return {
+			{ "MouseSensitivity", m_MouseSensitivity },
+			{ "MovementSpeed",    m_MovementSpeed    }
+		};
+	}
+
+	void CameraController::Deserialize(const nlohmann::json& data)
+	{
+		if (data.contains("MouseSensitivity"))
+			m_MouseSensitivity = data["MouseSensitivity"].get<float>();
+
+		if (data.contains("MovementSpeed"))
+			m_MovementSpeed = data["MovementSpeed"].get<float>();
 	}
 
 }

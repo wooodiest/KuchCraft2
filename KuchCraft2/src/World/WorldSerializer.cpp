@@ -117,7 +117,8 @@ namespace KuchCraft {
 			{
 				auto& script = entity.GetComponent<NativeScriptComponent>();
 				ejson["NativeScript"] = {
-					{ "ScriptName", script.ScriptName }
+					{ "ScriptName", script.ScriptName },
+					{ "State", script.Instance->Serialize() }
 				};
 			}
 
@@ -237,6 +238,15 @@ namespace KuchCraft {
 				const auto& scriptName = ejson["NativeScript"]["ScriptName"];
 				if (scriptName == typeid(CameraController).name())
 					entity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
+
+				if (entity.HasComponent<NativeScriptComponent>() && ejson["NativeScript"].contains("State") && !ejson["NativeScript"]["State"].is_null())
+				{
+					auto& script = entity.GetComponent<NativeScriptComponent>();
+					script.Instance = script.InstantiateScript();
+					script.Instance->m_Entity = entity;
+					script.Instance->Deserialize(ejson["NativeScript"]["State"]);
+					script.Instance->OnCreate();
+				}
 			}
 
 			if (ejson.contains("Camera"))

@@ -249,6 +249,7 @@ namespace KuchCraft {
 
 			static std::string nameFilter;
 			static bool filterByTransform        = false;
+			static bool filterByNativeScript     = false;
 			static bool filterByCamera           = false;
 			static bool filterBySprite2DRenderer = false;
 			static bool filterBySprite3DRenderer = false;
@@ -268,6 +269,7 @@ namespace KuchCraft {
 				{
 					nameFilter               = "";
 					filterByTransform        = false;
+					filterByNativeScript     = false;
 					filterByCamera           = false;
 					filterBySprite2DRenderer = false;
 					filterBySprite3DRenderer = false;
@@ -297,6 +299,8 @@ namespace KuchCraft {
 					if (!nameFilter.empty() && tag.find(nameFilter) == std::string::npos)
 						continue;
 					if (filterByTransform && !entity.HasComponent<TransformComponent>())
+						continue;
+					if (filterByNativeScript && !entity.HasComponent<NativeScriptComponent>())
 						continue;
 					if (filterByCamera && !entity.HasComponent<CameraComponent>())
 						continue;
@@ -365,7 +369,8 @@ namespace KuchCraft {
 				if (ImGui::BeginPopup("Add Component"))
 				{
 					AddComponentLabel<TransformComponent>(entity, "Transform Component##AddComponent");
-					AddComponentLabel<CameraComponent>(entity, "CameraComponentt##AddComponent");
+					/// TODO: AddComponentLabel<NativeScriptComponent>(entity, "NativeScriptComponent##AddComponent");
+					AddComponentLabel<CameraComponent>(entity, "CameraComponent##AddComponent");
 					AddComponentLabel<Sprite2DRendererComponent>(entity, "Sprite2DRendererComponent##AddComponent");
 					AddComponentLabel<Sprite3DRendererComponent>(entity, "Sprite3DRendererComponent##AddComponent");
 
@@ -375,7 +380,8 @@ namespace KuchCraft {
 				if (ImGui::BeginPopup("Remove Component"))
 				{
 					RemoveComponentLabel<TransformComponent>(entity, "Transform Component##RemoveComponent");
-					RemoveComponentLabel<CameraComponent>(entity, "CameraComponentt##RemoveComponent");
+					RemoveComponentLabel<CameraComponent>(entity, "CameraComponent##RemoveComponent");
+					RemoveComponentLabel<NativeScriptComponent>(entity, "NativeScriptComponentt##RemoveComponent");
 					RemoveComponentLabel<Sprite2DRendererComponent>(entity, "Sprite2DRendererComponent##RemoveComponent");
 					RemoveComponentLabel<Sprite3DRendererComponent>(entity, "Sprite3DRendererComponent##RemoveComponent");
 
@@ -403,6 +409,11 @@ namespace KuchCraft {
 				if (entity.HasComponent<NativeScriptComponent>())
 				{
 					ImGui::SeparatorText("Native script");
+					auto& nativeScriptComponent = entity.GetComponent<NativeScriptComponent>();
+					ImGui::Text("Name: %s", nativeScriptComponent.ScriptName.c_str());
+
+					if (nativeScriptComponent.Instance)
+						nativeScriptComponent.Instance->OnImGuiDebugRender();
 				}
 
 				if (entity.HasComponent<CameraComponent>())
@@ -430,6 +441,11 @@ namespace KuchCraft {
 							float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 							camera.SetAspectRatio(aspectRatio);
 						}
+					}
+
+					if (ImGui::Checkbox("Use transform component##CameraComponent", &cameraComponent.UseTransformComponent))
+					{
+
 					}
 
 					if (cameraComponent.FixedAspectRatio)
