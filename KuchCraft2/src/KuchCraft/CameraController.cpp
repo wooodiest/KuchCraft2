@@ -10,6 +10,16 @@
 
 namespace KuchCraft {
 
+	void CameraController::OnCreate()
+	{
+		/// TODO:
+		if (!HasComponent<TransformComponent>())
+			AddComponent<TransformComponent>();
+
+		if (!HasComponent<CameraComponent>())
+			AddComponent<CameraComponent>();
+	}
+
 	void CameraController::OnUpdate(float dt)
 	{
 		auto& cameraComponent    = GetComponent<CameraComponent>();
@@ -54,8 +64,10 @@ namespace KuchCraft {
 
 	void CameraController::OnImGuiDebugRender()
 	{
+#ifdef  INCLUDE_IMGUI
 		ImGui::DragFloat("Mouse sensitivity", &m_MouseSensitivity, 0.05f);
 		ImGui::DragFloat("Movement speed", &m_MovementSpeed, 0.5f);
+#endif
 	}
 
 	nlohmann::json CameraController::Serialize()

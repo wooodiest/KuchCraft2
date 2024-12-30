@@ -12,13 +12,13 @@
         "ShaderVersion": "460 core"
     },
     "Window": {
-        "FullScreen": true,
+        "FullScreen": false,
         "Height": 1080,
         "HeightBeforeFullscreen": 1080,
         "PositionBeforeFullscreenX": 64,
-        "PositionBeforeFullscreenY": 48,
+        "PositionBeforeFullscreenY": 79,
         "PositionX": 64,
-        "PositionY": 48,
+        "PositionY": 84,
         "Resizable": true,
         "ShowCursor": true,
         "Vsync": false,

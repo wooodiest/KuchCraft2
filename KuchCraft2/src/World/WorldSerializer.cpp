@@ -2,7 +2,7 @@
 #include "World/WorldSerializer.h"
 
 #include "World/Entity.h"
-#include "World/CameraController.h"
+#include "World/NativeScripts.h"
 #include "Graphics/TextureManager.h"
 #include "Core/Config.h"
 
@@ -17,9 +17,10 @@ namespace KuchCraft {
 	{
 		switch (filter)
 		{
+			case ImageFilter::None:    return "None";
 			case ImageFilter::LINEAR:  return "Linear";
 			case ImageFilter::NEAREST: return "Nearest";
-			default: return "Invalid";
+			default: return "None";
 		}
 	}
 
@@ -33,7 +34,7 @@ namespace KuchCraft {
 		else if (filter == "Nearest")
 			return ImageFilter::NEAREST;
 
-		return ImageFilter::LINEAR;
+		return ImageFilter::None;
 	}
 
 	/// @brief Converts a TextureType enum to a string representation.
@@ -43,8 +44,9 @@ namespace KuchCraft {
 	{
 		switch (type)
 		{
-			case TextureType::_2D: return "2D";
-			default: return "Invalid";
+			case TextureType::None: return "None";
+			case TextureType::_2D:  return "2D";
+			default: return "None";
 		}
 	}
 
@@ -56,7 +58,7 @@ namespace KuchCraft {
 		if (type == "2D")
 			return TextureType::_2D;
 
-		return TextureType::_2D;
+		return TextureType::None;
 	}
 
 	WorldSerializer::WorldSerializer(World* world)
@@ -142,9 +144,9 @@ namespace KuchCraft {
 				ejson["Sprite2DRenderer"] = {
 					{ "Color", {      sprite.Color.r, sprite.Color.g, sprite.Color.b, sprite.Color.a }},
 					{ "Texture",      sprite.Texture ? sprite.Texture->GetPath() : ""                 },
-					{ "Type",         TextureTypeToString(sprite.Texture->GetSpecification().Type)    },
-					{ "ImageFilter",  ImageFilterToString(sprite.Texture->GetSpecification().Filter)  },
-					{ "GenerateMips", sprite.Texture->GetSpecification().GenerateMips                 },
+					{ "Type",         TextureTypeToString(sprite.Texture ? sprite.Texture->GetSpecification().Type   : TextureType::None) },
+					{ "ImageFilter",  ImageFilterToString(sprite.Texture ? sprite.Texture->GetSpecification().Filter : ImageFilter::None) },
+					{ "GenerateMips", sprite.Texture ? sprite.Texture->GetSpecification().GenerateMips : false },
 				};
 			}
 
@@ -154,9 +156,9 @@ namespace KuchCraft {
 				ejson["Sprite3DRenderer"] = {
 					{ "Color", {      sprite.Color.r, sprite.Color.g, sprite.Color.b, sprite.Color.a }},
 					{ "Texture",      sprite.Texture ? sprite.Texture->GetPath() : ""                 },
-					{ "Type",         TextureTypeToString(sprite.Texture->GetSpecification().Type)    },
-					{ "ImageFilter",  ImageFilterToString(sprite.Texture->GetSpecification().Filter)  },
-					{ "GenerateMips", sprite.Texture->GetSpecification().GenerateMips                 },
+					{ "Type",         TextureTypeToString(sprite.Texture ? sprite.Texture->GetSpecification().Type   : TextureType::None) },
+					{ "ImageFilter",  ImageFilterToString(sprite.Texture ? sprite.Texture->GetSpecification().Filter : ImageFilter::None) },
+					{ "GenerateMips", sprite.Texture ? sprite.Texture->GetSpecification().GenerateMips : false },
 				};
 			}
 
@@ -221,9 +223,35 @@ namespace KuchCraft {
 				ejson["Tag"].get<std::string>()
 			);
 
+			if (ejson.contains("NativeScript"))
+			{
+				const auto& scriptName = ejson["NativeScript"]["ScriptName"];
+				if (!scriptName.empty())
+				{
+					auto& nsc = entity.AddComponent<NativeScriptComponent>();
+					bool scriptFound = IterateComponentGroup(AllNativeScripts{}, scriptName, [&nsc](auto scriptType) {
+						using Script = decltype(scriptType);
+						nsc.Bind<Script>();
+					});
+
+					if (scriptFound)
+					{
+						if (ejson["NativeScript"].contains("State") && !ejson["NativeScript"]["State"].is_null())
+						{
+							nsc.Instance = nsc.InstantiateScript();
+							nsc.Instance->m_Entity = entity;
+							nsc.Instance->Deserialize(ejson["NativeScript"]["State"]);
+							nsc.Instance->OnCreate();
+						}
+					}
+					else
+						Log::Error("[World Serializer] : Script not found : {}", std::string(scriptName));		
+				}
+			}
+
 			if (ejson.contains("Transform"))
 			{
-				auto& transform = entity.AddComponent<TransformComponent>();
+				auto& transform = entity.HasComponent<TransformComponent>() ? entity.GetComponent<TransformComponent>() : entity.AddComponent<TransformComponent>();
 				const auto& translation = ejson["Transform"]["Translation"];
 				const auto& rotation    = ejson["Transform"]["Rotation"];
 				const auto& scale       = ejson["Transform"]["Scale"];
@@ -233,25 +261,9 @@ namespace KuchCraft {
 				transform.Scale       = { scale[0],       scale[1],       scale[2]       };
 			}
 
-			if (ejson.contains("NativeScript"))
-			{
-				const auto& scriptName = ejson["NativeScript"]["ScriptName"];
-				if (scriptName == typeid(CameraController).name())
-					entity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-
-				if (entity.HasComponent<NativeScriptComponent>() && ejson["NativeScript"].contains("State") && !ejson["NativeScript"]["State"].is_null())
-				{
-					auto& script = entity.GetComponent<NativeScriptComponent>();
-					script.Instance = script.InstantiateScript();
-					script.Instance->m_Entity = entity;
-					script.Instance->Deserialize(ejson["NativeScript"]["State"]);
-					script.Instance->OnCreate();
-				}
-			}
-
 			if (ejson.contains("Camera"))
 			{
-				auto& camera = entity.AddComponent<CameraComponent>();
+				auto& camera = entity.HasComponent<CameraComponent>() ? entity.GetComponent<CameraComponent>() : entity.AddComponent<CameraComponent>();
 				const auto& primary               = ejson["Camera"]["Primary"];
 				const auto& fixedAspectRatio      = ejson["Camera"]["FixedAspectRatio"];
 				const auto& useTransformComponent = ejson["Camera"]["UseTransformComponent"];
@@ -269,7 +281,7 @@ namespace KuchCraft {
 
 			if (ejson.contains("Sprite2DRenderer"))
 			{
-				auto& sprite = entity.AddComponent<Sprite2DRendererComponent>();
+				auto& sprite = entity.HasComponent<Sprite2DRendererComponent>() ? entity.GetComponent<Sprite2DRendererComponent>() : entity.AddComponent<Sprite2DRendererComponent>();
 				const auto& color  = ejson["Sprite2DRenderer"]["Color"];
 				const auto& type   = ejson["Sprite2DRenderer"]["Type"];
 				const auto& filter = ejson["Sprite2DRenderer"]["ImageFilter"];
@@ -286,7 +298,7 @@ namespace KuchCraft {
 
 			if (ejson.contains("Sprite3DRenderer"))
 			{
-				auto& sprite = entity.AddComponent<Sprite3DRendererComponent>();
+				auto& sprite = entity.HasComponent<Sprite3DRendererComponent>() ? entity.GetComponent<Sprite3DRendererComponent>() : entity.AddComponent<Sprite3DRendererComponent>();
 				const auto& color  = ejson["Sprite3DRenderer"]["Color"];
 				const auto& type   = ejson["Sprite3DRenderer"]["Type"];
 				const auto& filter = ejson["Sprite3DRenderer"]["ImageFilter"];

@@ -33,36 +33,6 @@ namespace KuchCraft {
 		TagComponent(const std::string& tag) : Tag(tag) {}
 	};
 
-	/// Represents the transformation properties of an entity in 3D space.
-    /// The TransformComponent stores the translation, rotation, and scale of 
-    /// an entity, allowing for positioning and orientation in the 3D world. 
-	struct TransformComponent
-	{
-		/// Position of the entity in 3D space.
-		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
-
-		/// Rotation of the entity in radians along the X, Y, and Z axes.
-		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
-
-		/// Scale of the entity along the X, Y, and Z axes.
-		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
-
-		TransformComponent() = default;
-		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::vec3& translation) : Translation(translation) {}
-		TransformComponent(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale) 
-			: Translation(translation), Rotation(rotation), Scale(scale) {}
-
-		/// Computes the transformation matrix from the component's properties.
-		/// @return The transformation matrix representing the entity's position, rotation, and scale.
-		inline [[nodiscard]] glm::mat4 GetTransform() const
-		{
-			return glm::translate(glm::mat4(1.0f), Translation)
-				* glm::toMat4(glm::quat(Rotation))
-				* glm::scale(glm::mat4(1.0f), Scale);
-		}
-	};
-
 	class ScriptableEntity;
 
 	/// Component for binding native C++ scripts to entities.
@@ -95,6 +65,36 @@ namespace KuchCraft {
 				delete nsc->Instance;
 				nsc->Instance = nullptr;
 			};
+		}
+	};
+
+	/// Represents the transformation properties of an entity in 3D space.
+	/// The TransformComponent stores the translation, rotation, and scale of 
+	/// an entity, allowing for positioning and orientation in the 3D world. 
+	struct TransformComponent
+	{
+		/// Position of the entity in 3D space.
+		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
+
+		/// Rotation of the entity in radians along the X, Y, and Z axes.
+		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
+
+		/// Scale of the entity along the X, Y, and Z axes.
+		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
+
+		TransformComponent() = default;
+		TransformComponent(const TransformComponent&) = default;
+		TransformComponent(const glm::vec3& translation) : Translation(translation) {}
+		TransformComponent(const glm::vec3& translation, const glm::vec3& rotation, const glm::vec3& scale)
+			: Translation(translation), Rotation(rotation), Scale(scale) {}
+
+		/// Computes the transformation matrix from the component's properties.
+		/// @return The transformation matrix representing the entity's position, rotation, and scale.
+		inline [[nodiscard]] glm::mat4 GetTransform() const
+		{
+			return glm::translate(glm::mat4(1.0f), Translation)
+				* glm::toMat4(glm::quat(Rotation))
+				* glm::scale(glm::mat4(1.0f), Scale);
 		}
 	};
 

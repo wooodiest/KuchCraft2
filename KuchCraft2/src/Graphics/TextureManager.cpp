@@ -19,6 +19,9 @@ namespace KuchCraft {
 
 	std::shared_ptr<Texture> TextureManager::Load(const std::filesystem::path& path, const TextureSpecification& specification)
 	{	
+		if (path.empty())
+			return nullptr;
+
 		auto found = s_Data.find(path);
 		if (found != s_Data.end())
 			return found->second;

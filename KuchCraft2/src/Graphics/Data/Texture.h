@@ -29,8 +29,11 @@ namespace KuchCraft {
 	/// These filters determine how textures are sampled when rendered.
 	enum class ImageFilter
 	{
+		/// No format specified
+		None = 0,
+
 		/// Linear filtering for smoother texture sampling
-		LINEAR = 0,
+		LINEAR,
 
 		/// Nearest-neighbor filtering for sharper texture sampling
 		NEAREST
@@ -40,6 +43,10 @@ namespace KuchCraft {
 	/// Specifies texture type.
 	enum class TextureType
 	{
+		/// No format specified
+		None = 0,
+
+		/// 2D texture
 		_2D
 	};
 

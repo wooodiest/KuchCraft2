@@ -21,7 +21,7 @@ namespace KuchCraft {
 		/// @tparam T The type of the component to check for.
 		/// @return True if the entity has the component, false otherwise.
 		template <typename T>
-		bool HasComponent() const
+		bool HasComponent()
 		{
 			return m_Entity.HasComponent<T>();
 		}
@@ -123,4 +123,11 @@ namespace KuchCraft {
 		friend class WorldSerializer;
 
 	};
+
+	template <typename... Scripts, typename Func>
+	bool IterateComponentGroup(ComponentGroup<Scripts...>, const std::string& name, Func&& func) 
+	{
+		return (... || (name == typeid(Scripts).name() && (func(Scripts{}), true)));
+	}
+
 }

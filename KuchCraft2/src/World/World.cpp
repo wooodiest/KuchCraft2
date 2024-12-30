@@ -13,7 +13,7 @@
 #include "World/WorldSerializer.h"
 
 #include "Core/Application.h"
-
+#include "World/NativeScripts.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/TextureManager.h"
 
@@ -125,18 +125,6 @@ namespace KuchCraft {
 
 				script.Instance->OnUpdate(dt);
 			});
-			/// tmp
-			static float t = 0.0f; t += dt;
-			float r = (glm::cos(t) + 1.0f) / 2.0f;
-			float g = (glm::sin(t) + 1.0f) / 2.0f;
-			float b = (glm::sin(t) + 1.0f) * (glm::sin(t) + 1.0f) / 4;
-
-			m_Registry.view<TransformComponent, Sprite3DRendererComponent>().each([&](auto entity, auto& transformComponent, auto& spriteComponent) {
-				transformComponent.Rotation.x += glm::radians(30.0f) * dt;
-				transformComponent.Rotation.z += glm::radians(50.0f) * dt;
-				spriteComponent.Color = { r, g, b, 1.0f};
-			});
-
 		}		
 	}
 
@@ -234,6 +222,42 @@ namespace KuchCraft {
 #endif
 	}
 
+	template <typename... Scripts>
+	void AddScriptComponentLabel(Entity& entity, ComponentGroup<Scripts...>) 
+	{
+#ifdef INCLUDE_IMGUI
+		if (!entity.HasComponent<NativeScriptComponent>())
+		{
+			(..., [&]() {
+				std::string label = std::string("Add ") + typeid(Scripts).name();
+				if (ImGui::Button(label.c_str(), ImVec2(ImGui::GetContentRegionAvail().x, 0.0f))) 
+				{
+					auto& nsc = entity.AddComponent<NativeScriptComponent>();
+					nsc.Bind<Scripts>();
+					ImGui::CloseCurrentPopup();
+				}
+			}());
+		}
+#endif
+	}
+
+	template <typename... Scripts>
+	void RemoveScriptComponentLabel(Entity& entity, ComponentGroup<Scripts...>) {
+#ifdef INCLUDE_IMGUI
+		if (entity.HasComponent<NativeScriptComponent>())
+		{
+			auto& nsc = entity.GetComponent<NativeScriptComponent>();
+			ImGui::Text("Current Script: %s", nsc.ScriptName.c_str());
+
+			if (ImGui::Button("Native Script", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+			{
+				entity.RemoveComponent<NativeScriptComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+		}
+#endif
+	}
+
 	void World::OnImGuiRender()
 	{
 #ifdef  INCLUDE_IMGUI
@@ -248,8 +272,8 @@ namespace KuchCraft {
 				ImGui::OpenPopup("FilterPopup");
 
 			static std::string nameFilter;
-			static bool filterByTransform        = false;
 			static bool filterByNativeScript     = false;
+			static bool filterByTransform        = false;
 			static bool filterByCamera           = false;
 			static bool filterBySprite2DRenderer = false;
 			static bool filterBySprite3DRenderer = false;
@@ -260,6 +284,7 @@ namespace KuchCraft {
 				ImGui::SeparatorText("Filters");
 				
 				ImGui::InputText("Name##FilterByName", &nameFilter);
+				ImGui::Checkbox("Native script component##FilterByTransform", &filterByNativeScript);
 				ImGui::Checkbox("Transform Component##FilterByTransform", &filterByTransform);
 				ImGui::Checkbox("Camera Component##FilterByCamera", &filterByCamera);
 				ImGui::Checkbox("Sprite2D Renderer Component##FilterBySpriteRenderer", &filterBySprite2DRenderer);
@@ -268,8 +293,8 @@ namespace KuchCraft {
 				if (ImGui::Button("Clear##FilterPopup", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
 				{
 					nameFilter               = "";
-					filterByTransform        = false;
 					filterByNativeScript     = false;
+					filterByTransform        = false;
 					filterByCamera           = false;
 					filterBySprite2DRenderer = false;
 					filterBySprite3DRenderer = false;
@@ -298,10 +323,10 @@ namespace KuchCraft {
 					/// Filters
 					if (!nameFilter.empty() && tag.find(nameFilter) == std::string::npos)
 						continue;
-					if (filterByTransform && !entity.HasComponent<TransformComponent>())
-						continue;
 					if (filterByNativeScript && !entity.HasComponent<NativeScriptComponent>())
 						continue;
+					if (filterByTransform && !entity.HasComponent<TransformComponent>())
+						continue;				
 					if (filterByCamera && !entity.HasComponent<CameraComponent>())
 						continue;
 					if (filterBySprite2DRenderer && !entity.HasComponent<Sprite2DRendererComponent>())
@@ -368,8 +393,8 @@ namespace KuchCraft {
 
 				if (ImGui::BeginPopup("Add Component"))
 				{
+					AddScriptComponentLabel(entity, AllNativeScripts{});
 					AddComponentLabel<TransformComponent>(entity, "Transform Component##AddComponent");
-					/// TODO: AddComponentLabel<NativeScriptComponent>(entity, "NativeScriptComponent##AddComponent");
 					AddComponentLabel<CameraComponent>(entity, "CameraComponent##AddComponent");
 					AddComponentLabel<Sprite2DRendererComponent>(entity, "Sprite2DRendererComponent##AddComponent");
 					AddComponentLabel<Sprite3DRendererComponent>(entity, "Sprite3DRendererComponent##AddComponent");
@@ -379,9 +404,9 @@ namespace KuchCraft {
 
 				if (ImGui::BeginPopup("Remove Component"))
 				{
+					RemoveScriptComponentLabel(entity, AllNativeScripts{});
 					RemoveComponentLabel<TransformComponent>(entity, "Transform Component##RemoveComponent");
 					RemoveComponentLabel<CameraComponent>(entity, "CameraComponent##RemoveComponent");
-					RemoveComponentLabel<NativeScriptComponent>(entity, "NativeScriptComponentt##RemoveComponent");
 					RemoveComponentLabel<Sprite2DRendererComponent>(entity, "Sprite2DRendererComponent##RemoveComponent");
 					RemoveComponentLabel<Sprite3DRendererComponent>(entity, "Sprite3DRendererComponent##RemoveComponent");
 

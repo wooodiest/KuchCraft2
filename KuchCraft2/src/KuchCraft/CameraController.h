@@ -10,6 +10,9 @@ namespace KuchCraft {
 	class CameraController : public ScriptableEntity
 	{
 	public:
+		/// Called when the entity is created.
+		virtual void OnCreate() override;
+
 		// Handles input and updates the camera's transformation or other behaviors.
 		/// @param dt The time elapsed since the last frame, used for frame-independent calculations.
 		virtual void OnUpdate(float dt) override;

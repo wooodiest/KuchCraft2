@@ -25,6 +25,9 @@
 #include <shared_mutex>
 #include <queue>
 
+#include <type_traits>
+#include <typeinfo>
+
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/trigonometric.hpp>
