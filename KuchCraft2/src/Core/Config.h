@@ -101,8 +101,11 @@ namespace KuchCraft {
         /// Flag to enable or disable rendering-related log messages.
         bool Logs = true;
 
-        /// Maximum number of texture slots available in the GPU.
-        uint32_t MaxTextureSlots = 64;
+        /// Total maximum number of texture slots available in the GPU.
+        uint32_t MaxCombinedTextureSlots = 64;
+
+        /// Maximum number of texture slots available in the GPU per shader
+        uint32_t MaxTextureSlots = 32;
 
         /// Maximum number of 2D quads that can be rendered in a single batch.
         uint32_t Renderer2DMaxQuads = 20'000;
@@ -135,19 +138,19 @@ namespace KuchCraft {
 
         /// Retrieves log configuration data.
         /// @return Reference to the log configuration data.
-        static inline [[nodiscard]] const LogConfigData& GetLogData() noexcept { return s_LogConfig; }
+        static inline [[nodiscard]] LogConfigData& GetLogData() noexcept { return s_LogConfig; }
 
         /// Retrieves window configuration data.
         /// @return Reference to the window configuration data.
-        static inline [[nodiscard]] const WindowConfigData& GetWindowData() noexcept { return s_WindowConfig; }
+        static inline [[nodiscard]] WindowConfigData& GetWindowData() noexcept { return s_WindowConfig; }
 
         /// Retrieves renderer configuration data.
         /// @return Reference to the renderer configuration data.
-        static inline [[nodiscard]] const RendererConfigData& GetRendererData() noexcept { return s_RendererConfig; }
+        static inline [[nodiscard]] RendererConfigData& GetRendererData() noexcept { return s_RendererConfig; }
 
         /// Retrieves world configuration data.
         /// @return Reference to the world configuration data.
-        static inline [[nodiscard]] const WorldConfigData& GetWorldData() noexcept { return s_WorldConfig; }
+        static inline [[nodiscard]] WorldConfigData& GetWorldData() noexcept { return s_WorldConfig; }
 
     private:
         /// Log configuration data.

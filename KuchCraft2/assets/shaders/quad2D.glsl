@@ -34,7 +34,7 @@ in vec4 v_Color;
 in vec2 v_TextureCoord;
 in flat float v_TextureIndex;
 
-uniform sampler2D u_Textures[##MAX_TEXTURES_SLOTS];
+uniform sampler2D u_Textures[##MAX_COMBINED_TEXTURES_SLOTS];
 
 void main()
 {

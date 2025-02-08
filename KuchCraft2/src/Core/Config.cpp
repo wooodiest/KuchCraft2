@@ -50,7 +50,6 @@ namespace KuchCraft {
 					RendererConfigData rendererConfig;
 					rendererConfig.Logs               = json["Renderer"]["Logs"].get<bool>();
 					rendererConfig.ShaderVersion      = json["Renderer"]["ShaderVersion"].get<std::string>();
-					rendererConfig.MaxTextureSlots    = json["Renderer"]["MaxTextureSlots"].get<uint32_t>();
 					rendererConfig.Renderer2DMaxQuads = json["Renderer"]["Renderer2DMaxQuads"].get<uint32_t>();
 					rendererConfig.Renderer3DMaxQuads = json["Renderer"]["Renderer3DMaxQuads"].get<uint32_t>();
 					s_RendererConfig = rendererConfig;
@@ -105,7 +104,6 @@ namespace KuchCraft {
 		json["Renderer"] = {
 			{ "Logs",               s_RendererConfig.Logs },
 			{ "ShaderVersion",      s_RendererConfig.ShaderVersion },
-			{ "MaxTextureSlots",    s_RendererConfig.MaxTextureSlots },
 			{ "Renderer2DMaxQuads", s_RendererConfig.Renderer2DMaxQuads },
 			{ "Renderer3DMaxQuads", s_RendererConfig.Renderer3DMaxQuads }
 		};

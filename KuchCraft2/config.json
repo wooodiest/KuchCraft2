@@ -6,26 +6,26 @@
     },
     "Renderer": {
         "Logs": true,
-        "MaxTextureSlots": 64,
         "Renderer2DMaxQuads": 20000,
         "Renderer3DMaxQuads": 20000,
         "ShaderVersion": "460 core"
     },
     "Window": {
         "FullScreen": false,
-        "Height": 1080,
-        "HeightBeforeFullscreen": 1080,
-        "PositionBeforeFullscreenX": 64,
-        "PositionBeforeFullscreenY": 79,
-        "PositionX": 64,
-        "PositionY": 84,
+        "Height": 913,
+        "HeightBeforeFullscreen": 913,
+        "PositionBeforeFullscreenX": 51,
+        "PositionBeforeFullscreenY": 395,
+        "PositionX": 123,
+        "PositionY": 192,
         "Resizable": true,
         "ShowCursor": true,
         "Vsync": false,
-        "Width": 1920,
-        "WidthBeforeFullscreen": 1920
+        "Width": 1588,
+        "WidthBeforeFullscreen": 1588
     },
     "World": {
+        "TexturePackFile": "itemsInfo.kc",
         "WorldDataFile": "world_data.kc",
         "WorldsDirectory": "worlds"
     }

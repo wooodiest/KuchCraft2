@@ -440,7 +440,17 @@ namespace KuchCraft {
 	{
 		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("SHADER_VERSION", ApplicationConfig::GetRendererData().ShaderVersion));
 		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("UNIFORM_CAMERA_DATA_BINDING", std::to_string(s_Data.CameraDataUniformBuffer.GetBinding())));
-		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("MAX_TEXTURES_SLOTS", std::to_string(ApplicationConfig::GetRendererData().MaxTextureSlots)));
+
+		GLint maxArrayTextureLayers; glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxArrayTextureLayers);
+		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("MAX_ARRAY_TEXTURE_LAYERS", std::to_string(maxArrayTextureLayers)));
+
+		GLint maxCombindedTextureSlots; glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxCombindedTextureSlots);
+		ApplicationConfig::GetRendererData().MaxCombinedTextureSlots = maxCombindedTextureSlots;
+		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("MAX_COMBINED_TEXTURES_SLOTS", std::to_string(maxCombindedTextureSlots)));
+
+		GLint maxTextureSlots; glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &maxTextureSlots);
+		ApplicationConfig::GetRendererData().MaxTextureSlots = maxTextureSlots;
+		s_Data.ShaderLibrary.AddSubstitution(std::make_pair("MAX_TEXTURES_SLOTS", std::to_string(maxTextureSlots)));
 	}
 
 #pragma endregion
@@ -480,13 +490,13 @@ namespace KuchCraft {
 		s_Quad2DData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/quad2D.glsl");
 		s_Quad2DData.Shader->Bind();
 
-		int* samplers = new int[ApplicationConfig::GetRendererData().MaxTextureSlots];
-		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxTextureSlots; i++)
+		int* samplers = new int[ApplicationConfig::GetRendererData().MaxCombinedTextureSlots];
+		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxCombinedTextureSlots; i++)
 			samplers[i] = i;
-		s_Quad2DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxTextureSlots);
+		s_Quad2DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxCombinedTextureSlots);
 		delete[] samplers;
 
-		s_Quad2DData.TextureSlots = new uint32_t[ApplicationConfig::GetRendererData().MaxTextureSlots];
+		s_Quad2DData.TextureSlots = new uint32_t[ApplicationConfig::GetRendererData().MaxCombinedTextureSlots];
 		s_Quad2DData.TextureSlots[0] = TextureManager::GetWhiteTexture()->GetRendererID();
 
 		s_Quad2DData.Vertices.reserve(s_Quad2DData.MaxVertices);
@@ -549,7 +559,7 @@ namespace KuchCraft {
 
 				if (textureIndex == 0.0f)
 				{
-					if (s_Quad2DData.TextureSlotIndex >= ApplicationConfig::GetRendererData().MaxTextureSlots)
+					if (s_Quad2DData.TextureSlotIndex >= ApplicationConfig::GetRendererData().MaxCombinedTextureSlots)
 						NextQuadsBatch2D();
 
 					textureIndex = static_cast<float>(s_Quad2DData.TextureSlotIndex);
@@ -624,13 +634,13 @@ namespace KuchCraft {
 		s_Quad3DData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/quad3D.glsl");
 		s_Quad3DData.Shader->Bind();
 
-		int* samplers = new int[ApplicationConfig::GetRendererData().MaxTextureSlots];
-		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxTextureSlots; i++)
+		int* samplers = new int[ApplicationConfig::GetRendererData().MaxCombinedTextureSlots];
+		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxCombinedTextureSlots; i++)
 			samplers[i] = i;
-		s_Quad3DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxTextureSlots);
+		s_Quad3DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxCombinedTextureSlots);
 		delete[] samplers;
 
-		s_Quad3DData.TextureSlots    = new uint32_t[ApplicationConfig::GetRendererData().MaxTextureSlots];
+		s_Quad3DData.TextureSlots    = new uint32_t[ApplicationConfig::GetRendererData().MaxCombinedTextureSlots];
 		s_Quad3DData.TextureSlots[0] = TextureManager::GetWhiteTexture()->GetRendererID();
 
 		s_Quad3DData.Vertices.reserve(s_Quad3DData.MaxVertices);
@@ -693,7 +703,7 @@ namespace KuchCraft {
 
 				if (textureIndex == 0.0f)
 				{
-					if (s_Quad3DData.TextureSlotIndex >= ApplicationConfig::GetRendererData().MaxTextureSlots)
+					if (s_Quad3DData.TextureSlotIndex >= ApplicationConfig::GetRendererData().MaxCombinedTextureSlots)
 						NextQuadsBatch3D();
 
 					textureIndex = static_cast<float>(s_Quad3DData.TextureSlotIndex);
