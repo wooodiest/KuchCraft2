@@ -8,6 +8,7 @@
 #include "Graphics/Renderer.h"
 #include "Graphics/Data/ShaderLibrary.h"
 #include "Graphics/TextureManager.h"
+#include "Graphics/Data/TextureArray.h"
 
 #include "Core/Application.h"
 #include "Core/Config.h"
@@ -361,12 +362,44 @@ namespace KuchCraft {
 				{
 					ImVec2 size = { ImGui::GetContentRegionAvail().x , (float)texture->GetHeight() * ImGui::GetContentRegionAvail().x / (float)texture->GetWidth() };
 
-					ImGui::Image(
-						(ImTextureID)(texture->GetRendererID()),
-						size,
-						ImVec2{ 0, 1 },
-						ImVec2{ 1, 0 }
-					);
+					if (texture->GetSpecification().Type == TextureType::_2D)
+					{
+						ImGui::Image(
+							(ImTextureID)(texture->GetRendererID()),
+							size,
+							ImVec2{ 0, 1 },
+							ImVec2{ 1, 0 }
+						);
+					}
+					else if (texture->GetSpecification().Type == TextureType::_2D_ARRAY)
+					{
+						static std::shared_ptr<Texture2D> tex;
+						static int selectedLayer = 0;
+
+						ImGui::Text("TextureArray Layers:");
+										
+						if (!tex.get())
+						{
+							tex = std::make_shared<Texture2D>(TextureSpecification{ .Width = texture->GetWidth(), .Height = texture->GetHeight(), .Filter = ImageFilter::NEAREST });
+							texture->Bind(); tex->Bind();
+							texture->CopyTo(tex, selectedLayer);
+						}
+
+						if (ImGui::SliderInt("Layer", &selectedLayer, 0, texture->GetSpecification().Layers - 1))
+						{
+							texture->Bind(); tex->Bind();
+							texture->CopyTo(tex, selectedLayer);
+						}
+						
+						ImGui::Image(
+							(ImTextureID)(uintptr_t)(tex->GetRendererID()),
+							size,
+							ImVec2{ 0, 1 },
+							ImVec2{ 1, 0 }
+						);
+					
+					}
+					
 				}
 				else
 				{

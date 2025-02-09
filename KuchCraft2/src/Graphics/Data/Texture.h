@@ -47,7 +47,9 @@ namespace KuchCraft {
 		None = 0,
 
 		/// 2D texture
-		_2D
+		_2D,
+
+		_2D_ARRAY
 	};
 
 	/// Describes the properties and configuration of a texture.
@@ -70,6 +72,9 @@ namespace KuchCraft {
 
 		/// Whether to generate mipmaps for the texture
 		bool GenerateMips = true;
+
+		/// Number of texture layers (Texture array)
+		uint32_t Layers = 1;
 
 	};
 
@@ -112,11 +117,19 @@ namespace KuchCraft {
 		/// @return `true` if the texture is loaded successfully, otherwise `false`.
 		virtual bool IsLoaded() const = 0;
 
-		static void Bind(uint32_t rendererID, uint32_t slot);
+		/// Copies texture data from this texture to another texture.
+		/// @param destination - The target texture to copy data into.
+		/// @param srcLayer - The source layer (for 2D_ARRAY textures).
+		/// @param dstLayer - The destination layer (for 2D_ARRAY textures).
+		/// @param width, height, depth - The size of the region to copy.
+		virtual void CopyTo(std::shared_ptr<Texture> destination, int srcLayer = 0, int dstLayer = 0) const;
 
 		/// Helpers
-		static GLenum ImageFormatToGLDataFormat(ImageFormat format);
-		static GLenum ImageFormatToGLInternalFormat(ImageFormat format);
-		static GLenum ImageFilterToGL(ImageFilter filter);
+		GLenum          GetOpenGLTextureType() const;
+		static void     Bind(uint32_t rendererID, uint32_t slot);
+		static GLenum   ImageFormatToGLDataFormat(ImageFormat format);
+		static GLenum   ImageFormatToGLInternalFormat(ImageFormat format);
+		static GLenum   ImageFilterToGL(ImageFilter filter);
+		static uint32_t ImageFormatToChannelCount(ImageFormat format);
 	};
 }

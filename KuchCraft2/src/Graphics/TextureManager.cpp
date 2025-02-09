@@ -2,6 +2,7 @@
 #include "Graphics/TextureManager.h"
 
 #include "Graphics/Data/Texture2D.h"
+#include "Graphics/Data/TextureArray.h"
 
 namespace KuchCraft {
 
@@ -29,7 +30,8 @@ namespace KuchCraft {
 		std::shared_ptr<Texture> texture;
 		switch (specification.Type)
 		{
-			case     TextureType::_2D: texture = std::make_shared<Texture2D>(specification, path); break;
+			case     TextureType::_2D:       texture = std::make_shared<Texture2D>(specification, path);    break;
+			case     TextureType::_2D_ARRAY: texture = std::make_shared<TextureArray>(specification, path); break;
 			default: Log::Error("[Texture Manager] : Invalid texture type at loading");
 		}
 
@@ -52,6 +54,9 @@ namespace KuchCraft {
 		if (found != s_Data.end())
 		{
 			TextureSpecification specification = found->second->GetSpecification();
+			if (specification.Type == TextureType::_2D_ARRAY)
+				return;
+
 			std::shared_ptr<Texture> newTexture = Load(path, specification);
 
 			if (newTexture && newTexture->IsLoaded())
