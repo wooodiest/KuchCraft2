@@ -332,13 +332,13 @@ namespace KuchCraft {
 			ImGui::BeginChild("TexturesList", ImVec2(0.0f, textures_list_height), true);
 
 			int index = 0;
-			for (const auto& [path, texture] : TextureManager::GetData())
+			for (const auto& [name, texture] : TextureManager::GetData())
 			{
 				bool isSelected = (selected == index);
-				if (ImGui::Selectable(path.string().c_str(), isSelected))
+				if (ImGui::Selectable(name.c_str(), isSelected))
 				{
 					selected = index;
-					selectedTexture = path.string();
+					selectedTexture = name;
 				}
 
 				if (isSelected)
@@ -375,8 +375,6 @@ namespace KuchCraft {
 					{
 						static std::shared_ptr<Texture2D> tex;
 						static int selectedLayer = 0;
-
-						ImGui::Text("TextureArray Layers:");
 										
 						if (!tex.get())
 						{
@@ -407,7 +405,7 @@ namespace KuchCraft {
 				}
 
 				if (ImGui::Button("Reload##Texture", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
-					TextureManager::Reload(texture->GetPath());
+					TextureManager::Reload(texture->GetPath().string());
 			}
 
 		}

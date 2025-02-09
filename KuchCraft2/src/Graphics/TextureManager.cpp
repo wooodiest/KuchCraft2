@@ -23,10 +23,6 @@ namespace KuchCraft {
 		if (path.empty())
 			return nullptr;
 
-		auto found = s_Data.find(path);
-		if (found != s_Data.end())
-			return found->second;
-
 		std::shared_ptr<Texture> texture;
 		switch (specification.Type)
 		{
@@ -37,8 +33,8 @@ namespace KuchCraft {
 
 		if (texture && texture->IsLoaded())
 		{
-			s_Data[path] = texture;
-			Log::Info("[Texture Manager] : Loaded texture : {}", path.string());
+			s_Data[path.string()] = texture;
+			Log::Info("[Texture Manager] : Loaded texture : {}", texture->GetPath());
 			return texture;
 		}
 		else
@@ -48,37 +44,38 @@ namespace KuchCraft {
 		}
 	}
 
-	void TextureManager::Reload(const std::filesystem::path& path)
+	void TextureManager::Add(const std::shared_ptr<Texture>& tex, const std::string& name)
 	{
-		auto found = s_Data.find(path);
+		s_Data[name] = tex;
+		Log::Info("[Texture Manager] : Added texture : {}", name);
+	}
+
+	void TextureManager::Reload(const std::string& name)
+	{
+		auto found = s_Data.find(name);
 		if (found != s_Data.end())
 		{
 			TextureSpecification specification = found->second->GetSpecification();
-			if (specification.Type == TextureType::_2D_ARRAY)
+			if (specification.Type == TextureType::_2D_ARRAY || !std::filesystem::path(name).has_extension())
 				return;
 
-			std::shared_ptr<Texture> newTexture = Load(path, specification);
+			std::shared_ptr<Texture> newTexture = Load(found->second->GetPath(), specification);
 
 			if (newTexture && newTexture->IsLoaded())
-			{
-				s_Data[path] = newTexture;
-				Log::Info("[Texture Manager] : Reloaded texture : {}", path.string());
-			}
+				s_Data[name] = newTexture;
 			else
-			{
-				Log::Error("[Texture Manager] : Failed to reload texture : {}", path.string());
-			}
+				Log::Error("[Texture Manager] : Failed to reload texture : {}", name);
 		}
 		else
 		{
-			Log::Error("[Texture Manager] : Cannot reload, texture not found : {}", path.string());
+			Log::Error("[Texture Manager] : Cannot reload, texture not found : {}", name);
 		}
 	}
 
 	void TextureManager::ReloadAll()
 	{
-		for (auto& [path, texture] : s_Data)
-			Reload(path);
+		for (auto& [name, texture] : s_Data)
+			Reload(name);
 	}
 
 }
