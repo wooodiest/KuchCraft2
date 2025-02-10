@@ -59,8 +59,8 @@ namespace KuchCraft {
 			if (item.contains("name"))
 				info.Name = item["name"];
 
-			if (item.contains("isBlock"))
-				info.IsBlock = item["isBlock"];
+			if (item.contains("type"))
+				info.Type = StringToItemType(item["type"].get<std::string>());
 
 			if (item.contains("textures") || item.contains("texture"))
 			{

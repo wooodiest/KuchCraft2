@@ -17,7 +17,7 @@ namespace KuchCraft {
 	struct ItemInfo
 	{
 		std::string Name = "NONE";
-		bool IsBlock     = false;
+		ItemType    Type = ItemType::Utility;
 	};
 
 	class Item

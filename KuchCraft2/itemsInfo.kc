@@ -1,14 +1,9 @@
 {
     "Items": [
         {
-            "id": 0,
-            "name": "Air",
-            "isBlock": false
-        },
-        {
             "id": 1,
             "name": "Stone",
-            "isBlock": true,
+            "type": "block",
             "textures": {
                 "all": "block/stone.png"
             }
@@ -16,7 +11,7 @@
         {
             "id": 2,
             "name": "Dirt",
-            "isBlock": true,
+            "type": "block",
             "textures": {
                 "all": "block/dirt.png"
             }
@@ -24,7 +19,7 @@
         {
             "id": 3,
             "name": "Grass block",
-            "isBlock": true,
+            "type": "block",
             "textures": {
                 "top": "block/grass_block_top.png",
                 "bottom": "block/dirt.png",
@@ -34,6 +29,7 @@
         {
             "id": 4,
             "name": "Apple",
+            "type": "food",
             "texture": "item/apple.png"
         }
 
