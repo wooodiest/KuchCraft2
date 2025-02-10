@@ -5,6 +5,7 @@
         "Pattern": "[%Y-%m-%d %H:%M:%S] [%l] : %v"
     },
     "Renderer": {
+        "BlockTextureSize": 16,
         "Logs": true,
         "Renderer2DMaxQuads": 20000,
         "Renderer3DMaxQuads": 20000,
@@ -12,20 +13,21 @@
     },
     "Window": {
         "FullScreen": false,
-        "Height": 913,
-        "HeightBeforeFullscreen": 913,
-        "PositionBeforeFullscreenX": 51,
-        "PositionBeforeFullscreenY": 395,
-        "PositionX": 123,
-        "PositionY": 192,
+        "Height": 638,
+        "HeightBeforeFullscreen": 1017,
+        "PositionBeforeFullscreenX": 64,
+        "PositionBeforeFullscreenY": 23,
+        "PositionX": 300,
+        "PositionY": 511,
         "Resizable": true,
         "ShowCursor": true,
         "Vsync": false,
-        "Width": 1588,
-        "WidthBeforeFullscreen": 1588
+        "Width": 1116,
+        "WidthBeforeFullscreen": 1920
     },
     "World": {
         "TexturePackFile": "itemsInfo.kc",
+        "TexturesDirectory": "assets/textures",
         "WorldDataFile": "world_data.kc",
         "WorldsDirectory": "worlds"
     }

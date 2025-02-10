@@ -15,6 +15,8 @@
 #include "Graphics/Data/Texture2D.h"
 #include "Graphics/TextureManager.h"
 
+#include "World/ItemMenager.h"
+
 #ifdef  INCLUDE_IMGUI
 	#include <imgui.h>
 	#include <misc/cpp/imgui_stdlib.h>
@@ -24,6 +26,7 @@ namespace KuchCraft {
 
 	KuchCraft::KuchCraft()
 	{
+		ItemMenager::Reload();
 		ChangeState(KuchCraftState::MainMenu);
 	}
 

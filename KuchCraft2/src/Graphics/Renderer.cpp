@@ -322,7 +322,7 @@ namespace KuchCraft {
 		if (ImGui::CollapsingHeader("Textures") && !s_Data.ShaderLibrary.GetShaders().empty())
 		{
 			constexpr float textures_list_height = 150.0f;
-			static int selected = -1;
+			static int selected     = -1;
 			static std::string selectedTexture = "NONE";
 
 			if (ImGui::Button("Reload all", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
@@ -337,7 +337,7 @@ namespace KuchCraft {
 				bool isSelected = (selected == index);
 				if (ImGui::Selectable(name.c_str(), isSelected))
 				{
-					selected = index;
+					selected        = index;
 					selectedTexture = name;
 				}
 
@@ -375,29 +375,40 @@ namespace KuchCraft {
 					{
 						static std::shared_ptr<Texture2D> tex;
 						static int selectedLayer = 0;
-										
-						if (!tex.get())
+						static bool firstInit = true;
+
+						if (!tex || tex->GetRendererID() == 0 || firstInit)
 						{
-							tex = std::make_shared<Texture2D>(TextureSpecification{ .Width = texture->GetWidth(), .Height = texture->GetHeight(), .Filter = ImageFilter::NEAREST });
-							texture->Bind(); tex->Bind();
+							tex = std::make_shared<Texture2D>(TextureSpecification{
+								.Width = texture->GetWidth(),
+								.Height = texture->GetHeight(),
+								.Filter = ImageFilter::NEAREST
+								});
+
+							texture->Bind();
+							tex->Bind();
+							texture->CopyTo(tex, selectedLayer);
+
+							firstInit = false; 
+						}
+
+						if (texture->GetSpecification().Layers > 1 && ImGui::SliderInt("Layer", &selectedLayer, 0, texture->GetSpecification().Layers - 1))
+						{
+							texture->Bind();
+							tex->Bind();
 							texture->CopyTo(tex, selectedLayer);
 						}
 
-						if (ImGui::SliderInt("Layer", &selectedLayer, 0, texture->GetSpecification().Layers - 1))
+						if (tex && tex->GetRendererID() != 0)
 						{
-							texture->Bind(); tex->Bind();
-							texture->CopyTo(tex, selectedLayer);
+							ImGui::Image(
+								(ImTextureID)(uintptr_t)(tex->GetRendererID()),
+								size,
+								ImVec2{ 0, 1 },
+								ImVec2{ 1, 0 }
+							);
 						}
-						
-						ImGui::Image(
-							(ImTextureID)(uintptr_t)(tex->GetRendererID()),
-							size,
-							ImVec2{ 0, 1 },
-							ImVec2{ 1, 0 }
-						);
-					
-					}
-					
+					}		
 				}
 				else
 				{

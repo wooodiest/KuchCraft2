@@ -1,0 +1,41 @@
+{
+    "Items": [
+        {
+            "id": 0,
+            "name": "Air",
+            "isBlock": false
+        },
+        {
+            "id": 1,
+            "name": "Stone",
+            "isBlock": true,
+            "textures": {
+                "all": "block/stone.png"
+            }
+        },
+        {
+            "id": 2,
+            "name": "Dirt",
+            "isBlock": true,
+            "textures": {
+                "all": "block/dirt.png"
+            }
+        },
+        {
+            "id": 3,
+            "name": "Grass block",
+            "isBlock": true,
+            "textures": {
+                "top": "block/grass_block_top.png",
+                "bottom": "block/dirt.png",
+                "side": "block/grass_block_side.png"
+            }
+        },
+        {
+            "id": 4,
+            "name": "Apple",
+            "texture": "item/apple.png"
+        }
+
+    ]
+}

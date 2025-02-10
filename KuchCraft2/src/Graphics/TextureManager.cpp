@@ -23,6 +23,13 @@ namespace KuchCraft {
 		if (path.empty())
 			return nullptr;
 
+		auto it = s_Data.find(path.string());
+		if (it != s_Data.end())
+		{
+			Log::Info("[Texture Manager] : Returning cached texture : {}", path.string());
+			return it->second;
+		}
+
 		std::shared_ptr<Texture> texture;
 		switch (specification.Type)
 		{

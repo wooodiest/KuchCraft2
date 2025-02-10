@@ -115,6 +115,9 @@ namespace KuchCraft {
 
         /// GLSL shader version string to use in shader source files.
         std::string ShaderVersion = "460 core";
+
+        /// Size of texture block
+        uint32_t BlockTextureSize = 16;
     };
 
     /// Struct to hold world configuration data.
@@ -125,6 +128,12 @@ namespace KuchCraft {
 
         /// Main world entities file
         std::string WorldDataFile = "world_data.kc";
+
+        /// Item description info file
+        std::string TexturePackFile = "itemsInfo.kc";
+
+        /// Texture directory
+        std::string TexturesDirectory = "assets/textures";
     };
 
     class ApplicationConfig

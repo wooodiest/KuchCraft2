@@ -52,12 +52,14 @@ namespace KuchCraft {
 					rendererConfig.ShaderVersion      = json["Renderer"]["ShaderVersion"].get<std::string>();
 					rendererConfig.Renderer2DMaxQuads = json["Renderer"]["Renderer2DMaxQuads"].get<uint32_t>();
 					rendererConfig.Renderer3DMaxQuads = json["Renderer"]["Renderer3DMaxQuads"].get<uint32_t>();
+					rendererConfig.BlockTextureSize   = json["Renderer"]["BlockTextureSize"].get<uint32_t>();
 					s_RendererConfig = rendererConfig;
 
 					WorldConfigData worldConfig;
-					worldConfig.WorldsDirectory = json["World"]["WorldsDirectory"].get<std::string>();
-					worldConfig.WorldDataFile   = json["World"]["WorldDataFile"].get<std::string>();
-
+					worldConfig.WorldsDirectory   = json["World"]["WorldsDirectory"].get<std::string>();
+					worldConfig.WorldDataFile     = json["World"]["WorldDataFile"].get<std::string>();
+					worldConfig.TexturePackFile   = json["World"]["TexturePackFile"].get<std::string>();
+					worldConfig.TexturesDirectory = json["World"]["TexturesDirectory"].get<std::string>();
 				}
 				catch (const std::exception& e)
 				{
@@ -105,12 +107,15 @@ namespace KuchCraft {
 			{ "Logs",               s_RendererConfig.Logs },
 			{ "ShaderVersion",      s_RendererConfig.ShaderVersion },
 			{ "Renderer2DMaxQuads", s_RendererConfig.Renderer2DMaxQuads },
-			{ "Renderer3DMaxQuads", s_RendererConfig.Renderer3DMaxQuads }
+			{ "Renderer3DMaxQuads", s_RendererConfig.Renderer3DMaxQuads },
+			{ "BlockTextureSize",   s_RendererConfig.BlockTextureSize }
 		};
 
 		json["World"] = {
-			{ "WorldsDirectory", s_WorldConfig.WorldsDirectory },
-			{ "WorldDataFile",   s_WorldConfig.WorldDataFile },
+			{ "WorldsDirectory",   s_WorldConfig.WorldsDirectory },
+			{ "WorldDataFile",     s_WorldConfig.WorldDataFile },
+			{ "TexturePackFile",   s_WorldConfig.TexturePackFile },
+			{ "TexturesDirectory", s_WorldConfig.TexturesDirectory }
 		};
 
 		std::ofstream file(s_ConfigPath);
