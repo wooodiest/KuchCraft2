@@ -13,6 +13,8 @@
 
 #include "Graphics/Data/Camera.h"
 
+#include "World/Chunk.h"
+
 namespace KuchCraft {
 	
 	/// Forward declaration of the Entity class.
@@ -98,6 +100,11 @@ namespace KuchCraft {
 			return m_Registry.view<Components...>();
 		}
 
+		/// Retrieves a chunk based on a given world position.
+		/// @param position - the position in the world.
+		/// @return A pointer to the chunk containing the position, or nullptr if not found.
+		Chunk* GetChunk(const glm::vec3& position);
+
 		/// Checks if the world is currently paused.
 	    /// @return True if the world is paused; false otherwise.
 		inline [[nodiscard]] bool IsPaused() const { return m_IsPaused; }
@@ -132,6 +139,9 @@ namespace KuchCraft {
 
 		/// Maps UUIDs to entity handles for quick lookup.
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
+
+		/// Stores all the chunks in the world, indexed by their integer coordinates.
+		std::unordered_map<glm::ivec3, Chunk> m_Chunks;
 
 		/// Indicates whether the world is currently paused.
 		bool m_IsPaused = false;

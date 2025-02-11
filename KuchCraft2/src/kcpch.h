@@ -42,6 +42,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/epsilon.hpp>
 #include <glm/gtx/norm.hpp>
+#include <glm/gtx/hash.hpp>
 #include <glm/gtc/integer.hpp>
 
 #include "Core/Utils.h"

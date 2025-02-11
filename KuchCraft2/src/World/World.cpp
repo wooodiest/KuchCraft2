@@ -36,6 +36,9 @@ namespace KuchCraft {
 	{
 		WorldSerializer serializer(this);
 		serializer.Deserialize();
+
+		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, 0 }, Chunk(this, glm::ivec3{ 0, 0, 0 })));
+
 	}
 
 	World::~World()
@@ -154,10 +157,9 @@ namespace KuchCraft {
 				Renderer::DrawQuad(transformComponent, spriteComponent);
 			});
 
-			Renderer::DrawBlock(TransformComponent{ { 0.0f, 0.0f, 0.0f } }, Item(ItemData::Dirt));
-			Renderer::DrawBlock(TransformComponent{ { 2.0f, 0.0f, 0.0f } }, Item(ItemData::Stone));
-			Renderer::DrawBlock(TransformComponent{ { 4.0f, 0.0f, 0.0f } }, Item(ItemData::GrassBlock));
-			Renderer::DrawBlock(TransformComponent{ { 6.0f, 0.0f, 0.0f } }, Item(ItemData::Apple));
+			/// Chunks
+			for (auto& [_, chunk] : m_Chunks)
+				Renderer::DrawChunk(&chunk);
 
 			Renderer::EndWorld();
 		}
@@ -652,6 +654,15 @@ namespace KuchCraft {
 			return { m_EntityMap.at(uuid), this };
 
 		return {};
+	}
+
+	Chunk* World::GetChunk(const glm::vec3& position)
+	{
+		auto it = m_Chunks.find(Chunk::GetOrigin(position));
+		if (it != m_Chunks.end())
+			return &(it->second);
+
+		return nullptr;
 	}
 
 	bool World::OnWindowResize(WindowResizeEvent& e)

@@ -17,6 +17,7 @@
 #include "Graphics/RendererData.h"
 #include "World/Components.h"
 #include "World/Item.h"
+#include "World/Chunk.h"
 
 namespace KuchCraft {
 
@@ -78,6 +79,10 @@ namespace KuchCraft {
 		/// @param transformComponent - includes translation, rotation and scale
 		/// @param item - includes item data and texture
 		static void DrawBlock(const TransformComponent& transformComponent, const Item& item);
+
+		/// Draws an entire chunk of blocks
+		/// @param chunk - poiter to specific chunk
+		static void DrawChunk(Chunk* chunk);
 
 	#pragma endregion
 	#pragma region Shaders

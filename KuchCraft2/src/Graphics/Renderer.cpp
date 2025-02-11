@@ -485,6 +485,20 @@ namespace KuchCraft {
 		}
 	}
 
+	void Renderer::DrawChunk(Chunk* chunk)
+	{
+		for (int x = 0; x < chunk_size_XZ; x++)
+		{
+			for (int y = 0; y < chunk_size_Y; y++)
+			{
+				for (int z = 0; z < chunk_size_XZ; z++)
+				{ 
+					DrawBlock(TransformComponent{ chunk->GetPosition() + glm::vec3{ x, y, z } }, chunk->Get({ x, y, z }));
+				}
+			}
+		}
+	}
+
 #pragma endregion
 #pragma region Shaders
 
