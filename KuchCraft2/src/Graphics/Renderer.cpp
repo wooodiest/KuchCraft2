@@ -461,6 +461,30 @@ namespace KuchCraft {
 		}
 	}
 
+	void Renderer::DrawBlock(const TransformComponent& transformComponent, const Item& item)
+	{
+		if (item.GetInfo().Type != ItemType::Block)
+			return;
+
+		const glm::mat4 transform = transformComponent.GetTransform();
+		auto  texture   = item.GetTexture();
+		float textureID = texture->GetRendererID();
+
+		for (uint32_t face = 0; face < block_face_count; face++)
+		{
+			for (uint32_t vertex = 0; vertex < quad_vertex_count; vertex++)
+			{
+				s_Quad3DData.Vertices.emplace_back(
+					glm::vec3(transform * glm::vec4(blockFacePositions[face][vertex], 1.0f)),
+					glm::normalize(glm::mat3(transform) * blockFaceNormals[face]), 
+					glm::vec4(1.0f),        
+					blockFaceUV[face][vertex],
+					textureID /// Texture index temporarily holds the texture rendererID
+				);
+			}
+		}
+	}
+
 #pragma endregion
 #pragma region Shaders
 

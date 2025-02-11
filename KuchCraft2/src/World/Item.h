@@ -23,21 +23,26 @@ namespace KuchCraft {
 	class Item
 	{
 	public:
-		Item() = default;
+		Item();
 
 		/// Constructor that initializes an item with a specific ID.
 		/// @param id The unique identifier of the item.
-		Item(ItemID id)
-			: m_ID(id) {}
+		Item(ItemID id);
 
-		virtual ~Item() = default;
+		/// Constructor that initializes an item witch ItemData.
+		/// @param data TItemData representing id of specific item.
+		Item(ItemData data);
 
-		///Virtual function for item usage
-		virtual void Use() {}
+		~Item();
+
+		/// Item usage
+		void Use();
 
 		/// Retrieves the unique identifier of the item.
 	    /// @return The ID of the item.
 		inline [[nodiscard]] ItemID GetID() const { return m_ID; }
+
+		[[nodiscard]] const ItemInfo& GetInfo() const;
 
 		/// Retrieves the texture associated with a given item ID.
 		/// @param id The ID of the item.
@@ -48,7 +53,7 @@ namespace KuchCraft {
 	    /// @return A shared pointer to the texture.
 		[[nodiscard]] const std::shared_ptr<Texture>& GetTexture() const { return GetTexture(m_ID); };
 
-	protected:
+	private:
 		/// The unique identifier of the item.
 		ItemID m_ID = (ItemID)ItemData::Air;
 

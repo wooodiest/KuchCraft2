@@ -16,6 +16,7 @@
 #include "Core/Event.h"
 #include "Graphics/RendererData.h"
 #include "World/Components.h"
+#include "World/Item.h"
 
 namespace KuchCraft {
 
@@ -72,6 +73,11 @@ namespace KuchCraft {
 		/// @param transformComponent - includes translation, rotation and scale
 		/// @param spriteComponent - includes texture or color information
 		static void DrawQuad(const TransformComponent& transformComponent, const Sprite3DRendererComponent& spriteComponent);
+
+		/// Draws a single block item. Adds 6 3D quads to the rendering queue representing a cube/block
+		/// @param transformComponent - includes translation, rotation and scale
+		/// @param item - includes item data and texture
+		static void DrawBlock(const TransformComponent& transformComponent, const Item& item);
 
 	#pragma endregion
 	#pragma region Shaders

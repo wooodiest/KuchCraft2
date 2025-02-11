@@ -54,7 +54,9 @@ namespace KuchCraft {
 			}
 
 			ItemID ID = item["id"];
-			ItemInfo info;
+
+			s_Data[ID] = ItemInfo{};
+			ItemInfo& info = s_Data[ID];
 
 			if (item.contains("name"))
 				info.Name = item["name"];
@@ -72,12 +74,12 @@ namespace KuchCraft {
 					std::string defaultAll  = tex.contains("all")  ? tex["all"] .get<std::string>() : "";
 					std::string defaultSide = tex.contains("side") ? tex["side"].get<std::string>() : defaultAll;
 
-					textures[0] = tex.contains("front")  ? tex["front"] .get<std::string>() : defaultSide;
-					textures[1] = tex.contains("left")   ? tex["left"]  .get<std::string>() : defaultSide;
-					textures[2] = tex.contains("back")   ? tex["back"]  .get<std::string>() : defaultSide;
-					textures[3] = tex.contains("right")  ? tex["right"] .get<std::string>() : defaultSide;
-					textures[4] = tex.contains("top")    ? tex["top"]   .get<std::string>() : defaultAll;
-					textures[5] = tex.contains("bottom") ? tex["bottom"].get<std::string>() : defaultAll;
+					textures[(int)BlockFaces::Front]  = tex.contains("front")  ? tex["front"] .get<std::string>() : defaultSide;
+					textures[(int)BlockFaces::Left]   = tex.contains("left")   ? tex["left"]  .get<std::string>() : defaultSide;
+					textures[(int)BlockFaces::Back]   = tex.contains("back")   ? tex["back"]  .get<std::string>() : defaultSide;
+					textures[(int)BlockFaces::Right]  = tex.contains("right")  ? tex["right"] .get<std::string>() : defaultSide;
+					textures[(int)BlockFaces::Top]    = tex.contains("top")    ? tex["top"]   .get<std::string>() : defaultAll;
+					textures[(int)BlockFaces::Bottom] = tex.contains("bottom") ? tex["bottom"].get<std::string>() : defaultAll;
 				}
 				else
 				{

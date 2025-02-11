@@ -154,6 +154,11 @@ namespace KuchCraft {
 				Renderer::DrawQuad(transformComponent, spriteComponent);
 			});
 
+			Renderer::DrawBlock(TransformComponent{ { 0.0f, 0.0f, 0.0f } }, Item(ItemData::Dirt));
+			Renderer::DrawBlock(TransformComponent{ { 2.0f, 0.0f, 0.0f } }, Item(ItemData::Stone));
+			Renderer::DrawBlock(TransformComponent{ { 4.0f, 0.0f, 0.0f } }, Item(ItemData::GrassBlock));
+			Renderer::DrawBlock(TransformComponent{ { 6.0f, 0.0f, 0.0f } }, Item(ItemData::Apple));
+
 			Renderer::EndWorld();
 		}
 	}
