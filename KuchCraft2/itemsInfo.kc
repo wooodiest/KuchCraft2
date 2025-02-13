@@ -4,6 +4,7 @@
             "id": 1,
             "name": "Stone",
             "type": "block",
+            "transparent" :  false,
             "textures": {
                 "all": "block/stone.png"
             }
@@ -12,6 +13,7 @@
             "id": 2,
             "name": "Dirt",
             "type": "block",
+            "transparent" :  false,
             "textures": {
                 "all": "block/dirt.png"
             }
@@ -20,6 +22,7 @@
             "id": 3,
             "name": "Grass block",
             "type": "block",
+            "transparent" :  false,
             "textures": {
                 "top": "block/grass_block_top.png",
                 "bottom": "block/dirt.png",
@@ -30,6 +33,7 @@
             "id": 4,
             "name": "Apple",
             "type": "food",
+            "transparent" :  true,
             "texture": "item/apple.png"
         }
 

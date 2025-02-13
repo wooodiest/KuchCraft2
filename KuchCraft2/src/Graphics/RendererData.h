@@ -143,6 +143,17 @@ namespace KuchCraft {
 
 	};
 
+	class Chunk;
+
+	struct ChunkRendererData
+	{
+		std::vector<Chunk*> Chunks;
+		std::shared_ptr<Shader> Shader;
+		IndexBuffer  IndexBuffer;
+		VertexArray  VertexArray;
+		VertexBuffer VertexBuffer;
+	};
+
 	/// Stores data related to camera transformations
 	struct CameraDataUniformBuffer
 	{

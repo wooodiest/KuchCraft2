@@ -15,6 +15,15 @@
 
 #include "World/Chunk.h"
 
+namespace std {
+	template <>
+	struct hash<glm::ivec3> {
+		size_t operator()(const glm::ivec3& v) const {
+			return ((std::hash<int>()(v.x) ^ (std::hash<int>()(v.y) << 1)) >> 1) ^ (std::hash<int>()(v.z) << 1);
+		}
+	};
+}
+
 namespace KuchCraft {
 	
 	/// Forward declaration of the Entity class.
@@ -141,7 +150,7 @@ namespace KuchCraft {
 		std::unordered_map<UUID, entt::entity> m_EntityMap;
 
 		/// Stores all the chunks in the world, indexed by their integer coordinates.
-		std::unordered_map<glm::ivec3, Chunk> m_Chunks;
+		std::unordered_map<glm::ivec3, Chunk*> m_Chunks;
 
 		/// Indicates whether the world is currently paused.
 		bool m_IsPaused = false;

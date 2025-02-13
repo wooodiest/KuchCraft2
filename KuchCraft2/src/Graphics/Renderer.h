@@ -165,6 +165,14 @@ namespace KuchCraft {
 		static void FlushQuads3D();
 
 	#pragma endregion
+	#pragma region Chunks
+		/// Initializes resources required for rendering Chunks.
+		static void InitChunks();
+
+		/// This function handles the rendering of chunks
+		static void RenderChunks();
+
+	#pragma endregion
 	#pragma region RendererCommands
 	private:
 		/// Issues a draw call for rendering indexed elements.
@@ -255,6 +263,9 @@ namespace KuchCraft {
 		/// Includes buffers, shaders, and configuration parameters used exclusively for
 		/// rendering 3D quads in a batched manner.
 		static inline Quad3DRendererData s_Quad3DData;
+
+		/// Contains data specific to chunk rendering.
+		static inline ChunkRendererData s_ChunkData;
 
 	#pragma endregion
 	};

@@ -37,8 +37,12 @@ namespace KuchCraft {
 		WorldSerializer serializer(this);
 		serializer.Deserialize();
 
-		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, 0 }, Chunk(this, glm::ivec3{ 0, 0, 0 })));
+		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, 0 }, new Chunk(this, glm::ivec3{ 0, 0, 0 })));
+		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, -32 }, new Chunk(this, glm::ivec3{ 0, 0, -32 })));
+		m_Chunks.insert(std::make_pair(glm::ivec3{ 32, 0, 0 }, new Chunk(this, glm::ivec3{ 32, 0, 0 })));
 
+		for (const auto& [pos, chunk] : m_Chunks)
+			chunk->Recreate();
 	}
 
 	World::~World()
@@ -159,7 +163,7 @@ namespace KuchCraft {
 
 			/// Chunks
 			for (auto& [_, chunk] : m_Chunks)
-				Renderer::DrawChunk(&chunk);
+				Renderer::DrawChunk(chunk);
 
 			Renderer::EndWorld();
 		}
@@ -660,10 +664,11 @@ namespace KuchCraft {
 	{
 		auto it = m_Chunks.find(Chunk::GetOrigin(position));
 		if (it != m_Chunks.end())
-			return &(it->second);
+			return it->second;
 
 		return nullptr;
 	}
+
 
 	bool World::OnWindowResize(WindowResizeEvent& e)
 	{

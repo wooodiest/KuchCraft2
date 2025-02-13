@@ -16,8 +16,9 @@ namespace KuchCraft {
 	/// Represents the basic information about an item.
 	struct ItemInfo
 	{
-		std::string Name = "NONE";
-		ItemType    Type = ItemType::Utility;
+		std::string Name        = "AIR";
+		ItemType    Type        = ItemType::Utility;
+		bool        Transparent = true;
 	};
 
 	class Item

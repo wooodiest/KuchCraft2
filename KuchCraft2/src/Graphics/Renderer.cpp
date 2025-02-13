@@ -13,6 +13,8 @@
 #include "Core/Application.h"
 #include "Core/Config.h"
 
+#include "World/ItemMenager.h"
+
 #include <glad/glad.h>
 
 #ifdef  INCLUDE_IMGUI
@@ -61,6 +63,7 @@ namespace KuchCraft {
 		/// Initializes resources
 		InitQuads2D();
 		InitQuads3D();
+		InitChunks();
 	}
 
 	void Renderer::Shutdown()
@@ -83,8 +86,6 @@ namespace KuchCraft {
 
 		/// Clear data
 		s_Stats.Reset();
-		s_Quad2DData.Vertices.clear();
-		s_Quad3DData.Vertices.clear();
 	}
 
 	void Renderer::EndFrame()
@@ -107,6 +108,7 @@ namespace KuchCraft {
 	{
 		EnableDepthTesting();
 		RenderQuads3D();
+		RenderChunks();
 		RenderQuads2D();
 	}
 
@@ -487,16 +489,7 @@ namespace KuchCraft {
 
 	void Renderer::DrawChunk(Chunk* chunk)
 	{
-		for (int x = 0; x < chunk_size_XZ; x++)
-		{
-			for (int y = 0; y < chunk_size_Y; y++)
-			{
-				for (int z = 0; z < chunk_size_XZ; z++)
-				{ 
-					DrawBlock(TransformComponent{ chunk->GetPosition() + glm::vec3{ x, y, z } }, chunk->Get({ x, y, z }));
-				}
-			}
-		}
+		s_ChunkData.Chunks.push_back(chunk);
 	}
 
 #pragma endregion
@@ -657,6 +650,8 @@ namespace KuchCraft {
 		}
 
 		FlushQuads2D();
+
+		s_Quad2DData.Vertices.clear();
 	}
 
 	void Renderer::FlushQuads2D()
@@ -801,6 +796,8 @@ namespace KuchCraft {
 		}
 
 		FlushQuads3D();
+
+		s_Quad3DData.Vertices.clear();
 	}
 
 	void Renderer::FlushQuads3D()
@@ -819,6 +816,76 @@ namespace KuchCraft {
 
 		s_Stats.DrawCalls++;
 		s_Stats.Vertices += vertexCount;
+	}
+
+#pragma endregion
+#pragma region Chunks
+
+	void Renderer::InitChunks()
+	{
+		s_ChunkData.VertexArray .Create();
+		s_ChunkData.VertexBuffer.Create(VertexBufferDataUsage::DYNAMIC, chunk_size_XZ * chunk_size_XZ * chunk_size_XZ * block_face_count * block_vertex_count);
+		s_ChunkData.VertexBuffer.SetBufferLayout({
+			{ ShaderDataType::Uint, "a_PackedData" },
+		});
+		s_ChunkData.VertexArray.SetVertexBuffer(s_ChunkData.VertexBuffer);
+
+		constexpr int max_indices = chunk_size_XZ * chunk_size_XZ * chunk_size_XZ * block_face_count * block_index_count;
+		uint32_t* indices = new uint32_t[max_indices];
+		uint32_t  offset = 0;
+		for (uint32_t i = 0; i < max_indices; i += quad_index_count)
+		{
+			indices[i + 0] = offset + 0;
+			indices[i + 1] = offset + 1;
+			indices[i + 2] = offset + 2;
+			indices[i + 3] = offset + 2;
+			indices[i + 4] = offset + 3;
+			indices[i + 5] = offset + 0;
+
+			offset += quad_vertex_count;
+		}
+		s_ChunkData.IndexBuffer.Create(IndexBufferDataUsage::STATIC, max_indices, indices);
+		delete[] indices;
+
+		s_ChunkData.Shader = s_Data.ShaderLibrary.Load("assets/shaders/chunk.glsl");
+		s_ChunkData.Shader->Bind();
+
+		// TODO: s_ChunkData.Chunks.reserve();
+
+		s_ChunkData.VertexArray .Unbind();
+		s_ChunkData.VertexBuffer.Unbind();
+	}
+
+	void Renderer::RenderChunks()
+	{
+		if (!s_ChunkData.Chunks.size())
+			return;
+
+		s_ChunkData.Shader     ->Bind();
+		s_ChunkData.VertexArray .Bind();
+		s_ChunkData.IndexBuffer .Bind();
+		s_ChunkData.VertexBuffer.Bind();
+
+		ItemMenager::GetTextureArray()->Bind();
+
+		for (const auto& chunk : s_ChunkData.Chunks)
+		{
+			s_ChunkData.Shader->SetFloat3("u_ChunkPosition", chunk->GetPosition() + glm::vec3(0.5f, 0.5f, 0.5f));
+			
+			const auto& renderData = chunk->GetRenderData();
+			s_ChunkData.VertexBuffer.SetData(renderData.GetData1().size() * sizeof(uint32_t) , &renderData.GetData1()[0]);
+
+			uint32_t quadCount = renderData.GetData1().size() / quad_vertex_count;
+			uint32_t indexCount = quadCount * quad_index_count;
+			uint32_t vertexCount = quadCount * quad_vertex_count;
+			DrawElemnts(indexCount);
+
+			s_Stats.Vertices += vertexCount;
+		}
+
+		s_Stats.DrawCalls++;
+
+		s_ChunkData.Chunks.clear();
 	}
 
 #pragma endregion

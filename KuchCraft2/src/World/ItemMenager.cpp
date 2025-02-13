@@ -64,6 +64,9 @@ namespace KuchCraft {
 			if (item.contains("type"))
 				info.Type = StringToItemType(item["type"].get<std::string>());
 
+			if (item.contains("transparent"))
+				info.Transparent = item["transparent"];
+
 			if (item.contains("textures") || item.contains("texture"))
 			{
 				std::string textures[block_face_count];

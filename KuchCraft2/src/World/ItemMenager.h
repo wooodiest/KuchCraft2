@@ -16,6 +16,10 @@ namespace KuchCraft {
 		/// @return A reference to the ItemInfo structure.
 		static const ItemInfo& GetInfo(ItemID id) { return s_Data[id]; }
 
+		static const uint32_t GetTextureLayer(ItemID id) { return s_ItemTextureArrayLayers[id]; }
+
+		static const std::shared_ptr<TextureArray>& GetTextureArray() { return s_ItemTextureArray; }
+
 	private:
 		/// Path to the item configuration file.
 		static inline std::filesystem::path s_Path;

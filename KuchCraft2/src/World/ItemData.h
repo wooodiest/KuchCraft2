@@ -9,7 +9,9 @@
 
 namespace KuchCraft
 {
-	inline constexpr uint32_t block_face_count = 6;
+	inline constexpr uint32_t block_face_count   = 6;
+	inline constexpr uint32_t block_vertex_count = 24;
+	inline constexpr uint32_t block_index_count  = 36;
 
 	using ItemID = uint8_t;
 
