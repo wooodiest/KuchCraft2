@@ -19,14 +19,17 @@ namespace KuchCraft
 
     void ChunkRenderData::Recreate()
     {
+        if (!m_Chunk->IsBuilded())
+            return;
+
         m_Data1.clear();
         m_Data1.reserve(chunk_size_XZ * chunk_size_XZ * chunk_size_Y * block_vertex_count);
 
-        glm::ivec3 position = m_Chunk->GetPosition();
-        Chunk* leftChunk   = m_Chunk->m_World->GetChunk({ position.x - chunk_size_XZ, position.y, position.z });
-        Chunk* rightChunk  = m_Chunk->m_World->GetChunk({ position.x + chunk_size_XZ, position.y, position.z });
-        Chunk* frontChunk  = m_Chunk->m_World->GetChunk({ position.x, position.y, position.z + chunk_size_XZ });
-        Chunk* behindChunk = m_Chunk->m_World->GetChunk({ position.x, position.y, position.z - chunk_size_XZ });
+        glm::ivec3 position    = m_Chunk->GetPosition();
+        Chunk*     leftChunk   = m_Chunk->GetLeftNeighbor();
+        Chunk*     rightChunk  = m_Chunk->GetRightNeighbor();
+        Chunk*     frontChunk  = m_Chunk->GetFrontNeighbor();
+        Chunk*     behindChunk = m_Chunk->GetBehindNeighbor();
 
         for (int x = 0; x < chunk_size_XZ; x++)
         {
@@ -38,38 +41,43 @@ namespace KuchCraft
                     if (ItemMenager::GetInfo(block.GetID()).Transparent)
                         continue;
 
-                    bool renderBottom = (y == 0) || ItemMenager::GetInfo(m_Chunk->Get({ x, y - 1, z }).GetID()).Transparent;
+                    bool hasFrontChunk  = (frontChunk  && frontChunk ->IsBuilded());
+                    bool hasBehindChunk = (behindChunk && behindChunk->IsBuilded());
+                    bool hasRightChunk  = (rightChunk  && rightChunk ->IsBuilded());
+                    bool hasLeftChunk   = (leftChunk   && leftChunk  ->IsBuilded());
+
+                    bool renderBottom = (y > 0) && ItemMenager::GetInfo(m_Chunk->Get({ x, y - 1, z }).GetID()).Transparent;
 
                     bool renderTop = (y == chunk_size_Y - 1) || ItemMenager::GetInfo(m_Chunk->Get({ x, y + 1, z }).GetID()).Transparent;
 
                     bool renderFront = (z == chunk_size_XZ - 1) ?
-                        (frontChunk ? ItemMenager::GetInfo(frontChunk->Get({ x, y, 0 }).GetID()).Transparent : true)
+                        (hasFrontChunk && ItemMenager::GetInfo(frontChunk->Get({ x, y, 0 }).GetID()).Transparent)
                         : ItemMenager::GetInfo(m_Chunk->Get({ x, y, z + 1 }).GetID()).Transparent;
 
                     bool renderBehind = (z == 0) ?
-                        (behindChunk ? ItemMenager::GetInfo(behindChunk->Get({ x, y, chunk_size_XZ - 1 }).GetID()).Transparent : true)
+                        (hasBehindChunk && ItemMenager::GetInfo(behindChunk->Get({ x, y, chunk_size_XZ - 1 }).GetID()).Transparent)
                         : ItemMenager::GetInfo(m_Chunk->Get({ x, y, z - 1 }).GetID()).Transparent;
 
                     bool renderRight = (x == chunk_size_XZ - 1) ?
-                        (rightChunk ? ItemMenager::GetInfo(rightChunk->Get({ 0, y, z }).GetID()).Transparent : true)
+                        (hasRightChunk && ItemMenager::GetInfo(rightChunk->Get({ 0, y, z }).GetID()).Transparent)
                         : ItemMenager::GetInfo(m_Chunk->Get({ x + 1, y, z }).GetID()).Transparent;
 
                     bool renderLeft = (x == 0) ?
-                        (leftChunk ? ItemMenager::GetInfo(leftChunk->Get({ chunk_size_XZ - 1, y, z }).GetID()).Transparent : true)
+                        (hasLeftChunk && ItemMenager::GetInfo(leftChunk->Get({ chunk_size_XZ - 1, y, z }).GetID()).Transparent)
                         : ItemMenager::GetInfo(m_Chunk->Get({ x - 1, y, z }).GetID()).Transparent;
 
-                    if (renderBottom)  
-                        AddFace({ x, y, z }, BlockFaces::Bottom);
-                    if (renderTop)     
-                        AddFace({ x, y, z }, BlockFaces::Top);
-                    if (renderFront)   
+                    if (renderFront)    
                         AddFace({ x, y, z }, BlockFaces::Front);
-                    if (renderBehind)  
+                    if (renderBehind)   
                         AddFace({ x, y, z }, BlockFaces::Back);
-                    if (renderRight)   
+                    if (renderRight)    
                         AddFace({ x, y, z }, BlockFaces::Right);
-                    if (renderLeft)    
+                    if (renderLeft)     
                         AddFace({ x, y, z }, BlockFaces::Left);
+                    if (y > 0 && renderBottom) 
+                        AddFace({ x, y, z }, BlockFaces::Bottom);
+                    if (renderTop)              
+                        AddFace({ x, y, z }, BlockFaces::Top);
                 }
             }
         }

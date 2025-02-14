@@ -40,9 +40,7 @@ namespace KuchCraft {
 		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, 0 }, new Chunk(this, glm::ivec3{ 0, 0, 0 })));
 		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, -32 }, new Chunk(this, glm::ivec3{ 0, 0, -32 })));
 		m_Chunks.insert(std::make_pair(glm::ivec3{ 32, 0, 0 }, new Chunk(this, glm::ivec3{ 32, 0, 0 })));
-
-		for (const auto& [pos, chunk] : m_Chunks)
-			chunk->Recreate();
+		m_Chunks.insert(std::make_pair(glm::ivec3{ 96, 0, 0 }, new Chunk(this, glm::ivec3{ 96, 0, 0 })));
 	}
 
 	World::~World()
@@ -122,6 +120,57 @@ namespace KuchCraft {
 	{
 		if (!m_IsPaused)
 		{
+			uint32_t chunksToBuild    = 1;
+			uint32_t chunksToRecreate = 1;
+			for (const auto& [pos, chunk] : m_Chunks)
+			{
+				if (!chunk->IsBuilded() && chunksToBuild > 0)
+				{
+					chunk->Build();
+					chunksToBuild--;
+				}
+
+				if (!chunk->IsRecreated() && chunksToRecreate > 0)
+				{
+					chunk->Recreate();
+					chunksToRecreate--;
+				}
+
+				Chunk* leftChunk   = chunk->GetLeftNeighbor();
+				Chunk* rightChunk  = chunk->GetRightNeighbor();
+				Chunk* frontChunk  = chunk->GetFrontNeighbor();
+				Chunk* behindChunk = chunk->GetBehindNeighbor();
+
+				bool currentLeft   = (leftChunk   && leftChunk  ->IsBuilded());
+				bool currentRight  = (rightChunk  && rightChunk ->IsBuilded());
+				bool currentFront  = (frontChunk  && frontChunk ->IsBuilded());
+				bool currentBehind = (behindChunk && behindChunk->IsBuilded());
+
+				bool prevLeft   = chunk->GetLastLeftBuilt();
+				bool prevRight  = chunk->GetLastRightBuilt();
+				bool prevFront  = chunk->GetLastFrontBuilt();
+				bool prevBehind = chunk->GetLastBehindBuilt();
+
+				bool hadMissingNeighbors = chunk->GetMissingNeighborsStatus();
+				bool hasMissingNeighbors = !currentLeft || !currentRight || !currentFront || !currentBehind;
+
+				if ((currentLeft  && !prevLeft)  || (currentRight  && !prevRight)  ||
+					(currentFront && !prevFront) || (currentBehind && !prevBehind) ||
+					(hadMissingNeighbors && !hasMissingNeighbors))
+				{
+					chunk->Recreate();
+					chunksToRecreate--;
+				}
+
+				chunk->SetLastLeftBuilt(currentLeft);
+				chunk->SetLastRightBuilt(currentRight);
+				chunk->SetLastFrontBuilt(currentFront);
+				chunk->SetLastBehindBuilt(currentBehind);
+				chunk->SetMissingNeighborsStatus(hasMissingNeighbors);
+
+				chunk->OnUpdate(dt);
+			}
+
 			m_Registry.view<NativeScriptComponent>().each([&](auto entity, auto& script) {
 				if (!script.Instance)
 				{
@@ -132,8 +181,9 @@ namespace KuchCraft {
 
 				script.Instance->OnUpdate(dt);
 			});
-		}		
+		}
 	}
+
 
 	void World::Render()
 	{
@@ -274,6 +324,12 @@ namespace KuchCraft {
 #ifdef  INCLUDE_IMGUI
 		
 		ImGui::Text("World name: %s", m_Path.filename().string());
+
+		if (ImGui::Button("Spawn chunk"))
+		{
+			m_Chunks.insert(std::make_pair(glm::ivec3{ 32, 0, 32 }, new Chunk(this, glm::ivec3{ 32, 0, 32 })));
+		}
+
 		if (ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			constexpr float entities_list_height = 250.0f;
