@@ -56,10 +56,15 @@ namespace KuchCraft {
 					s_RendererConfig = rendererConfig;
 
 					WorldConfigData worldConfig;
-					worldConfig.WorldsDirectory   = json["World"]["WorldsDirectory"].get<std::string>();
-					worldConfig.WorldDataFile     = json["World"]["WorldDataFile"].get<std::string>();
-					worldConfig.TexturePackFile   = json["World"]["TexturePackFile"].get<std::string>();
-					worldConfig.TexturesDirectory = json["World"]["TexturesDirectory"].get<std::string>();
+					worldConfig.WorldsDirectory        = json["World"]["WorldsDirectory"].get<std::string>();
+					worldConfig.WorldDataFile          = json["World"]["WorldDataFile"].get<std::string>();
+					worldConfig.TexturePackFile        = json["World"]["TexturePackFile"].get<std::string>();
+					worldConfig.TexturesDirectory      = json["World"]["TexturesDirectory"].get<std::string>();
+					worldConfig.RenderDistance         = json["World"]["RenderDistance"].get<uint32_t>();
+					worldConfig.KeptInMemoryDistance   = json["World"]["KeptInMemoryDistance"].get<uint32_t>();
+					worldConfig.ChunksToBuildInFrame   = json["World"]["ChunksToBuildInFrame"].get<uint32_t>();
+					worldConfig.ChuksToRecreateInFrame = json["World"]["ChuksToRecreateInFrame"].get<uint32_t>();
+					s_WorldConfig = worldConfig;
 				}
 				catch (const std::exception& e)
 				{
@@ -112,10 +117,14 @@ namespace KuchCraft {
 		};
 
 		json["World"] = {
-			{ "WorldsDirectory",   s_WorldConfig.WorldsDirectory },
-			{ "WorldDataFile",     s_WorldConfig.WorldDataFile },
-			{ "TexturePackFile",   s_WorldConfig.TexturePackFile },
-			{ "TexturesDirectory", s_WorldConfig.TexturesDirectory }
+			{ "WorldsDirectory",        s_WorldConfig.WorldsDirectory },
+			{ "WorldDataFile",          s_WorldConfig.WorldDataFile },
+			{ "TexturePackFile",        s_WorldConfig.TexturePackFile },
+			{ "TexturesDirectory",      s_WorldConfig.TexturesDirectory },
+			{ "RenderDistance",         s_WorldConfig.RenderDistance },
+			{ "KeptInMemoryDistance",   s_WorldConfig.KeptInMemoryDistance },
+			{ "ChunksToBuildInFrame",   s_WorldConfig.ChunksToBuildInFrame },
+			{ "ChuksToRecreateInFrame", s_WorldConfig.ChuksToRecreateInFrame }
 		};
 
 		std::ofstream file(s_ConfigPath);

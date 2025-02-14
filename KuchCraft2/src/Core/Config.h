@@ -134,6 +134,18 @@ namespace KuchCraft {
 
         /// Texture directory
         std::string TexturesDirectory = "assets/textures";
+
+        /// Radius od maximum number of chunks to be visible
+        uint32_t RenderDistance = 5;
+
+        /// Radius of maximum number of chunks to be kept in memory
+        uint32_t KeptInMemoryDistance = 10;
+
+        /// Number of chunks to be build in single frame
+        uint32_t ChunksToBuildInFrame = 1;
+
+        /// Number of chunks to be recreated in single frame
+        uint32_t ChuksToRecreateInFrame = 1;
     };
 
     class ApplicationConfig

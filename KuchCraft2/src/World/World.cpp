@@ -36,11 +36,6 @@ namespace KuchCraft {
 	{
 		WorldSerializer serializer(this);
 		serializer.Deserialize();
-
-		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, 0 }, new Chunk(this, glm::ivec3{ 0, 0, 0 })));
-		m_Chunks.insert(std::make_pair(glm::ivec3{ 0, 0, -32 }, new Chunk(this, glm::ivec3{ 0, 0, -32 })));
-		m_Chunks.insert(std::make_pair(glm::ivec3{ 32, 0, 0 }, new Chunk(this, glm::ivec3{ 32, 0, 0 })));
-		m_Chunks.insert(std::make_pair(glm::ivec3{ 96, 0, 0 }, new Chunk(this, glm::ivec3{ 96, 0, 0 })));
 	}
 
 	World::~World()
@@ -120,22 +115,59 @@ namespace KuchCraft {
 	{
 		if (!m_IsPaused)
 		{
-			uint32_t chunksToBuild    = 1;
-			uint32_t chunksToRecreate = 1;
+			const auto& config = ApplicationConfig::GetWorldData();
+
+			glm::vec3 playerPosition = { 0.0f, 0.0f, 0.0f }; /// tmp
+			m_Registry.view<TransformComponent, CameraComponent>().each([&](auto entity, auto& transformComponent, auto& cameraComponent) {
+				if (cameraComponent.Primary) {
+					playerPosition = transformComponent.Translation;
+				}
+			});
+
+			/// Create new chunks within the render distance
+			for (float dx = -(int)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
+			{
+				for (float dz = -(int)config.RenderDistance * chunk_size_XZ; dz <= config.RenderDistance * chunk_size_XZ; dz += chunk_size_XZ)
+				{
+					glm::vec3 chunkPosition = Chunk::GetOrigin(playerPosition + glm::vec3(dx, 0.0f, dz));
+					if (!GetChunk(chunkPosition))
+						m_Chunks[chunkPosition] = new Chunk(this, chunkPosition);
+				}
+			}
+
+			/// Remove chunks outside the memory retention range
+			for (auto it = m_Chunks.begin(); it != m_Chunks.end();)
+			{
+				if (glm::length2(playerPosition - glm::vec3(it->first)) > config.KeptInMemoryDistance * config.KeptInMemoryDistance * chunk_size_XZ * chunk_size_XZ)
+				{
+					delete it->second;
+					it = m_Chunks.erase(it);
+				}
+				else
+					++it;
+
+			}
+
+			/// Build and refresh chunks with a limited number per frame
+			uint32_t chunksToBuild    = config.ChunksToBuildInFrame;
+			uint32_t chunksToRecreate = config.ChuksToRecreateInFrame;
 			for (const auto& [pos, chunk] : m_Chunks)
 			{
+				/// Build new chunks if they are not yet ready
 				if (!chunk->IsBuilded() && chunksToBuild > 0)
 				{
 					chunk->Build();
 					chunksToBuild--;
 				}
 
+				/// Recreate chunks mesh if they require updating
 				if (!chunk->IsRecreated() && chunksToRecreate > 0)
 				{
 					chunk->Recreate();
 					chunksToRecreate--;
 				}
 
+				/// Check if the chunk had missing neighbors, if so - recreate
 				bool hadMissingNeighbors = chunk->GetMissingNeighborsStatus();
 				if (hadMissingNeighbors)
 				{
@@ -172,9 +204,11 @@ namespace KuchCraft {
 					chunk->SetMissingNeighborsStatus(hasMissingNeighbors);
 				}
 				
+				/// Update the chunk
 				chunk->OnUpdate(dt);
 			}
 
+			/// Update native scripts for each entity
 			m_Registry.view<NativeScriptComponent>().each([&](auto entity, auto& script) {
 				if (!script.Instance)
 				{
