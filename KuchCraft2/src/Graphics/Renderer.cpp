@@ -666,7 +666,7 @@ namespace KuchCraft {
 		for (uint32_t i = 0; i < s_Quad2DData.TextureSlotIndex; i++)
 			Texture::Bind(s_Quad2DData.TextureSlots[i], i);
 
-		DrawElemnts(s_Quad2DData.IndexCount);
+		DrawElements(s_Quad2DData.IndexCount);
 
 		s_Stats.DrawCalls++;
 		s_Stats.Vertices += vertexCount;
@@ -812,7 +812,7 @@ namespace KuchCraft {
 		for (uint32_t i = 0; i < s_Quad3DData.TextureSlotIndex; i++)
 			Texture::Bind(s_Quad3DData.TextureSlots[i], i);
 
-		DrawElemnts(s_Quad3DData.IndexCount);
+		DrawElements(s_Quad3DData.IndexCount);
 
 		s_Stats.DrawCalls++;
 		s_Stats.Vertices += vertexCount;
@@ -824,9 +824,10 @@ namespace KuchCraft {
 	void Renderer::InitChunks()
 	{
 		s_ChunkData.VertexArray .Create();
-		s_ChunkData.VertexBuffer.Create(VertexBufferDataUsage::DYNAMIC, chunk_size_XZ * chunk_size_XZ * chunk_size_XZ * block_face_count * block_vertex_count);
+		s_ChunkData.VertexBuffer.Create(VertexBufferDataUsage::DYNAMIC, chunk_size_XZ * chunk_size_XZ * chunk_size_XZ * block_face_count * block_vertex_count * 2 * sizeof(uint32_t));
 		s_ChunkData.VertexBuffer.SetBufferLayout({
-			{ ShaderDataType::Uint, "a_PackedData" },
+			{ ShaderDataType::Uint, "a_PackedData1" },
+			{ ShaderDataType::Uint, "a_PackedData2" },
 		});
 		s_ChunkData.VertexArray.SetVertexBuffer(s_ChunkData.VertexBuffer);
 
@@ -873,12 +874,12 @@ namespace KuchCraft {
 			s_ChunkData.Shader->SetFloat3("u_ChunkPosition", chunk->GetPosition() + glm::vec3(0.5f, 0.5f, 0.5f));
 			
 			const auto& renderData = chunk->GetRenderData();
-			s_ChunkData.VertexBuffer.SetData(renderData.GetData1().size() * sizeof(uint32_t) , &renderData.GetData1()[0]);
+			s_ChunkData.VertexBuffer.SetData(renderData.GetData1().size() * 2 * sizeof(uint32_t) , renderData.GetData1().data());
 
-			uint32_t quadCount = renderData.GetData1().size() / quad_vertex_count;
-			uint32_t indexCount = quadCount * quad_index_count;
+			uint32_t quadCount   = renderData.GetData1().size() / (2 * quad_vertex_count);
+			uint32_t indexCount  = quadCount * quad_index_count;
 			uint32_t vertexCount = quadCount * quad_vertex_count;
-			DrawElemnts(indexCount);
+			DrawElements(indexCount);
 
 			s_Stats.Vertices += vertexCount;
 		}
@@ -891,7 +892,7 @@ namespace KuchCraft {
 #pragma endregion
 #pragma region RendererCommands
 
-	void Renderer::DrawElemnts(uint32_t count)
+	void Renderer::DrawElements(uint32_t count)
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 	}

@@ -20,6 +20,12 @@ namespace KuchCraft {
 	{
 	}
 
+	Item::Item(ItemData data, ItemRotation rotation)
+		: m_ID((ItemID)data)
+	{
+		SetRotation(rotation);
+	}
+
 	Item::~Item()
 	{
 	}

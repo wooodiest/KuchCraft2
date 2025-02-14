@@ -136,38 +136,42 @@ namespace KuchCraft {
 					chunksToRecreate--;
 				}
 
-				Chunk* leftChunk   = chunk->GetLeftNeighbor();
-				Chunk* rightChunk  = chunk->GetRightNeighbor();
-				Chunk* frontChunk  = chunk->GetFrontNeighbor();
-				Chunk* behindChunk = chunk->GetBehindNeighbor();
-
-				bool currentLeft   = (leftChunk   && leftChunk  ->IsBuilded());
-				bool currentRight  = (rightChunk  && rightChunk ->IsBuilded());
-				bool currentFront  = (frontChunk  && frontChunk ->IsBuilded());
-				bool currentBehind = (behindChunk && behindChunk->IsBuilded());
-
-				bool prevLeft   = chunk->GetLastLeftBuilt();
-				bool prevRight  = chunk->GetLastRightBuilt();
-				bool prevFront  = chunk->GetLastFrontBuilt();
-				bool prevBehind = chunk->GetLastBehindBuilt();
-
 				bool hadMissingNeighbors = chunk->GetMissingNeighborsStatus();
-				bool hasMissingNeighbors = !currentLeft || !currentRight || !currentFront || !currentBehind;
-
-				if ((currentLeft  && !prevLeft)  || (currentRight  && !prevRight)  ||
-					(currentFront && !prevFront) || (currentBehind && !prevBehind) ||
-					(hadMissingNeighbors && !hasMissingNeighbors))
+				if (hadMissingNeighbors)
 				{
-					chunk->Recreate();
-					chunksToRecreate--;
+					Chunk* leftChunk   = chunk->GetLeftNeighbor();
+					Chunk* rightChunk  = chunk->GetRightNeighbor();
+					Chunk* frontChunk  = chunk->GetFrontNeighbor();
+					Chunk* behindChunk = chunk->GetBehindNeighbor();
+
+					bool currentLeft   = (leftChunk   && leftChunk  ->IsBuilded());
+					bool currentRight  = (rightChunk  && rightChunk ->IsBuilded());
+					bool currentFront  = (frontChunk  && frontChunk ->IsBuilded());
+					bool currentBehind = (behindChunk && behindChunk->IsBuilded());
+
+					bool prevLeft   = chunk->GetLastLeftBuilt();
+					bool prevRight  = chunk->GetLastRightBuilt();
+					bool prevFront  = chunk->GetLastFrontBuilt();
+					bool prevBehind = chunk->GetLastBehindBuilt();
+
+					bool hasMissingNeighbors = !currentLeft || !currentRight || !currentFront || !currentBehind;
+
+					if ((currentLeft  && !prevLeft)  || (currentRight  && !prevRight) ||
+						(currentFront && !prevFront) || (currentBehind && !prevBehind) ||
+						(hadMissingNeighbors && !hasMissingNeighbors))
+					{
+						chunk->Recreate();
+						chunksToRecreate--;
+					}
+
+					chunk->SetLastLeftBuilt(currentLeft);
+					chunk->SetLastRightBuilt(currentRight);
+					chunk->SetLastFrontBuilt(currentFront);
+					chunk->SetLastBehindBuilt(currentBehind);
+
+					chunk->SetMissingNeighborsStatus(hasMissingNeighbors);
 				}
-
-				chunk->SetLastLeftBuilt(currentLeft);
-				chunk->SetLastRightBuilt(currentRight);
-				chunk->SetLastFrontBuilt(currentFront);
-				chunk->SetLastBehindBuilt(currentBehind);
-				chunk->SetMissingNeighborsStatus(hasMissingNeighbors);
-
+				
 				chunk->OnUpdate(dt);
 			}
 

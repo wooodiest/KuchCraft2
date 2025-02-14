@@ -83,21 +83,27 @@ namespace KuchCraft
         }
     }
 
-	void ChunkRenderData::AddFace(const glm::ivec3& position, BlockFaces face)
-	{
-		for (uint32_t i = 0; i < quad_vertex_count; i++)
-		{
-			uint32_t packedData =
-				((position.x & 0x1F))             | // 5B X
-				((position.y & 0x7F) << 5)        | // 7B Y
-				((position.z & 0x1F) << 12)       | // 5B Z
-				((0 & 0x03) << 17)                | // 2B Rot
-				(((uint32_t)(face) & 0x07) << 19) | // 3B Face
-				((ItemMenager::GetTextureLayer(m_Chunk->m_Data[position.x][position.y][position.z].GetID()) & 0xFF) << 22) | // 8B ID
-				((i & 0x03) << 30); // 2B Index
+    void ChunkRenderData::AddFace(const glm::ivec3& position, BlockFaces face)
+    {
+        const Item& block = m_Chunk->m_Data[position.x][position.y][position.z];
 
-			m_Data1.push_back(packedData);
-		}	
-	}
+        uint32_t basePackedData1 =
+            ((position.x    & 0x1F))       |   
+            ((position.y    & 0xFF) << 5)  | 
+            ((position.z    & 0x1F) << 13) | 
+            (((uint8_t)face & 0x07) << 18) |
+            ((ItemMenager::GetTextureLayer(block.GetID()) & 0x1FF) << 21);
+
+        uint32_t basePackedData2 =
+            ((uint8_t)block.GetRotation() & 0x03);
+
+        for (uint32_t i = 0; i < quad_vertex_count; i++)
+        {
+            m_Data1.push_back(basePackedData1 | ((i & 0x03) << 30));
+            m_Data1.push_back(basePackedData2);
+        }
+    }
+
+
 
 }

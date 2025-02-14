@@ -9,7 +9,7 @@ namespace KuchCraft {
 	inline constexpr int chunk_size_XZ = 32;
 
 	/// The size of a chunk in the Y dimension.
-	inline constexpr int chunk_size_Y  = 128;
+	inline constexpr int chunk_size_Y  = 256;
 
 	class World;
 

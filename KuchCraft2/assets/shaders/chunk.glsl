@@ -1,7 +1,8 @@
 ### VERTEX
 #version ##SHADER_VERSION
 
-layout (location = 0) in uint a_PackedData;
+layout (location = 0) in uint a_PackedData1;
+layout (location = 1) in uint a_PackedData2;
 
 layout (std140, binding = ##UNIFORM_CAMERA_DATA_BINDING) uniform UniformCameraData
 {
@@ -47,24 +48,27 @@ const vec3 blockFacePositions[6][4] = vec3[6][4](
 
 void main()
 {
-	uint posX = (a_PackedData      ) & 0x1F;
-    uint posY = (a_PackedData >> 5 ) & 0x7F;
-    uint posZ = (a_PackedData >> 12) & 0x1F;
-    uint rot  = (a_PackedData >> 17) & 0x03;
-    uint face = (a_PackedData >> 19) & 0x07;
-    uint tex  = (a_PackedData >> 22) & 0xFF;
-    uint ind  = (a_PackedData >> 30) & 0x03;
+	uint posX = (a_PackedData1      ) & 0x1F;
+    uint posY = (a_PackedData1 >> 5 ) & 0xFF;
+    uint posZ = (a_PackedData1 >> 13) & 0x1F;
+    uint face = (a_PackedData1 >> 18) & 0x07;
+    uint tex  = (a_PackedData1 >> 21) & 0x1FF;
+    uint ind  = (a_PackedData1 >> 30) & 0x03;
+    uint rot  = (a_PackedData2      ) & 0x03; 
 
     vec3 position = vec3(posX, posY, posZ) + u_ChunkPosition;
-    
+
+    if (face == 4) 
+        v_TexCoord = blockFaceUV[face][(ind - rot + 4) % 4];
+    else if (face == 5)
+        v_TexCoord = blockFaceUV[face][(ind + rot) % 4];
+    else 
+        v_TexCoord = blockFaceUV[(face + rot) % 4][ind];
+
     v_Normal   = blockFaceNormals[face];
     v_TexIndex = tex;
-    v_TexCoord = blockFaceUV[face][ind]; // Take rotation in count
-
-   /// gl_Position = u_ViewProjection * TranslationMatrix(position) * vec4(blockFacePositions[face][ind], 1.0);
-   gl_Position = u_ViewProjection * vec4(position + blockFacePositions[face][ind], 1.0);
-
-
+ 
+    gl_Position = u_ViewProjection * vec4(position + blockFacePositions[face][ind], 1.0);
 }
 
 ### FRAGMENT
@@ -81,10 +85,8 @@ in vec3 v_Normal;
 void main()
 {
     vec4 color = texture(u_Textures, vec3(v_TexCoord, v_TexIndex));
-
-    if (color.a < 0.1) {
+    if (color.a < 0.1)
         discard;
-    }
 
     o_Color = color;
 }

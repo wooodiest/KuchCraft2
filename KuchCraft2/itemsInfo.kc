@@ -2,6 +2,20 @@
     "Items": [
         {
             "id": 1,
+            "name": "Debug block",
+            "type": "block",
+            "transparent" :  false,
+            "textures": {
+               "top": "block/debug_block_top.png",
+               "bottom": "block/debug_block_bottom.png",
+               "left": "block/debug_block_left.png",
+               "right": "block/debug_block_right.png",
+               "front": "block/debug_block_front.png",
+               "back": "block/debug_block_back.png"
+            }
+        },
+        {
+            "id": 2,
             "name": "Stone",
             "type": "block",
             "transparent" :  false,
@@ -10,7 +24,7 @@
             }
         },
         {
-            "id": 2,
+            "id": 3,
             "name": "Dirt",
             "type": "block",
             "transparent" :  false,
@@ -19,7 +33,7 @@
             }
         },
         {
-            "id": 3,
+            "id": 4,
             "name": "Grass block",
             "type": "block",
             "transparent" :  false,
@@ -30,12 +44,11 @@
             }
         },
         {
-            "id": 4,
+            "id": 5,
             "name": "Apple",
             "type": "food",
             "transparent" :  true,
             "texture": "item/apple.png"
         }
-
     ]
 }

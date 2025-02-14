@@ -30,7 +30,7 @@ namespace KuchCraft {
 
 		for (int x = 0; x < chunk_size_XZ; x++)
 		{
-			for (int y = 0; y < chunk_size_Y; y++)
+			for (int y = 0; y < chunk_size_Y / 2; y++)
 			{
 				if (jd && y > 60)
 					continue;
@@ -48,6 +48,11 @@ namespace KuchCraft {
 		m_Data[3][4][3] = Item(ItemData::Air);
 		m_Data[3][5][3] = Item(ItemData::Air);
 		m_Data[3][5][2] = Item(ItemData::Stone);
+
+		m_Data[3][chunk_size_Y / 2 + 2][2] = Item(ItemData::DebugBlock, ItemRotation::DEG_0);
+		m_Data[3][chunk_size_Y / 2 + 2][4] = Item(ItemData::DebugBlock, ItemRotation::DEG_90);
+		m_Data[3][chunk_size_Y / 2 + 2][6] = Item(ItemData::DebugBlock, ItemRotation::DEG_180);
+		m_Data[3][chunk_size_Y / 2 + 2][8] = Item(ItemData::DebugBlock, ItemRotation::DEG_270);
 
 		///
 

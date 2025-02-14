@@ -178,7 +178,7 @@ namespace KuchCraft {
 		/// Issues a draw call for rendering indexed elements.
 	    /// Wraps the OpenGL `glDrawElements` function to render a specified number of indexed elements.
 	    /// @param count - the number of indices to render.
-		static void DrawElemnts(uint32_t count);
+		static void DrawElements(uint32_t count);
 
 		/// Issues a draw call for rendering non-indexed elements.
 		/// Wraps the OpenGL `glDrawArrays` function to render a specified number of vertices starting at a given offset.

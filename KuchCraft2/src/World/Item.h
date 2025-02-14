@@ -34,15 +34,30 @@ namespace KuchCraft {
 		/// @param data TItemData representing id of specific item.
 		Item(ItemData data);
 
+		/// Constructor that initializes an item with ItemData and rotation.
+		/// @param data ItemData representing the ID of a specific item.
+		/// @param rotation The rotation of the item.
+		Item(ItemData data, ItemRotation rotation);
+
 		~Item();
 
-		/// Item usage
+		/// Handles item usage logic.
 		void Use();
+
+		/// Sets the rotation of the item.
+		/// @param rotation The desired rotation value.
+		inline void SetRotation(ItemRotation rotation) { m_Flags = (m_Flags & ~0x03) | ((uint8_t)rotation & 0x03); }
+
+		/// Retrieves the current rotation of the item.
+		/// @return The rotation value as an ItemRotation enum.
+		inline ItemRotation GetRotation() const { return (ItemRotation)(m_Flags & 0x03); }
 
 		/// Retrieves the unique identifier of the item.
 	    /// @return The ID of the item.
 		inline [[nodiscard]] ItemID GetID() const { return m_ID; }
 
+		/// Retrieves the item information.
+		/// @return A reference to the ItemInfo structure.
 		[[nodiscard]] const ItemInfo& GetInfo() const;
 
 		/// Retrieves the texture associated with a given item ID.
@@ -56,7 +71,10 @@ namespace KuchCraft {
 
 	private:
 		/// The unique identifier of the item.
-		ItemID m_ID = (ItemID)ItemData::Air;
+		ItemID  m_ID = (ItemID)ItemData::Air;
+		
+		/// Flags containing additional properties of the item.
+		uint16_t m_Flags = 0;
 
 	};
 
