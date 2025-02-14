@@ -22,8 +22,8 @@ namespace KuchCraft
         if (!m_Chunk->IsBuilded())
             return;
 
-        m_Data1.clear();
-        m_Data1.reserve(chunk_size_XZ * chunk_size_XZ * chunk_size_Y * block_vertex_count);
+        m_Data.clear();
+        m_Data.reserve(chunk_size_XZ * chunk_size_XZ * chunk_size_Y * block_vertex_count);
 
         glm::ivec3 position    = m_Chunk->GetPosition();
         Chunk*     leftChunk   = m_Chunk->GetLeftNeighbor();
@@ -99,8 +99,8 @@ namespace KuchCraft
 
         for (uint32_t i = 0; i < quad_vertex_count; i++)
         {
-            m_Data1.push_back(basePackedData1 | ((i & 0x03) << 30));
-            m_Data1.push_back(basePackedData2);
+            m_Data.push_back(basePackedData1 | ((i & 0x03) << 30));
+            m_Data.push_back(basePackedData2);
         }
     }
 

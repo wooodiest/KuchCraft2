@@ -874,9 +874,9 @@ namespace KuchCraft {
 			s_ChunkData.Shader->SetFloat3("u_ChunkPosition", chunk->GetPosition() + glm::vec3(0.5f, 0.5f, 0.5f));
 			
 			const auto& renderData = chunk->GetRenderData();
-			s_ChunkData.VertexBuffer.SetData(renderData.GetData1().size() * 2 * sizeof(uint32_t) , renderData.GetData1().data());
+			s_ChunkData.VertexBuffer.SetData(renderData.GetData().size() * 2 * sizeof(uint32_t) , renderData.GetData().data());
 
-			uint32_t quadCount   = renderData.GetData1().size() / (2 * quad_vertex_count);
+			uint32_t quadCount   = renderData.GetData().size() / (2 * quad_vertex_count);
 			uint32_t indexCount  = quadCount * quad_index_count;
 			uint32_t vertexCount = quadCount * quad_vertex_count;
 			DrawElements(indexCount);
