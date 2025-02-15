@@ -88,22 +88,20 @@ namespace KuchCraft
         const Item& block = m_Chunk->m_Data[position.x][position.y][position.z];
 
         uint32_t basePackedData1 =
-            ((position.x    & 0x1F))       |   
-            ((position.y    & 0xFF) << 5)  | 
-            ((position.z    & 0x1F) << 13) | 
-            (((uint8_t)face & 0x07) << 18) |
-            ((ItemMenager::GetTextureLayer(block.GetID()) & 0x1FF) << 21);
+            ((position.x & 0xF)) | 
+            ((position.y & 0xFF) << 4) |
+            ((position.z & 0xF) << 12) |
+            (((uint8_t)face & 0x07) << 16) |
+            ((ItemMenager::GetTextureLayer(block.GetID()) & 0x1FF) << 19) |
+            (((uint8_t)block.GetRotation() & 0x03) << 30);
 
-        uint32_t basePackedData2 =
-            ((uint8_t)block.GetRotation() & 0x03);
+        uint32_t basePackedData2 = 0;
 
         for (uint32_t i = 0; i < quad_vertex_count; i++)
         {
-            m_Data.push_back(basePackedData1 | ((i & 0x03) << 30));
+            m_Data.push_back(basePackedData1 | ((i & 0x03) << 28) );
             m_Data.push_back(basePackedData2);
         }
     }
-
-
 
 }

@@ -48,13 +48,13 @@ const vec3 blockFacePositions[6][4] = vec3[6][4](
 
 void main()
 {
-	uint posX = (a_PackedData1      ) & 0x1F;
-    uint posY = (a_PackedData1 >> 5 ) & 0xFF;
-    uint posZ = (a_PackedData1 >> 13) & 0x1F;
-    uint face = (a_PackedData1 >> 18) & 0x07;
-    uint tex  = (a_PackedData1 >> 21) & 0x1FF;
-    uint ind  = (a_PackedData1 >> 30) & 0x03;
-    uint rot  = (a_PackedData2      ) & 0x03; 
+	uint posX = (a_PackedData1      ) & 0xF;
+    uint posY = (a_PackedData1 >> 4 ) & 0xFF;
+    uint posZ = (a_PackedData1 >> 12) & 0xF;
+    uint face = (a_PackedData1 >> 16) & 0x07;
+    uint tex  = (a_PackedData1 >> 19) & 0x1FF;
+    uint ind  = (a_PackedData1 >> 28) & 0x03;
+    uint rot  = (a_PackedData1 >> 30) & 0x03; 
 
     vec3 position = vec3(posX, posY, posZ) + u_ChunkPosition;
 
