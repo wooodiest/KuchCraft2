@@ -50,6 +50,13 @@ namespace KuchCraft {
 
 			DestroyEntity(entity);
 		}
+
+		for (auto it = m_Chunks.begin(); it != m_Chunks.end();)
+		{
+			delete it->second;
+			it = m_Chunks.erase(it);
+		}
+
 	}
 
 	/// Copies components from one registry to another based on a mapping of UUIDs to entity handles.
@@ -363,9 +370,12 @@ namespace KuchCraft {
 		
 		ImGui::Text("World name: %s", m_Path.filename().string());
 
-		if (ImGui::Button("Spawn chunk"))
+		if (ImGui::CollapsingHeader("World", ImGuiTreeNodeFlags_DefaultOpen))
 		{
-			m_Chunks.insert(std::make_pair(glm::ivec3{ 32, 0, 32 }, new Chunk(this, glm::ivec3{ 32, 0, 32 })));
+			int rdr = ApplicationConfig::GetWorldData().RenderDistance;
+
+			if (ImGui::DragInt("Render distance", &rdr, 1, 20))
+				ApplicationConfig::GetWorldData().RenderDistance = rdr;
 		}
 
 		if (ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen))

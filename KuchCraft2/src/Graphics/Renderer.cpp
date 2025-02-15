@@ -882,9 +882,8 @@ namespace KuchCraft {
 			DrawElements(indexCount);
 
 			s_Stats.Vertices += vertexCount;
+			s_Stats.DrawCalls++;
 		}
-
-		s_Stats.DrawCalls++;
 
 		s_ChunkData.Chunks.clear();
 	}

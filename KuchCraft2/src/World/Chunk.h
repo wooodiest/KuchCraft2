@@ -6,7 +6,7 @@
 namespace KuchCraft {
 
 	/// The size of a chunk in the X and Z dimensions.
-	inline constexpr int chunk_size_XZ = 32;
+	inline constexpr int chunk_size_XZ = 16;
 
 	/// The size of a chunk in the Y dimension.
 	inline constexpr int chunk_size_Y  = 256;
