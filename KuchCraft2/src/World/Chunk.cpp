@@ -3,6 +3,8 @@
 
 #include "World/World.h"
 
+#include <FastNoiseLite.h>
+
 namespace KuchCraft {
 
 	Chunk::Chunk(World* world, const glm::vec3& position)
@@ -22,21 +24,43 @@ namespace KuchCraft {
 
 	void Chunk::Build()
 	{
+		FastNoiseLite baseNoise;
+		baseNoise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+		baseNoise.SetFrequency(0.01f);
+
+		FastNoiseLite mountainNoise;
+		mountainNoise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+		mountainNoise.SetFrequency(0.011f);
+
+		int maxHeight = static_cast<int>(chunk_size_Y * 0.6f);
+		int minHeight = static_cast<int>(chunk_size_Y * 0.3f); 
+
 		for (int x = 0; x < chunk_size_XZ; x++)
 		{
-			for (int y = 0; y < chunk_size_Y / 2; y++)
+			for (int z = 0; z < chunk_size_XZ; z++)
 			{
-				for (int z = 0; z < chunk_size_XZ; z++)
-				{
-					m_Data[x][y][z] = Item(ItemData::GrassBlock);
-				}
+				float baseHeightValue = baseNoise.GetNoise(
+					static_cast<float>(m_Position.x + x),
+					static_cast<float>(m_Position.z + z)
+				);
+
+				float mountainFactor = mountainNoise.GetNoise(
+					static_cast<float>(m_Position.x + x),
+					static_cast<float>(m_Position.z + z)
+				) * 0.5f + 0.5f;
+
+				int height = static_cast<int>(minHeight + (baseHeightValue * 0.4f + 0.6f) *
+					mountainFactor * (maxHeight - minHeight));
+
+				m_Data[x][height][z] = Item(ItemData::GrassBlock);
+
+				for (int y = height - 1; y > height - 4 && y >= 0; y--)
+					m_Data[x][y][z] = Item(ItemData::Dirt);
+
+				for (int y = height - 4; y >= 0; y--)
+					m_Data[x][y][z] = Item(ItemData::Stone);
 			}
 		}
-
-		m_Data[3][chunk_size_Y / 2 + 2][2] = Item(ItemData::DebugBlock, ItemRotation::DEG_0);
-		m_Data[3][chunk_size_Y / 2 + 2][4] = Item(ItemData::DebugBlock, ItemRotation::DEG_90);
-		m_Data[3][chunk_size_Y / 2 + 2][6] = Item(ItemData::DebugBlock, ItemRotation::DEG_180);
-		m_Data[3][chunk_size_Y / 2 + 2][8] = Item(ItemData::DebugBlock, ItemRotation::DEG_270);
 
 		bool hasMissingNeighbors =
 			(!GetLeftNeighbor()   || !GetLeftNeighbor()  ->IsBuilded()) ||
