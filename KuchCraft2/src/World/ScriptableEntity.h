@@ -107,6 +107,10 @@ namespace KuchCraft {
 		/// @param data The JSON object containing the serialized state.
 		virtual void Deserialize(const nlohmann::json& data) {}
 
+		/// Retrieves a pointer to the world that this entity belongs to.
+		/// @return A pointer to the World object associated with this entity.
+		World* GetWorld() { return m_Entity.m_World; }
+
 	private:
 		/// The underlying entity associated with this scriptable entity.
 		/// Provides access to the entity's components and allows the scriptable
@@ -124,6 +128,13 @@ namespace KuchCraft {
 
 	};
 
+	/// Iterates over a group of component types, checking for a match with a given name.
+	/// If a match is found, the provided function is executed for that component type.
+	/// @tparam Scripts The component types to iterate over.
+	/// @tparam Func The type of the function to be executed when a match is found.
+	/// @param name The name of the component to search for.
+	/// @param func The function to execute if a match is found.
+	/// @return True if a matching component type was found and the function was executed, false otherwise.
 	template <typename... Scripts, typename Func>
 	bool IterateComponentGroup(ComponentGroup<Scripts...>, const std::string& name, Func&& func) 
 	{

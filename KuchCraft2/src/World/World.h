@@ -100,10 +100,16 @@ namespace KuchCraft {
 		/// @return The entity with the specified UUID.
 		Entity GetEntityByUUID(UUID uuid);
 
+		/// Sets the given entity as the primary camera.
+		/// @param entity - the entity to be set as the primary camera.
 		void SetPrimaryCamera(Entity entity);
 
+		/// Retrieves the entity that is currently set as the primary camera.
+		/// @return The entity that is designated as the primary camera.
 		Entity GetPrimaryCameraEntity();
 
+		/// Retrieves the primary camera component.
+		/// @return A pointer to the primary camera component, or nullptr if no primary camera is set.
 		Camera* GetPrimaryCamera();
 
 		/// Retrieves a view of all entities that have the specified components.

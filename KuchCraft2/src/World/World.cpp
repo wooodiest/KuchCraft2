@@ -126,9 +126,17 @@ namespace KuchCraft {
 
 			glm::vec3 playerPosition = { 0.0f, 0.0f, 0.0f };
 
-			Entity primaryCamera = GetPrimaryCameraEntity();  /// tmp
-			if (primaryCamera)
-				playerPosition = primaryCamera.GetComponent<TransformComponent>().Translation;
+			Entity cameraEntity = GetPrimaryCameraEntity();
+			if (cameraEntity)
+			{
+				auto& cameraComponent    = cameraEntity.GetComponent<CameraComponent>();
+				auto& transformComponent = cameraEntity.GetComponent<TransformComponent>();
+
+				if (cameraComponent.UseTransformComponent)
+					cameraComponent.Camera.SetData(transformComponent.Translation, transformComponent.Rotation);
+
+				playerPosition = cameraComponent.Camera.GetPosition();
+			}
 
 			/// Create new chunks within the render distance
 			for (float dx = -(int)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
@@ -231,18 +239,7 @@ namespace KuchCraft {
 
 	void World::Render()
 	{
-		Camera* mainCamera = nullptr;;
-
-		Entity cameraEntity = GetPrimaryCameraEntity();
-		if (cameraEntity)
-		{
-			auto& cameraComponent    = cameraEntity.GetComponent<CameraComponent>();
-			auto& transformComponent = cameraEntity.GetComponent<TransformComponent>();
-
-			mainCamera = &cameraComponent.Camera;
-			if (cameraComponent.UseTransformComponent)
-				mainCamera->SetData(transformComponent.Translation, transformComponent.Rotation);
-		}
+		Camera* mainCamera = GetPrimaryCamera();
 
 		if (mainCamera)
 		{

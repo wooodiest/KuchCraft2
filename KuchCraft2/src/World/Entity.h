@@ -138,6 +138,8 @@ namespace KuchCraft {
 		/// Pointer to the world context that manages this entity.
 		World* m_World = nullptr;
 
+		friend class ScriptableEntity;
+
 	};
 
 }
