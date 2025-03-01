@@ -100,6 +100,12 @@ namespace KuchCraft {
 		/// @return The entity with the specified UUID.
 		Entity GetEntityByUUID(UUID uuid);
 
+		void SetPrimaryCamera(Entity entity);
+
+		Entity GetPrimaryCameraEntity();
+
+		Camera* GetPrimaryCamera();
+
 		/// Retrieves a view of all entities that have the specified components.
 		/// @tparam Components - the component types to filter entities by.
 		/// @return A view of entities that have the specified component types.
@@ -142,6 +148,9 @@ namespace KuchCraft {
 	private:
 		/// The registry managing all entities and their components.
 		entt::registry m_Registry;
+
+		/// The entt enttity holding primary camera
+		entt::entity m_PrimaryCameraEntity = entt::null;
 
 		/// World saving path
 		const std::filesystem::path m_Path;

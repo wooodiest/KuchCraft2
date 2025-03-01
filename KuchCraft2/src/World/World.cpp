@@ -124,12 +124,11 @@ namespace KuchCraft {
 		{
 			const auto& config = ApplicationConfig::GetWorldData();
 
-			glm::vec3 playerPosition = { 0.0f, 0.0f, 0.0f }; /// tmp
-			m_Registry.view<TransformComponent, CameraComponent>().each([&](auto entity, auto& transformComponent, auto& cameraComponent) {
-				if (cameraComponent.Primary) {
-					playerPosition = transformComponent.Translation;
-				}
-			});
+			glm::vec3 playerPosition = { 0.0f, 0.0f, 0.0f };
+
+			Entity primaryCamera = GetPrimaryCameraEntity();  /// tmp
+			if (primaryCamera)
+				playerPosition = primaryCamera.GetComponent<TransformComponent>().Translation;
 
 			/// Create new chunks within the render distance
 			for (float dx = -(int)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
@@ -232,15 +231,18 @@ namespace KuchCraft {
 
 	void World::Render()
 	{
-		Camera* mainCamera = nullptr;
-		m_Registry.view<TransformComponent, CameraComponent>().each([&](auto entity, auto& transformComponent, auto& cameraComponent) {
-			if (cameraComponent.Primary) {
-				mainCamera = &cameraComponent.Camera;
-				if (cameraComponent.UseTransformComponent)
-					mainCamera->SetData(transformComponent.Translation, transformComponent.Rotation);
-				return;
-			}
-		});
+		Camera* mainCamera = nullptr;;
+
+		Entity cameraEntity = GetPrimaryCameraEntity();
+		if (cameraEntity)
+		{
+			auto& cameraComponent    = cameraEntity.GetComponent<CameraComponent>();
+			auto& transformComponent = cameraEntity.GetComponent<TransformComponent>();
+
+			mainCamera = &cameraComponent.Camera;
+			if (cameraComponent.UseTransformComponent)
+				mainCamera->SetData(transformComponent.Translation, transformComponent.Rotation);
+		}
 
 		if (mainCamera)
 		{
@@ -562,15 +564,12 @@ namespace KuchCraft {
 					auto& cameraComponent = entity.GetComponent<CameraComponent>();
 					auto& camera = cameraComponent.Camera;
 
-					if (ImGui::Checkbox("Primary##CameraComponent", &cameraComponent.Primary))
+					bool primary = GetPrimaryCameraEntity().GetUUID() == entity.GetUUID();
+					
+					if (ImGui::Checkbox("Primary Camera##CameraComponen", &primary))
 					{
-						if (cameraComponent.Primary)
-						{
-							m_Registry.view<CameraComponent>().each([&](auto entity, auto& cameraComponent) {
-								cameraComponent.Primary = false;		
-							});
-							cameraComponent.Primary = true;
-						}
+						if (primary)
+							SetPrimaryCamera(entity);
 					}
 
 					if (ImGui::Checkbox("Fixed aspect ratio##CameraComponent", &cameraComponent.FixedAspectRatio))
@@ -762,6 +761,34 @@ namespace KuchCraft {
 			return { m_EntityMap.at(uuid), this };
 
 		return {};
+	}
+
+	void World::SetPrimaryCamera(Entity entity)
+	{
+		if (!entity.HasComponent<CameraComponent>() || !entity.HasComponent<TransformComponent>())
+		{
+			Log::Error("[World] : SetPrimaryCamera : Trying to set an entity without CameraComponent or TransformComponent");
+			return;
+		}
+
+		m_PrimaryCameraEntity = entity;
+	}
+
+	Entity World::GetPrimaryCameraEntity()
+	{
+		if (m_PrimaryCameraEntity == entt::null)
+			return Entity(); 
+
+		return Entity(m_PrimaryCameraEntity, this);
+	}
+
+	Camera* World::GetPrimaryCamera()
+	{
+		Entity cameraEntity = GetPrimaryCameraEntity();
+		if (cameraEntity)
+			return &cameraEntity.GetComponent<CameraComponent>().Camera;
+
+		return nullptr;
 	}
 
 	Chunk* World::GetChunk(const glm::vec3& position)

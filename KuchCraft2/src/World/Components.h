@@ -107,9 +107,6 @@ namespace KuchCraft {
 		/// Camera object
 		Camera Camera;
 
-		/// Flag indicating if this is the primary camera in the scene.
-		bool Primary = false;
-
 		/// Flag indicating if the camera's aspect ratio should remain fixed.
 		bool FixedAspectRatio = false;
 
@@ -117,8 +114,7 @@ namespace KuchCraft {
 		bool UseTransformComponent = true;
 
 		CameraComponent() = default;
-		CameraComponent(const CameraComponent& other)
-			: Primary(false), FixedAspectRatio(other.FixedAspectRatio) {}
+		CameraComponent(const CameraComponent& other) = default;
 	};
 
 	/// A component that represents the visual appearance of an entity as a 2D sprite.

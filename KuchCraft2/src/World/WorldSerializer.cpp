@@ -87,6 +87,11 @@ namespace KuchCraft {
 		}
 
 		nlohmann::json wjson;
+
+		Entity primaryCameraEntity = m_World->GetPrimaryCameraEntity();
+		if (primaryCameraEntity)
+			wjson["PrimaryCameraUUID"] = static_cast<uint64_t>(primaryCameraEntity.GetUUID());
+
 		for (auto handle : m_World->m_Registry.view<entt::entity>())
 		{
 			Entity entity = { handle, &(*m_World) };
@@ -129,7 +134,6 @@ namespace KuchCraft {
 				auto& camera = entity.GetComponent<CameraComponent>();
 
 				ejson["Camera"] = {
-					{ "Primary",               camera.Primary                 },
 					{ "FixedAspectRatio",      camera.FixedAspectRatio        },
 					{ "UseTransformComponent", camera.UseTransformComponent   },
 					{ "AspectRatio",		   camera.Camera.GetAspectRatio() },
@@ -271,7 +275,6 @@ namespace KuchCraft {
 				const auto& nearClip              = ejson["Camera"]["NearClip"];
 				const auto& farClip               = ejson["Camera"]["FarClip"];
 
-				camera.Primary               = primary;
 				camera.FixedAspectRatio      = fixedAspectRatio;
 				camera.UseTransformComponent = useTransformComponent;
 				camera.Camera.SetAspectRatio(aspectRatio);
@@ -313,6 +316,17 @@ namespace KuchCraft {
 				sprite.Texture = TextureManager::Load(std::filesystem::path(std::string(ejson["Sprite3DRenderer"]["Texture"])), spec);
 			}
 		}
+
+		if (wjson.contains("PrimaryCameraUUID"))
+		{
+			Entity found = m_World->GetEntityByUUID(UUID(wjson["PrimaryCameraUUID"].get<uint64_t>()));
+			if (found)
+				m_World->SetPrimaryCamera(found);
+			else
+				Log::Warn("[World Serializer] : PrimaryCamera : Could not found entity with given UUID");
+		}
+		else
+			Log::Warn("[World Serializer] : Do not contains PrimaryCameraUUID");
 
 		Log::Info("[World Serializer] : Deserialized : {}", m_World->GetPath().string());
 		return true;
