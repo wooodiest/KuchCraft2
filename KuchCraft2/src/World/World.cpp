@@ -139,9 +139,9 @@ namespace KuchCraft {
 			}
 
 			/// Create new chunks within the render distance
-			for (float dx = -(int)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
+			for (float dx = -(float)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
 			{
-				for (float dz = -(int)config.RenderDistance * chunk_size_XZ; dz <= config.RenderDistance * chunk_size_XZ; dz += chunk_size_XZ)
+				for (float dz = -(float)config.RenderDistance * chunk_size_XZ; dz <= config.RenderDistance * chunk_size_XZ; dz += chunk_size_XZ)
 				{
 					glm::vec3 chunkPosition = Chunk::GetOrigin(playerPosition + glm::vec3(dx, 0.0f, dz));
 					if (!GetChunk(chunkPosition))

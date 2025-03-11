@@ -470,7 +470,7 @@ namespace KuchCraft {
 
 		const glm::mat4 transform = transformComponent.GetTransform();
 		auto  texture   = item.GetTexture();
-		float textureID = texture->GetRendererID();
+		float textureID = (float)texture->GetRendererID();
 
 		for (uint32_t face = 0; face < block_face_count; face++)
 		{
@@ -564,7 +564,7 @@ namespace KuchCraft {
 		s_Quad2DData.Shader->Bind();
 
 		int* samplers = new int[ApplicationConfig::GetRendererData().MaxCombinedTextureSlots];
-		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxCombinedTextureSlots; i++)
+		for (int i = 0; i < (int)ApplicationConfig::GetRendererData().MaxCombinedTextureSlots; i++)
 			samplers[i] = i;
 		s_Quad2DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxCombinedTextureSlots);
 		delete[] samplers;
@@ -636,7 +636,7 @@ namespace KuchCraft {
 						NextQuadsBatch2D();
 
 					textureIndex = static_cast<float>(s_Quad2DData.TextureSlotIndex);
-					s_Quad2DData.TextureSlots[s_Quad2DData.TextureSlotIndex] = s_Quad2DData.Vertices[i].TextureIndex;
+					s_Quad2DData.TextureSlots[s_Quad2DData.TextureSlotIndex] = (uint32_t)s_Quad2DData.Vertices[i].TextureIndex;
 					s_Quad2DData.TextureSlotIndex++;
 				}
 
@@ -710,7 +710,7 @@ namespace KuchCraft {
 		s_Quad3DData.Shader->Bind();
 
 		int* samplers = new int[ApplicationConfig::GetRendererData().MaxCombinedTextureSlots];
-		for (int i = 0; i < ApplicationConfig::GetRendererData().MaxCombinedTextureSlots; i++)
+		for (int i = 0; i < (int)ApplicationConfig::GetRendererData().MaxCombinedTextureSlots; i++)
 			samplers[i] = i;
 		s_Quad3DData.Shader->SetIntArray("u_Textures", samplers, ApplicationConfig::GetRendererData().MaxCombinedTextureSlots);
 		delete[] samplers;
@@ -782,7 +782,7 @@ namespace KuchCraft {
 						NextQuadsBatch3D();
 
 					textureIndex = static_cast<float>(s_Quad3DData.TextureSlotIndex);
-					s_Quad3DData.TextureSlots[s_Quad3DData.TextureSlotIndex] = s_Quad3DData.Vertices[i].TextureIndex;
+					s_Quad3DData.TextureSlots[s_Quad3DData.TextureSlotIndex] = (uint32_t)s_Quad3DData.Vertices[i].TextureIndex;
 					s_Quad3DData.TextureSlotIndex++;
 				}
 
@@ -862,6 +862,10 @@ namespace KuchCraft {
 		if (!s_ChunkData.Chunks.size())
 			return;
 
+		DisableBlending();
+		EnableFaceCulling();
+		EnableDepthTesting();
+
 		s_ChunkData.Shader     ->Bind();
 		s_ChunkData.VertexArray .Bind();
 		s_ChunkData.IndexBuffer .Bind();
@@ -874,9 +878,9 @@ namespace KuchCraft {
 			s_ChunkData.Shader->SetFloat3("u_ChunkPosition", chunk->GetPosition() + glm::vec3(0.5f, 0.5f, 0.5f));
 			
 			const auto& renderData = chunk->GetRenderData();
-			s_ChunkData.VertexBuffer.SetData(renderData.GetData().size() * 2 * sizeof(uint32_t) , renderData.GetData().data());
+			s_ChunkData.VertexBuffer.SetData((uint32_t)(renderData.GetData().size() * 2 * sizeof(uint32_t)) , renderData.GetData().data());
 
-			uint32_t quadCount   = renderData.GetData().size() / (2 * quad_vertex_count);
+			uint32_t quadCount   = (uint32_t)renderData.GetData().size() / (2 * quad_vertex_count);
 			uint32_t indexCount  = quadCount * quad_index_count;
 			uint32_t vertexCount = quadCount * quad_vertex_count;
 			DrawElements(indexCount);

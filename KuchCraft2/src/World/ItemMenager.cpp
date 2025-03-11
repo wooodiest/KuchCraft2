@@ -112,7 +112,7 @@ namespace KuchCraft {
 						return;
 					}
 
-					for (int y = 0; y < blockTextureSize; y++)
+					for (int y = 0; y < (int)blockTextureSize; y++)
 					{
 						std::memcpy(
 							mergedData + (y * spec.Width * channelCount) + (i * blockTextureSize * channelCount),
@@ -125,7 +125,7 @@ namespace KuchCraft {
 				s_ItemTextureArray->SetLayerData(layerIndex, mergedData);
 
 				auto texture2D = std::make_shared<Texture2D>(TextureSpecification{ .Width = s_ItemTextureArray->GetWidth(), .Height = s_ItemTextureArray->GetHeight(), .Filter = ImageFilter::NEAREST });
-				texture2D->SetData(mergedData, size);
+				texture2D->SetData(mergedData, (uint32_t)size);
 				TextureManager::Add(texture2D, info.Name);
 
 				delete[] mergedData;
