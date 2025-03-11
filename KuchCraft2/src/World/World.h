@@ -108,6 +108,14 @@ namespace KuchCraft {
 		/// @return The entity that is designated as the primary camera.
 		Entity GetPrimaryCameraEntity();
 
+		/// Sets the given entity as the player.
+		/// @param entity - the entity to be set as the player.
+		void SetPlayerEntity(Entity entity);
+
+		/// Retrieves the entity that is currently set as the player.
+		/// @return The entity that is designated as the playera.
+		Entity GetPlayer();
+
 		/// Retrieves the primary camera component.
 		/// @return A pointer to the primary camera component, or nullptr if no primary camera is set.
 		Camera* GetPrimaryCamera();
@@ -157,6 +165,9 @@ namespace KuchCraft {
 
 		/// The entt enttity holding primary camera
 		entt::entity m_PrimaryCameraEntity = entt::null;
+
+		/// The entt enttity holding player 
+		entt::entity m_Player = entt::null;
 
 		/// World saving path
 		const std::filesystem::path m_Path;

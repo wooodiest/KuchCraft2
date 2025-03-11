@@ -92,6 +92,10 @@ namespace KuchCraft {
 		if (primaryCameraEntity)
 			wjson["PrimaryCameraUUID"] = static_cast<uint64_t>(primaryCameraEntity.GetUUID());
 
+		Entity playerEntity = m_World->GetPlayer();
+		if (playerEntity)
+			wjson["PlayerUUID"] = static_cast<uint64_t>(playerEntity.GetUUID());
+
 		for (auto handle : m_World->m_Registry.view<entt::entity>())
 		{
 			Entity entity = { handle, &(*m_World) };
@@ -327,6 +331,17 @@ namespace KuchCraft {
 		}
 		else
 			Log::Warn("[World Serializer] : Do not contains PrimaryCameraUUID");
+
+		if (wjson.contains("PlayerUUID"))
+		{
+			Entity found = m_World->GetEntityByUUID(UUID(wjson["PlayerUUID"].get<uint64_t>()));
+			if (found)
+				m_World->SetPlayerEntity(found);
+			else
+				Log::Warn("[World Serializer] : PlayerUUID : Could not found entity with given UUID");
+		}
+		else
+			Log::Warn("[World Serializer] : Do not contains PlayerUUID");
 
 		Log::Info("[World Serializer] : Deserialized : {}", m_World->GetPath().string());
 		return true;

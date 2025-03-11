@@ -371,6 +371,8 @@ namespace KuchCraft {
 
 		if (ImGui::CollapsingHeader("World", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			ImGui::Text("Player UUID: %llu", GetPlayer().GetUUID());
+
 			int rdr = ApplicationConfig::GetWorldData().RenderDistance;
 
 			if (ImGui::DragInt("Render distance", &rdr, 1, 20))
@@ -422,6 +424,8 @@ namespace KuchCraft {
 
 			ImGui::SeparatorText("EntitiesList");
 			ImGui::BeginChild("EntitiesList", ImVec2(0.0f, entities_list_height), true);
+
+			Entity playerEntity = GetPlayer();
 
 			for (auto handle : m_Registry.view<entt::entity>())
 			{
@@ -482,6 +486,11 @@ namespace KuchCraft {
 
 				ImGui::SeparatorText("Entity info");
 				ImGui::Text("UUID: %llu", entity.GetUUID());
+
+				bool isEntityPlayer = entity == playerEntity;
+				if (ImGui::Checkbox("Is player", &isEntityPlayer))
+					if (isEntityPlayer)
+						SetPlayerEntity(entity);
 
 				std::string entityName = entity.GetName();
 				if (ImGui::InputText("Name", &entityName))
@@ -777,6 +786,24 @@ namespace KuchCraft {
 			return Entity(); 
 
 		return Entity(m_PrimaryCameraEntity, this);
+	}
+
+	void World::SetPlayerEntity(Entity entity)
+	{
+		if (!entity)
+			Log::Warn("[World] : SetPlayerEntity : Setting player enity with null");
+		else if (!entity.HasComponent<TransformComponent>() || !entity.HasComponent<NativeScriptComponent>())
+			Log::Warn("[World] : SetPlayerEntity : Setting player enity without basic components");
+
+		m_Player = entity;
+	}
+
+	Entity World::GetPlayer()
+	{
+		if (m_Player == entt::null)
+			return Entity();
+
+		return Entity(m_Player, this);
 	}
 
 	Camera* World::GetPrimaryCamera()
