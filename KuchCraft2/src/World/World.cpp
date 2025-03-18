@@ -140,6 +140,9 @@ namespace KuchCraft {
 			ViewFrustum viewFrustom(cameraComponent.Camera.GetViewProjection());
 			for (const auto& [pos, chunk] : m_Chunks)
 			{
+				if (!chunk->IsRecreated())
+					continue;
+
 				AABB chunkAABB{ chunk->GetPosition(), chunk->GetPosition() + glm::vec3{ chunk_size_XZ, chunk_size_Y, chunk_size_XZ } };
 				if (viewFrustom.IsAABBVisible(chunkAABB))
 					m_VisibleChunks.push_back(chunk);
