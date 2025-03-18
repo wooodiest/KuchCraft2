@@ -17,6 +17,8 @@
 #include "Graphics/Renderer.h"
 #include "Graphics/TextureManager.h"
 
+#include "Physics/ViewFrustum.h"
+
 #ifdef  INCLUDE_IMGUI
 	#include <imgui.h>
 	#include <misc/cpp/imgui_stdlib.h>
@@ -120,24 +122,34 @@ namespace KuchCraft {
 
 	void World::OnUpdate(float dt)
 	{
+		m_VisibleChunks.clear();
+
+		glm::vec3 playerPosition = { 0.0f, 0.0f, 0.0f };
+
+		Entity cameraEntity = GetPrimaryCameraEntity();
+		if (cameraEntity)
+		{
+			auto& cameraComponent    = cameraEntity.GetComponent<CameraComponent>();
+			auto& transformComponent = cameraEntity.GetComponent<TransformComponent>();
+
+			if (cameraComponent.UseTransformComponent)
+				cameraComponent.Camera.SetData(transformComponent.Translation, transformComponent.Rotation);
+
+			playerPosition = cameraComponent.Camera.GetPosition();
+
+			ViewFrustum viewFrustom(cameraComponent.Camera.GetViewProjection());
+			for (const auto& [pos, chunk] : m_Chunks)
+			{
+				AABB chunkAABB{ chunk->GetPosition(), chunk->GetPosition() + glm::vec3{ chunk_size_XZ, chunk_size_Y, chunk_size_XZ } };
+				if (viewFrustom.IsAABBVisible(chunkAABB))
+					m_VisibleChunks.push_back(chunk);
+			}
+		}
+
 		if (!m_IsPaused)
 		{
 			const auto& config = ApplicationConfig::GetWorldData();
-
-			glm::vec3 playerPosition = { 0.0f, 0.0f, 0.0f };
-
-			Entity cameraEntity = GetPrimaryCameraEntity();
-			if (cameraEntity)
-			{
-				auto& cameraComponent    = cameraEntity.GetComponent<CameraComponent>();
-				auto& transformComponent = cameraEntity.GetComponent<TransformComponent>();
-
-				if (cameraComponent.UseTransformComponent)
-					cameraComponent.Camera.SetData(transformComponent.Translation, transformComponent.Rotation);
-
-				playerPosition = cameraComponent.Camera.GetPosition();
-			}
-
+			
 			/// Create new chunks within the render distance
 			for (float dx = -(float)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
 			{
@@ -219,7 +231,7 @@ namespace KuchCraft {
 				}
 				
 				/// Update the chunk
-				chunk->OnUpdate(dt);
+				chunk->OnUpdate(dt);	
 			}
 
 			/// Update native scripts for each entity
@@ -256,7 +268,7 @@ namespace KuchCraft {
 			});
 
 			/// Chunks
-			for (auto& [_, chunk] : m_Chunks)
+			for (auto& chunk : m_VisibleChunks)
 				Renderer::DrawChunk(chunk);
 
 			Renderer::EndWorld();

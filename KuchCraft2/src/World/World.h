@@ -178,6 +178,9 @@ namespace KuchCraft {
 		/// Stores all the chunks in the world, indexed by their integer coordinates.
 		std::unordered_map<glm::ivec3, Chunk*> m_Chunks;
 
+		/// Every frame updated storege of visible by player chunks
+		std::vector<Chunk*> m_VisibleChunks;
+
 		/// Indicates whether the world is currently paused.
 		bool m_IsPaused = false;
 
