@@ -46,9 +46,9 @@ namespace std {
 
 	/// Retrieves the N-th element of a glm::vec2 using std::get.
 	/// N must be less than 2, otherwise a static assertion will trigger.
-    /// @tparam N - the index of the element to retrieve.
-    /// @param v - the glm::vec2 vector.
-    /// @return The N-th element of the vector.
+	/// @tparam N - the index of the element to retrieve.
+	/// @param v - the glm::vec2 vector.
+	/// @return The N-th element of the vector.
 	template <std::size_t N>
 	float get(const glm::vec2& v) {
 		static_assert(N < 2, "Index out of bounds for glm::vec2");
@@ -152,6 +152,6 @@ namespace std {
 		if constexpr (N == 3) return v.w;
 	}
 
-	
+
 
 }

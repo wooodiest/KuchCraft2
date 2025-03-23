@@ -146,6 +146,9 @@ namespace KuchCraft {
 
         /// Number of chunks to be recreated in single frame
         uint32_t ChuksToRecreateInFrame = 1;
+
+		/// The duration of the day in minutes
+        uint32_t DurationOfDayInMinutes = 20;
     };
 
     class ApplicationConfig

@@ -122,22 +122,56 @@ namespace KuchCraft {
 
 	void World::OnUpdate(float dt)
 	{
+		if (m_IsPaused)
+			return;
+		
+		m_InGameTime += dt ;
+
 		m_VisibleChunks.clear();
+		const auto& config = ApplicationConfig::GetWorldData();
 
-		glm::vec3 playerPosition = { 0.0f, 0.0f, 0.0f };
+		auto player = GetPlayer();
+		TransformComponent playerTransform({ 0.0f, 0.0f, 0.0f });
 
+		if (player && player.HasComponent<TransformComponent>())
+			playerTransform = player.GetComponent<TransformComponent>();
+
+		/// Create new chunks within the render distance
+		for (float dx = -(float)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
+		{
+			for (float dz = -(float)config.RenderDistance * chunk_size_XZ; dz <= config.RenderDistance * chunk_size_XZ; dz += chunk_size_XZ)
+			{
+				glm::vec3 chunkPosition = Chunk::GetOrigin(playerTransform.Translation + glm::vec3(dx, 0.0f, dz));
+				if (!GetChunk(chunkPosition))
+					m_Chunks[chunkPosition] = new Chunk(this, chunkPosition);
+			}
+		}
+
+		/// Remove chunks outside the memory retention range
+		float delDist  = (float)(config.RenderDistance + config.KeptInMemoryDistance) * chunk_size_XZ;
+		float delDist2 = delDist * delDist;
+		for (auto it = m_Chunks.begin(); it != m_Chunks.end();)
+		{
+			if (glm::length2(playerTransform.Translation - glm::vec3(it->first)) > delDist2)
+			{
+				delete it->second;
+				it = m_Chunks.erase(it);
+			}
+			else
+				++it;
+		}
+
+		/// Update primary camera and find visible chunks
 		Entity cameraEntity = GetPrimaryCameraEntity();
 		if (cameraEntity)
 		{
-			auto& cameraComponent    = cameraEntity.GetComponent<CameraComponent>();
+			auto& cameraComponent = cameraEntity.GetComponent<CameraComponent>();
 			auto& transformComponent = cameraEntity.GetComponent<TransformComponent>();
 
 			if (cameraComponent.UseTransformComponent)
 				cameraComponent.Camera.SetData(transformComponent.Translation, transformComponent.Rotation);
 
-			playerPosition = cameraComponent.Camera.GetPosition();
-
-			ViewFrustum viewFrustom(cameraComponent.Camera.GetViewProjection());
+			ViewFrustum viewFrustom(cameraEntity.GetComponent<CameraComponent>().Camera.GetViewProjection());
 			for (const auto& [pos, chunk] : m_Chunks)
 			{
 				if (!chunk->IsRecreated())
@@ -148,109 +182,79 @@ namespace KuchCraft {
 					m_VisibleChunks.push_back(chunk);
 			}
 		}
-
-		if (!m_IsPaused)
+		
+		/// Build and refresh chunks with a limited number per frame
+		uint32_t chunksToBuild    = config.ChunksToBuildInFrame;
+		uint32_t chunksToRecreate = config.ChuksToRecreateInFrame;
+		for (const auto& [pos, chunk] : m_Chunks)
 		{
-			const auto& config = ApplicationConfig::GetWorldData();
-			
-			/// Create new chunks within the render distance
-			for (float dx = -(float)config.RenderDistance * chunk_size_XZ; dx <= config.RenderDistance * chunk_size_XZ; dx += chunk_size_XZ)
+			/// Build new chunks if they are not yet ready
+			if (!chunk->IsBuilded() && chunksToBuild > 0)
 			{
-				for (float dz = -(float)config.RenderDistance * chunk_size_XZ; dz <= config.RenderDistance * chunk_size_XZ; dz += chunk_size_XZ)
-				{
-					glm::vec3 chunkPosition = Chunk::GetOrigin(playerPosition + glm::vec3(dx, 0.0f, dz));
-					if (!GetChunk(chunkPosition))
-						m_Chunks[chunkPosition] = new Chunk(this, chunkPosition);
-				}
+				chunk->Build();
+				chunksToBuild--;
 			}
 
-			/// Remove chunks outside the memory retention range
-			for (auto it = m_Chunks.begin(); it != m_Chunks.end();)
+			/// Recreate chunks mesh if they require updating
+			if (!chunk->IsRecreated() && chunksToRecreate > 0)
 			{
-				if (glm::length2(playerPosition - glm::vec3(it->first)) > config.KeptInMemoryDistance * config.KeptInMemoryDistance * chunk_size_XZ * chunk_size_XZ)
-				{
-					delete it->second;
-					it = m_Chunks.erase(it);
-				}
-				else
-					++it;
-
+				chunk->Recreate();
+				chunksToRecreate--;
 			}
 
-			/// Build and refresh chunks with a limited number per frame
-			uint32_t chunksToBuild    = config.ChunksToBuildInFrame;
-			uint32_t chunksToRecreate = config.ChuksToRecreateInFrame;
-			for (const auto& [pos, chunk] : m_Chunks)
+			/// Check if the chunk had missing neighbors, if so - recreate
+			bool hadMissingNeighbors = chunk->GetMissingNeighborsStatus();
+			if (hadMissingNeighbors)
 			{
-				/// Build new chunks if they are not yet ready
-				if (!chunk->IsBuilded() && chunksToBuild > 0)
-				{
-					chunk->Build();
-					chunksToBuild--;
-				}
+				Chunk* leftChunk   = chunk->GetLeftNeighbor();
+				Chunk* rightChunk  = chunk->GetRightNeighbor();
+				Chunk* frontChunk  = chunk->GetFrontNeighbor();
+				Chunk* behindChunk = chunk->GetBehindNeighbor();
 
-				/// Recreate chunks mesh if they require updating
-				if (!chunk->IsRecreated() && chunksToRecreate > 0)
+				bool currentLeft   = (leftChunk   && leftChunk  ->IsBuilded());
+				bool currentRight  = (rightChunk  && rightChunk ->IsBuilded());
+				bool currentFront  = (frontChunk  && frontChunk ->IsBuilded());
+				bool currentBehind = (behindChunk && behindChunk->IsBuilded());
+
+				bool prevLeft   = chunk->GetLastLeftBuilt();
+				bool prevRight  = chunk->GetLastRightBuilt();
+				bool prevFront  = chunk->GetLastFrontBuilt();
+				bool prevBehind = chunk->GetLastBehindBuilt();
+
+				bool hasMissingNeighbors = !currentLeft || !currentRight || !currentFront || !currentBehind;
+
+				if ((currentLeft  && !prevLeft)  || (currentRight  && !prevRight) ||
+					(currentFront && !prevFront) || (currentBehind && !prevBehind) ||
+					(hadMissingNeighbors && !hasMissingNeighbors))
 				{
 					chunk->Recreate();
 					chunksToRecreate--;
 				}
 
-				/// Check if the chunk had missing neighbors, if so - recreate
-				bool hadMissingNeighbors = chunk->GetMissingNeighborsStatus();
-				if (hadMissingNeighbors)
-				{
-					Chunk* leftChunk   = chunk->GetLeftNeighbor();
-					Chunk* rightChunk  = chunk->GetRightNeighbor();
-					Chunk* frontChunk  = chunk->GetFrontNeighbor();
-					Chunk* behindChunk = chunk->GetBehindNeighbor();
+				chunk->SetLastLeftBuilt(currentLeft);
+				chunk->SetLastRightBuilt(currentRight);
+				chunk->SetLastFrontBuilt(currentFront);
+				chunk->SetLastBehindBuilt(currentBehind);
 
-					bool currentLeft   = (leftChunk   && leftChunk  ->IsBuilded());
-					bool currentRight  = (rightChunk  && rightChunk ->IsBuilded());
-					bool currentFront  = (frontChunk  && frontChunk ->IsBuilded());
-					bool currentBehind = (behindChunk && behindChunk->IsBuilded());
+				chunk->SetMissingNeighborsStatus(hasMissingNeighbors);
+			}
+			
+			/// Update the chunk
+			chunk->OnUpdate(dt);	
+		}
 
-					bool prevLeft   = chunk->GetLastLeftBuilt();
-					bool prevRight  = chunk->GetLastRightBuilt();
-					bool prevFront  = chunk->GetLastFrontBuilt();
-					bool prevBehind = chunk->GetLastBehindBuilt();
-
-					bool hasMissingNeighbors = !currentLeft || !currentRight || !currentFront || !currentBehind;
-
-					if ((currentLeft  && !prevLeft)  || (currentRight  && !prevRight) ||
-						(currentFront && !prevFront) || (currentBehind && !prevBehind) ||
-						(hadMissingNeighbors && !hasMissingNeighbors))
-					{
-						chunk->Recreate();
-						chunksToRecreate--;
-					}
-
-					chunk->SetLastLeftBuilt(currentLeft);
-					chunk->SetLastRightBuilt(currentRight);
-					chunk->SetLastFrontBuilt(currentFront);
-					chunk->SetLastBehindBuilt(currentBehind);
-
-					chunk->SetMissingNeighborsStatus(hasMissingNeighbors);
-				}
-				
-				/// Update the chunk
-				chunk->OnUpdate(dt);	
+		/// Update native scripts for each entity
+		m_Registry.view<NativeScriptComponent>().each([&](auto entity, auto& script) {
+			if (!script.Instance)
+			{
+				script.Instance = script.InstantiateScript();
+				script.Instance->m_Entity = Entity{ entity, this };
+				script.Instance->OnCreate();
 			}
 
-			/// Update native scripts for each entity
-			m_Registry.view<NativeScriptComponent>().each([&](auto entity, auto& script) {
-				if (!script.Instance)
-				{
-					script.Instance = script.InstantiateScript();
-					script.Instance->m_Entity = Entity{ entity, this };
-					script.Instance->OnCreate();
-				}
-
-				script.Instance->OnUpdate(dt);
-			});
-		}
+			script.Instance->OnUpdate(dt);
+		});
 	}
-
 
 	void World::Render()
 	{
@@ -392,6 +396,44 @@ namespace KuchCraft {
 
 			if (ImGui::DragInt("Render distance", &rdr, 1, 20))
 				ApplicationConfig::GetWorldData().RenderDistance = rdr;
+		}
+
+		if (ImGui::CollapsingHeader("Time control"))
+		{
+			Time currentTime  = m_InGameTime.GetTime();
+			float speedFactor = m_InGameTime.GetSpeedFactor();
+			
+			ImGui::Text("Current Time: %u days, %02u:%02u:%02u", currentTime.Days, currentTime.Hours, currentTime.Minutes, currentTime.Seconds);
+			ImGui::Text("Time of Day: %s", InGameTime::TimeOfDayToString(m_InGameTime.GetTimeOfDay()).c_str());
+
+			if (ImGui::SliderFloat("Speed Factor", &speedFactor, 0.01f, 10.0f))
+				m_InGameTime.SetSpeedFactor(speedFactor);
+
+			ImGui::Text("Set Time");
+			static int manualSeconds = 0;
+			static int manualMinutes = 0;
+			static int manualHour    = 0;
+			static int manualDay     = 0;
+			ImGui::SliderInt("Seconds##set", &manualSeconds, 0, 59);
+			ImGui::SliderInt("Minutes##set", &manualMinutes, 0, 59);
+			ImGui::SliderInt("Hours##set",   &manualHour, 0, 23);
+			ImGui::SliderInt("Days##set",    &manualDay, 0, 999);
+
+			if (ImGui::Button("Apply Time", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				m_InGameTime.SetTime(Time{ 0, 0, static_cast<uint32_t>(manualHour), static_cast<uint32_t>(manualDay) });
+
+			ImGui::Text("Add Time");
+			static int addSeconds = 0;
+			static int addMinutes = 0;
+			static int addHour    = 0;
+			static int addDay     = 0;
+			ImGui::SliderInt("Seconds##add", &addSeconds, 0, 59);
+			ImGui::SliderInt("Minutes##add", &addMinutes, 0, 59);
+			ImGui::SliderInt("Hours##add",   &addHour, 0, 23);
+			ImGui::SliderInt("Days##add",    &addDay, 0, 100);
+
+			if (ImGui::Button("Add Time", ImVec2(ImGui::GetContentRegionAvail().x, 0.0f)))
+				m_InGameTime += Time{ static_cast<uint32_t>(addSeconds), static_cast<uint32_t>(addMinutes), static_cast<uint32_t>(addHour), static_cast<uint32_t>(addDay) };
 		}
 
 		if (ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen))

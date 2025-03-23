@@ -64,6 +64,7 @@ namespace KuchCraft {
 					worldConfig.KeptInMemoryDistance   = json["World"]["KeptInMemoryDistance"].get<uint32_t>();
 					worldConfig.ChunksToBuildInFrame   = json["World"]["ChunksToBuildInFrame"].get<uint32_t>();
 					worldConfig.ChuksToRecreateInFrame = json["World"]["ChuksToRecreateInFrame"].get<uint32_t>();
+					worldConfig.DurationOfDayInMinutes = json["World"]["DurationOfDayInMinutes"].get<uint32_t>();
 					s_WorldConfig = worldConfig;
 				}
 				catch (const std::exception& e)
@@ -124,7 +125,8 @@ namespace KuchCraft {
 			{ "RenderDistance",         s_WorldConfig.RenderDistance },
 			{ "KeptInMemoryDistance",   s_WorldConfig.KeptInMemoryDistance },
 			{ "ChunksToBuildInFrame",   s_WorldConfig.ChunksToBuildInFrame },
-			{ "ChuksToRecreateInFrame", s_WorldConfig.ChuksToRecreateInFrame }
+			{ "ChuksToRecreateInFrame", s_WorldConfig.ChuksToRecreateInFrame },
+			{ "DurationOfDayInMinutes", s_WorldConfig.DurationOfDayInMinutes }
 		};
 
 		std::ofstream file(s_ConfigPath);

@@ -14,6 +14,7 @@
 #include "Graphics/Data/Camera.h"
 
 #include "World/Chunk.h"
+#include "World/InGameTime.h"
 
 namespace std {
 	template <>
@@ -120,6 +121,10 @@ namespace KuchCraft {
 		/// @return A pointer to the primary camera component, or nullptr if no primary camera is set.
 		Camera* GetPrimaryCamera();
 
+		/// Retrives in-game time
+		/// @return In-game time reference
+		InGameTime& GetInGameTime() { return m_InGameTime; }
+
 		/// Retrieves a view of all entities that have the specified components.
 		/// @tparam Components - the component types to filter entities by.
 		/// @return A view of entities that have the specified component types.
@@ -184,8 +189,11 @@ namespace KuchCraft {
 		/// Indicates whether the world is currently paused.
 		bool m_IsPaused = false;
 
-		/// total number of entities
+		/// Total number of entities
 		uint64_t m_EntityCount = 0;
+
+		/// In-game time
+		InGameTime m_InGameTime;
 
 		/// Grants the Entity and WorldSerializer classes access to private members of World.
 		friend class Entity;

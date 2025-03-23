@@ -1,113 +1,74 @@
 {
     "Entities": [
         {
-            "Sprite3DRenderer": {
-                "Color": [
-                    0.5219892859458923,
-                    0.9995162487030029,
-                    0.999032735824585,
-                    1.0
-                ],
-                "GenerateMips": false,
-                "ImageFilter": "None",
-                "Texture": "",
-                "Type": "None"
+            "Camera": {
+                "AspectRatio": 1.6876606941223145,
+                "FarClip": 1000.0,
+                "FixedAspectRatio": false,
+                "NearClip": 0.009999999776482582,
+                "UseTransformComponent": true
             },
-            "Tag": "3D entity3",
-            "Transform": {
-                "Rotation": [
-                    0.0,
-                    4.413951873779297,
-                    0.0
-                ],
-                "Scale": [
-                    2.0,
-                    1.0,
-                    1.0
-                ],
-                "Translation": [
-                    0.0,
-                    1.5,
-                    0.0
-                ]
-            },
-            "UUID": 3484140073445009947
-        },
-        {
             "NativeScript": {
-                "ScriptName": "class KuchCraft::MovableObject",
+                "ScriptName": "class KuchCraft::CameraController",
                 "State": {
-                    "RotationSpeed": [
-                        1.4049900770187378,
-                        0.0,
-                        0.0
-                    ]
+                    "MouseSensitivity": 0.05000000074505806,
+                    "MovementSpeed": 20.5
                 }
             },
-            "Sprite3DRenderer": {
-                "Color": [
-                    0.7330437898635864,
-                    0.9423693418502808,
-                    0.8880599737167358,
-                    1.0
-                ],
-                "GenerateMips": true,
-                "ImageFilter": "Nearest",
-                "Texture": "assets/textures/grid.png",
-                "Type": "2D"
-            },
-            "Tag": "3D entity1",
+            "Tag": "Camera",
             "Transform": {
                 "Rotation": [
-                    27614.876953125,
-                    5.67445182800293,
+                    4.60764217376709,
+                    -0.17639754712581635,
                     0.0
                 ],
                 "Scale": [
-                    0.5,
+                    1.0,
                     1.0,
                     1.0
                 ],
                 "Translation": [
-                    0.5,
-                    0.5,
-                    0.0
+                    137.5293426513672,
+                    155.20297241210938,
+                    292.83392333984375
                 ]
             },
-            "UUID": 8154352176858846882
+            "UUID": 15470494315249721500
         },
         {
-            "Sprite3DRenderer": {
-                "Color": [
-                    0.6615130305290222,
-                    0.9731950759887695,
-                    0.9471086263656616,
-                    1.0
-                ],
-                "GenerateMips": true,
-                "ImageFilter": "Nearest",
-                "Texture": "assets/textures/grid.png",
-                "Type": "2D"
+            "Camera": {
+                "AspectRatio": 1.6876606941223145,
+                "FarClip": 1000.0,
+                "FixedAspectRatio": false,
+                "NearClip": 0.009999999776482582,
+                "UseTransformComponent": true
             },
-            "Tag": "3D entity2",
+            "NativeScript": {
+                "ScriptName": "class KuchCraft::Player",
+                "State": {
+                    "MouseSensitivity": 0.550000011920929,
+                    "MovementSpeed": 20.5
+                }
+            },
+            "Tag": "Player",
             "Transform": {
                 "Rotation": [
-                    861.69140625,
-                    0.0,
-                    1422.041748046875
+                    3.5528573989868164,
+                    -0.1139494776725769,
+                    0.0
                 ],
                 "Scale": [
-                    0.5,
+                    1.0,
                     1.0,
                     1.0
                 ],
                 "Translation": [
-                    1.5,
-                    1.0,
-                    0.5
+                    678.319091796875,
+                    133.2105255126953,
+                    732.8114624023438
                 ]
             },
-            "UUID": 11730769102095435100
+            "UUID": 15470494315249721501
         },
         {
             "Sprite2DRenderer": {
@@ -143,76 +104,121 @@
             "UUID": 13280849221379826916
         },
         {
-            "Camera": {
-                "AspectRatio": 1.6876606941223145,
-                "FarClip": 1000.0,
-                "FixedAspectRatio": false,
-                "NearClip": 0.009999999776482582,
-                "UseTransformComponent": true
+            "Sprite3DRenderer": {
+                "Color": [
+                    0.6615130305290222,
+                    0.9731950759887695,
+                    0.9471086263656616,
+                    1.0
+                ],
+                "GenerateMips": true,
+                "ImageFilter": "Nearest",
+                "Texture": "assets/textures/grid.png",
+                "Type": "2D"
             },
-            "NativeScript": {
-                "ScriptName": "class KuchCraft::Player",
-                "State": {
-                    "MouseSensitivity": 0.550000011920929,
-                    "MovementSpeed": 20.5
-                }
-            },
-            "Tag": "Player",
+            "Tag": "3D entity2",
             "Transform": {
                 "Rotation": [
-                    3.20422625541687,
-                    -0.26002317667007446,
-                    0.0
+                    861.69140625,
+                    0.0,
+                    1422.041748046875
                 ],
                 "Scale": [
-                    1.0,
+                    0.5,
                     1.0,
                     1.0
                 ],
                 "Translation": [
-                    100.18557739257813,
-                    144.10304260253906,
-                    636.5588989257813
+                    1.5,
+                    1.0,
+                    0.5
                 ]
             },
-            "UUID": 15470494315249721501
+            "UUID": 11730769102095435100
         },
         {
-            "Camera": {
-                "AspectRatio": 1.6876606941223145,
-                "FarClip": 1000.0,
-                "FixedAspectRatio": false,
-                "NearClip": 0.009999999776482582,
-                "UseTransformComponent": true
-            },
             "NativeScript": {
-                "ScriptName": "class KuchCraft::CameraController",
+                "ScriptName": "class KuchCraft::MovableObject",
                 "State": {
-                    "MouseSensitivity": 0.05000000074505806,
-                    "MovementSpeed": 20.5
+                    "RotationSpeed": [
+                        1.4049900770187378,
+                        0.0,
+                        0.0
+                    ]
                 }
             },
-            "Tag": "Camera",
+            "Sprite3DRenderer": {
+                "Color": [
+                    0.7577035427093506,
+                    0.07152727246284485,
+                    0.005116150714457035,
+                    1.0
+                ],
+                "GenerateMips": true,
+                "ImageFilter": "Nearest",
+                "Texture": "assets/textures/grid.png",
+                "Type": "2D"
+            },
+            "Tag": "3D entity1",
             "Transform": {
                 "Rotation": [
-                    5.147121906280518,
-                    -0.2184448540210724,
+                    28335.908203125,
+                    5.67445182800293,
                     0.0
                 ],
                 "Scale": [
-                    1.0,
+                    0.5,
                     1.0,
                     1.0
                 ],
                 "Translation": [
-                    230.82666015625,
-                    150.2509307861328,
-                    538.5742797851563
+                    0.5,
+                    0.5,
+                    0.0
                 ]
             },
-            "UUID": 15470494315249721500
+            "UUID": 8154352176858846882
+        },
+        {
+            "Sprite3DRenderer": {
+                "Color": [
+                    0.5219892859458923,
+                    0.9995162487030029,
+                    0.999032735824585,
+                    1.0
+                ],
+                "GenerateMips": false,
+                "ImageFilter": "None",
+                "Texture": "",
+                "Type": "None"
+            },
+            "Tag": "3D entity3",
+            "Transform": {
+                "Rotation": [
+                    0.0,
+                    4.413951873779297,
+                    0.0
+                ],
+                "Scale": [
+                    2.0,
+                    1.0,
+                    1.0
+                ],
+                "Translation": [
+                    0.0,
+                    1.5,
+                    0.0
+                ]
+            },
+            "UUID": 3484140073445009947
         }
     ],
+    "InGameTime": {
+        "Days": 0,
+        "Hours": 13,
+        "Minutes": 35,
+        "Seconds": 57
+    },
     "PlayerUUID": 15470494315249721501,
     "PrimaryCameraUUID": 15470494315249721501
 }

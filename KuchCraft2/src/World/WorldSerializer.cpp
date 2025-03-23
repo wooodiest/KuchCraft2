@@ -96,6 +96,13 @@ namespace KuchCraft {
 		if (playerEntity)
 			wjson["PlayerUUID"] = static_cast<uint64_t>(playerEntity.GetUUID());
 
+		wjson["InGameTime"] = {
+			{ "Seconds", m_World->GetInGameTime().GetTime().Seconds },
+			{ "Minutes", m_World->GetInGameTime().GetTime().Minutes },
+			{ "Hours",   m_World->GetInGameTime().GetTime().Hours   },
+			{ "Days",    m_World->GetInGameTime().GetTime().Days    }
+		};
+
 		for (auto handle : m_World->m_Registry.view<entt::entity>())
 		{
 			Entity entity = { handle, &(*m_World) };
@@ -342,6 +349,19 @@ namespace KuchCraft {
 		}
 		else
 			Log::Warn("[World Serializer] : Do not contains PlayerUUID");
+
+		if (wjson.contains("InGameTime"))
+		{
+			const auto& time = wjson["InGameTime"];
+			m_World->GetInGameTime().SetTime({
+				time["Seconds"].get<uint32_t>(),
+				time["Minutes"].get<uint32_t>(),
+				time["Hours"].get<uint32_t>(),
+				time["Days"].get<uint32_t>()
+			});
+		}
+		else
+			Log::Warn("[World Serializer] : Do not contains InGameTime");
 
 		Log::Info("[World Serializer] : Deserialized : {}", m_World->GetPath().string());
 		return true;
