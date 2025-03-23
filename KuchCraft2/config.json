@@ -9,7 +9,51 @@
         "Logs": true,
         "Renderer2DMaxQuads": 20000,
         "Renderer3DMaxQuads": 20000,
-        "ShaderVersion": "460 core"
+        "ShaderVersion": "460 core",
+        "SkyboxColor": {
+            "Afternoon": [
+                0.699999988079071,
+                0.699999988079071,
+                1.0,
+                1.0
+            ],
+            "Dawn": [
+                0.800000011920929,
+                0.4000000059604645,
+                0.10000000149011612,
+                1.0
+            ],
+            "Dusk": [
+                0.30000001192092896,
+                0.10000000149011612,
+                0.30000001192092896,
+                1.0
+            ],
+            "Evening": [
+                0.800000011920929,
+                0.5,
+                0.30000001192092896,
+                1.0
+            ],
+            "Morning": [
+                0.8999999761581421,
+                0.6000000238418579,
+                0.30000001192092896,
+                1.0
+            ],
+            "Night": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.30000001192092896,
+                1.0
+            ],
+            "Noon": [
+                0.6000000238418579,
+                0.800000011920929,
+                1.0,
+                1.0
+            ]
+        }
     },
     "Window": {
         "FullScreen": false,
@@ -30,7 +74,7 @@
         "ChunksToBuildInFrame": 1,
         "DurationOfDayInMinutes": 20,
         "KeptInMemoryDistance": 10,
-        "RenderDistance": 10,
+        "RenderDistance": 8,
         "TexturePackFile": "itemsInfo.kc",
         "TexturesDirectory": "assets/textures",
         "WorldDataFile": "world_data.kc",

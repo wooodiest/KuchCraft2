@@ -126,6 +126,7 @@ namespace KuchCraft {
 			return;
 		
 		m_InGameTime += dt ;
+		Renderer::SetTime(m_InGameTime.GetTime());
 
 		m_VisibleChunks.clear();
 		const auto& config = ApplicationConfig::GetWorldData();

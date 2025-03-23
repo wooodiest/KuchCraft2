@@ -53,6 +53,8 @@ namespace KuchCraft {
 					rendererConfig.Renderer2DMaxQuads = json["Renderer"]["Renderer2DMaxQuads"].get<uint32_t>();
 					rendererConfig.Renderer3DMaxQuads = json["Renderer"]["Renderer3DMaxQuads"].get<uint32_t>();
 					rendererConfig.BlockTextureSize   = json["Renderer"]["BlockTextureSize"].get<uint32_t>();
+					for (const auto& [time, color]    : json["Renderer"]["SkyboxColor"].items())
+						rendererConfig.SkyboxColor[InGameTime::StringToTimeOfDay(time)] = { color[0], color[1], color[2], color[3] };
 					s_RendererConfig = rendererConfig;
 
 					WorldConfigData worldConfig;
@@ -116,6 +118,9 @@ namespace KuchCraft {
 			{ "Renderer3DMaxQuads", s_RendererConfig.Renderer3DMaxQuads },
 			{ "BlockTextureSize",   s_RendererConfig.BlockTextureSize }
 		};
+
+		for (const auto& [time, color] : s_RendererConfig.SkyboxColor)
+			json["Renderer"]["SkyboxColor"][InGameTime::TimeOfDayToString(time)] = { color.r, color.g, color.b, color.a };
 
 		json["World"] = {
 			{ "WorldsDirectory",        s_WorldConfig.WorldsDirectory },

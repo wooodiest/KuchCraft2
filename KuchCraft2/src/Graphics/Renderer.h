@@ -165,6 +165,23 @@ namespace KuchCraft {
 		static void FlushQuads3D();
 
 	#pragma endregion
+	#pragma region Skybox
+	public:
+		static void SetTime(InGameTime time) { s_SkyboxData.Time = time; }
+
+	private:
+		/// Initializes resources required for rendering the skybox.
+		/// Sets up vertex buffers, defines the layout, index buffers, and shaders
+		/// required for rendering the skybox.
+		static void InitSkybox();
+
+		/// Renders the skybox.
+		/// This function handles the rendering of the skybox, including binding the necessary
+		/// buffers and shaders, processing the vertex data, and issuing draw calls to render
+		/// the skybox on screen.
+		static void RenderSkybox();
+
+	#pragma endregion
 	#pragma region Chunks
 		/// Initializes resources required for rendering Chunks.
 		static void InitChunks();
@@ -263,6 +280,9 @@ namespace KuchCraft {
 		/// Includes buffers, shaders, and configuration parameters used exclusively for
 		/// rendering 3D quads in a batched manner.
 		static inline Quad3DRendererData s_Quad3DData;
+
+		/// Contains data specific to skybox rendering.
+		static inline SkyboxRendererData s_SkyboxData;
 
 		/// Contains data specific to chunk rendering.
 		static inline ChunkRendererData s_ChunkData;

@@ -81,7 +81,9 @@ namespace KuchCraft {
 		/// tmp
 		auto windowSize = Application::GetWindow().GetSize();
 		glViewport(0, 0, windowSize.x, windowSize.y);
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
+		glm::vec4 color = ApplicationConfig::GetRendererData().SkyboxColor[s_SkyboxData.Time.GetTimeOfDay()];
+		glClearColor(color.r, color.g, color.b, color.a);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		/// Clear data
@@ -816,6 +818,17 @@ namespace KuchCraft {
 
 		s_Stats.DrawCalls++;
 		s_Stats.Vertices += vertexCount;
+	}
+
+#pragma endregion
+#pragma region Skybox
+	void Renderer::InitSkybox()
+	{
+	}
+
+	void Renderer::RenderSkybox()
+	{
+		
 	}
 
 #pragma endregion

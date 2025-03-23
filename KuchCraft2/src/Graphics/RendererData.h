@@ -22,6 +22,7 @@
 #include "Graphics/Data/Texture.h"
 #include "Graphics/Data/Texture2D.h"
 #include "Core/MetricTracker.h"
+#include "World/InGameTime.h"
 
 namespace KuchCraft {
 
@@ -141,6 +142,20 @@ namespace KuchCraft {
 		VertexArray  VertexArray;
 		VertexBuffer VertexBuffer;
 
+	};
+
+	/// Stores data related to the skybox rendering.
+	struct SkyboxRendererData
+	{
+		InGameTime Time;/// tmp
+
+		std::map<TimeOfDay, std::shared_ptr<Texture>> Textures;
+
+		///...
+		std::shared_ptr<Shader> Shader;
+		VertexArray  VertexArray;
+		VertexBuffer VertexBuffer;
+		IndexBuffer  IndexBuffer;
 	};
 
 	class Chunk;

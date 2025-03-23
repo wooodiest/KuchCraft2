@@ -86,6 +86,9 @@ namespace KuchCraft {
         /// @return A string representation of the given TimeOfDay.
         static std::string TimeOfDayToString(TimeOfDay timeOfDay);
 
+		/// Converts a string representation to a TimeOfDay value.
+        static TimeOfDay StringToTimeOfDay(const std::string& time);
+
     private:
         /// Stores the current in-game time.
         Time m_Time;

@@ -25,6 +25,8 @@
 
 #pragma once
 
+#include "World/InGameTime.h"
+
 namespace KuchCraft {
 
     /// Path to the application configuration file.
@@ -118,6 +120,18 @@ namespace KuchCraft {
 
         /// Size of texture block
         uint32_t BlockTextureSize = 16;
+
+        /// Skybox colors for different times of day, represented as a map.
+        /// The keys are time periods (Dawn, Morning, Noon, etc.), and values are RGBA colors.
+        std::map<TimeOfDay, glm::vec4> SkyboxColor = {
+            { TimeOfDay::Dawn,      glm::vec4(0.8f, 0.4f, 0.1f, 1.0f) },
+            { TimeOfDay::Morning,   glm::vec4(0.9f, 0.6f, 0.3f, 1.0f) },
+            { TimeOfDay::Noon,      glm::vec4(0.6f, 0.8f, 1.0f, 1.0f) },
+            { TimeOfDay::Afternoon, glm::vec4(0.7f, 0.7f, 1.0f, 1.0f) },
+            { TimeOfDay::Evening,   glm::vec4(0.8f, 0.5f, 0.3f, 1.0f) },
+            { TimeOfDay::Dusk,      glm::vec4(0.3f, 0.1f, 0.3f, 1.0f) },
+            { TimeOfDay::Night,     glm::vec4(0.1f, 0.1f, 0.3f, 1.0f) }
+		};  
     };
 
     /// Struct to hold world configuration data.

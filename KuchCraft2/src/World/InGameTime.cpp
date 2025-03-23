@@ -81,4 +81,16 @@ namespace KuchCraft {
 		}
 	}
 
+	TimeOfDay InGameTime::StringToTimeOfDay(const std::string& time)
+	{
+		if (time == "Dawn")      return TimeOfDay::Dawn;
+		if (time == "Morning")   return TimeOfDay::Morning;
+		if (time == "Noon")      return TimeOfDay::Noon;
+		if (time == "Afternoon") return TimeOfDay::Afternoon;
+		if (time == "Evening")   return TimeOfDay::Evening;
+		if (time == "Dusk")      return TimeOfDay::Dusk;
+		if (time == "Night")     return TimeOfDay::Night;
+		return TimeOfDay::Noon;
+	}
+
 }
