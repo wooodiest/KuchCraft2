@@ -79,8 +79,8 @@ namespace KuchCraft {
 	void Renderer::BeginFrame()
 	{
 		/// tmp
-		auto [width, height] = Application::GetWindow().GetSize();
-		glViewport(0, 0, width, height);
+		auto windowSize = Application::GetWindow().GetSize();
+		glViewport(0, 0, windowSize.x, windowSize.y);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

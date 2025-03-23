@@ -597,8 +597,8 @@ namespace KuchCraft {
 					{
 						if (!cameraComponent.FixedAspectRatio)
 						{
-							auto [width, height] = Application::GetWindow().GetSize();
-							float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+							auto windowSize = Application::GetWindow().GetSize();
+							float aspectRatio = static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y);
 							camera.SetAspectRatio(aspectRatio);
 						}
 					}
@@ -842,8 +842,8 @@ namespace KuchCraft {
 
 	bool World::OnWindowResize(WindowResizeEvent& e)
 	{
-		auto [width, height] = Application::GetWindow().GetSize();
-		float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+		auto windowSize = Application::GetWindow().GetSize();
+		float aspectRatio = static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y);
 
 		m_Registry.view<CameraComponent>().each([&](auto entity, auto& cameraComponent) {
 			if (!cameraComponent.FixedAspectRatio)
@@ -884,8 +884,8 @@ namespace KuchCraft {
 	{	
 		if (!component.FixedAspectRatio)
 		{
-			auto [width, height] = Application::GetWindow().GetSize();
-			float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+			auto windowSize = Application::GetWindow().GetSize();
+			float aspectRatio = static_cast<float>(windowSize.x) / static_cast<float>(windowSize.y);
 		
 			component.Camera.SetAspectRatio(aspectRatio);
 		}
