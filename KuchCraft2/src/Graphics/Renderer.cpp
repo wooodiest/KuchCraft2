@@ -108,7 +108,6 @@ namespace KuchCraft {
 
 	void Renderer::EndWorld()
 	{
-		EnableDepthTesting();
 		RenderQuads3D();
 		RenderChunks();
 		RenderQuads2D();
@@ -599,6 +598,10 @@ namespace KuchCraft {
 		if (!s_Quad2DData.Vertices.size())
 			return;
 
+		EnableBlending();
+		DisableFaceCulling();
+		EnableDepthTesting();
+
 		s_Quad2DData.Shader     ->Bind();
 		s_Quad2DData.VertexArray .Bind();
 		s_Quad2DData.VertexBuffer.Bind();
@@ -745,6 +748,8 @@ namespace KuchCraft {
 		if (!s_Quad3DData.Vertices.size())
 			return;
 
+		EnableDepthTesting();
+
 		s_Quad3DData.Shader     ->Bind();
 		s_Quad3DData.VertexArray .Bind();
 		s_Quad3DData.VertexBuffer.Bind();
@@ -875,7 +880,7 @@ namespace KuchCraft {
 		if (!s_ChunkData.Chunks.size())
 			return;
 
-		DisableBlending();
+		EnableBlending();
 		EnableFaceCulling();
 		EnableDepthTesting();
 

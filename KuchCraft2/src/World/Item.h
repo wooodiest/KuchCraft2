@@ -71,7 +71,7 @@ namespace KuchCraft {
 
 	private:
 		/// The unique identifier of the item.
-		ItemID  m_ID = (ItemID)ItemData::Air;
+		ItemID m_ID = (ItemID)ItemData::Air;
 		
 		/// Flags containing additional properties of the item.
 		uint16_t m_Flags = 0;

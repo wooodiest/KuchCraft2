@@ -25,9 +25,15 @@ namespace KuchCraft
 	enum class ItemType : uint8_t
 	{
 		Block,
+		Item,
 		Tool,
+		Armor,
+		Weapon,
 		Food,
-		Utility
+		Utility,
+		Flower,
+		Sapling,
+		Other
 	};
 
 	/// Enum representing specific item data values
@@ -37,8 +43,7 @@ namespace KuchCraft
 		DebugBlock = 1,
 		Stone      = 2,
 		Dirt       = 3,
-		GrassBlock = 4,
-		Apple      = 5
+		GrassBlock = 4
 	};
 
 	/// Enum representing possible rotations for an item.
@@ -56,9 +61,15 @@ namespace KuchCraft
 		switch (type)
 		{
 			case ItemType::Block:    return "block";
+			case ItemType::Item:     return "item";
 			case ItemType::Tool:     return "tool";
+			case ItemType::Weapon:   return "weapon";
+			case ItemType::Armor:    return "armor";
 			case ItemType::Food:     return "food";
 			case ItemType::Utility:  return "utility";
+			case ItemType::Flower:   return "flower";
+			case ItemType::Sapling:  return "sapling";
+			case ItemType::Other:    return "other";
 		}
 	}
 
@@ -71,14 +82,24 @@ namespace KuchCraft
 		});
 		if (text == "block")
 			return ItemType::Block;
+		else if (text == "item")
+			return ItemType::Item;
 		else if (text == "tool")
 			return ItemType::Tool;
+		else if (text == "armor")
+			return ItemType::Armor;
+		else if (text == "weapon")
+			return ItemType::Weapon;
 		else if (text == "food")
 			return ItemType::Food;
+		else if (text == "flower")
+			return ItemType::Flower;
+		else if (text == "sapling")
+			return ItemType::Sapling;
 		else if (text == "utility")
 			return ItemType::Utility;
 
-		return ItemType::Utility;
+		return ItemType::Other;
 	}
 
 	/// Enum representing different block faces

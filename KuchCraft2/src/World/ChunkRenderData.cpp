@@ -38,7 +38,7 @@ namespace KuchCraft
                 for (int z = 0; z < chunk_size_XZ; z++)
                 {
                     const Item& block = m_Chunk->m_Data[x][y][z];
-                    if (ItemMenager::GetInfo(block.GetID()).Transparent)
+                    if (block.GetID() == (ItemID)ItemData::Air)
                         continue;
 
                     bool hasFrontChunk  = (frontChunk  && frontChunk ->IsBuilded());
