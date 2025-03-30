@@ -15,6 +15,11 @@ namespace KuchCraft {
 	{
 	}
 
+	Item::Item(const std::string& name)
+		: m_ID(ItemMenager::GetItemIDByName(name))
+	{
+	}
+
 	Item::Item(ItemData data)
 		: m_ID((ItemID)data)
 	{
@@ -22,6 +27,18 @@ namespace KuchCraft {
 
 	Item::Item(ItemData data, ItemRotation rotation)
 		: m_ID((ItemID)data)
+	{
+		SetRotation(rotation);
+	}
+
+	Item::Item(ItemID id, ItemRotation rotation)
+		: m_ID(id)
+	{
+		SetRotation(rotation);
+	}
+
+	Item::Item(const std::string& name, ItemRotation rotation)
+		: m_ID(ItemMenager::GetItemIDByName(name))
 	{
 		SetRotation(rotation);
 	}

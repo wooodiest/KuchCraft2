@@ -58,14 +58,79 @@ namespace KuchCraft {
 			s_Data[ID] = ItemInfo{};
 			ItemInfo& info = s_Data[ID];
 
+			///// === BASIC PROPERTIES 
 			if (item.contains("name"))
 				info.Name = item["name"];
+
+			s_NameData[info.Name] = ID;
+
+			if (item.contains("description"))
+				info.Description = item["description"];
 
 			if (item.contains("type"))
 				info.Type = StringToItemType(item["type"].get<std::string>());
 
 			if (item.contains("transparent"))
 				info.Transparent = item["transparent"];
+
+			if (item.contains("stackSize"))
+				info.StackSize = item["stackSize"].get<int>();
+
+			if (item.contains("recipes")) // TODO: Add crafting recipes and if size > 0 set IsCraftable to true
+				info.IsCraftable = true;
+
+			///// === DURABILITY & BREAKING ===
+			if (item.contains("durability"))
+				info.Durability = item["durability"].get<int>();
+
+			if (item.contains("breakingTime"))
+				info.BreakingTime = item["breakingTime"].get<float>();		
+
+			///// === DEFENSE & DAMAGE ===
+			if (item.contains("defense"))
+				info.Defense = item["defense"].get<int>();
+
+			if (item.contains("attackDamage"))
+				info.AttackDamage = item["attackDamage"].get<int>();
+
+			if (item.contains("attackSpeed"))
+				info.AttackSpeed = item["attackSpeed"].get<float>();
+
+			///// === FOOD PROPERTIES ===
+			if (item.contains("foodValue"))
+			{
+				info.IsEdible = true;
+				info.FoodValue = item["foodValue"].get<int>();
+			}
+
+			if (item.contains("foodEffects"))
+			{
+				for (const auto& effect : item["foodEffects"])
+				{
+					std::string name = effect["name"];
+					float value = effect["value"];
+					info.FoodEffects.emplace_back(name, value);
+				}
+
+				if (info.FoodEffects.size() > 0)
+					info.HasSpecialEffect = true;
+			}
+			///// === ENVIRONMENTAL PROPERTIES ===
+			if (item.contains("lightEmission"))
+				info.LightEmission = item["lightEmission"].get<float>();
+
+			if (item.contains("lightColor"))
+			{
+				auto color = item["lightColor"];
+				info.LightColor = { color[0].get<float>(), color[1].get<float>(), color[2].get<float>(), color[3].get<float>() };
+			}
+
+			///// === PHYSICAL PROPERTIES ===
+			if (item.contains("weight"))
+				info.Weight = item["weight"].get<float>();
+
+			if (item.contains("friction"))
+				info.Friction = item["friction"].get<float>();
 
 			if (item.contains("textures") || item.contains("texture"))
 			{
@@ -134,6 +199,54 @@ namespace KuchCraft {
 			}
 			
 		}
+
+		for (const auto& item : json["Items"])
+		{
+			ItemID ID = item["id"];
+			ItemInfo& info = s_Data[ID];
+
+			///// === DURABILITY & BREAKING ===
+			if (item.contains("breakableBy"))
+			{
+				for (const auto& tool : item["breakableBy"])
+				{
+					if (tool.is_number_integer())
+						info.BreakableBy.insert(tool.get<int>());
+					else if (tool.is_string())
+					{
+						ItemID toolID = GetItemIDByName(tool.get<std::string>());
+						if (toolID != 0)
+							info.BreakableBy.insert(toolID);
+					}
+				}
+			}
+
+			if (item.contains("drops"))
+			{
+				for (const auto& drop : item["drops"])
+				{
+					ItemID dropItemID = 0;
+					int dropCount = 1;
+
+					if (drop.contains("item"))
+					{
+						if (drop["item"].is_number_integer())
+							dropItemID = drop["item"].get<int>();
+						else if (drop["item"].is_string())
+							dropItemID = GetItemIDByName(drop["item"].get<std::string>());
+					}
+
+					if (drop.contains("count"))
+						dropCount = drop["count"].get<int>();
+
+					if (dropItemID != 0)
+						info.Drops.emplace_back(dropItemID, dropCount);
+				}
+			}
+			else
+				info.Drops.emplace_back(ID, 1);
+		}
+
 	}
 
 }

@@ -437,7 +437,114 @@ namespace KuchCraft {
 				m_InGameTime += Time{ static_cast<uint32_t>(addSeconds), static_cast<uint32_t>(addMinutes), static_cast<uint32_t>(addHour), static_cast<uint32_t>(addDay) };
 		}
 
-		if (ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen))
+		if (ImGui::CollapsingHeader("Item info"))
+		{
+			static std::string nameFilter;
+			static ItemID selected = 0;
+
+			const auto& items = ItemMenager::GetData();
+			constexpr float items_list_height = 250.0f;
+			ImGui::SeparatorText("Item List");
+			ImGui::InputText("Name##FilterItemsByName", &nameFilter);
+
+			ImGui::BeginChild("ItemList", ImVec2(0.0f, items_list_height), true);
+			for (auto& [id, info] : items)
+			{
+				if (!nameFilter.empty() && info.Name.find(nameFilter) == std::string::npos)
+					continue;
+
+				bool isSelected = (selected == id);
+				std::string imguiName = info.Name + "##" + std::to_string(id);
+				if (ImGui::Selectable(imguiName.c_str(), isSelected))
+					selected = id;
+
+				if (isSelected)
+					ImGui::SetItemDefaultFocus();
+
+			}
+			ImGui::EndChild();
+
+			if (selected)
+			{
+				auto& info = ItemMenager::GetInfo(selected);
+				ImGui::Text("ID: %d", selected);
+				ImGui::Text("Name: %s", info.Name.c_str());
+				ImGui::Text("Type: %s", ItemTypeToString(info.Type).c_str());
+				ImGui::Text("Transparent: %s", info.Transparent ? "true" : "false");
+				ImGui::Text("Stack size: %d", info.StackSize);
+				ImGui::Text("Is craftable: %s", info.IsCraftable ? "true" : "false");
+
+				if (info.IsCraftable)
+				{
+					/// TODO: Display crafting recipe
+				}
+
+				ImGui::Separator();
+
+				ImGui::Text("Durability: %d", info.Durability);
+				ImGui::Text("Breaking time: %.2f", info.BreakingTime);
+
+				if (info.BreakableBy.empty())
+					ImGui::Text("Breakable by: Everything");
+				else
+				{
+					std::string output = "Breakable by:\n";
+					output.reserve(128);
+					for (const auto& tool : info.BreakableBy)
+						output += " - " + ItemMenager::GetInfo(tool).Name + " (id = " + std::to_string(tool) + ")\n";
+					ImGui::TextUnformatted(output.c_str());
+				}
+
+				if (info.Drops.empty())
+					ImGui::Text("Drops: Nothing");
+				else
+				{
+					std::string output = "Drops:\n";
+					output.reserve(128);
+					for (const auto& [drop, count] : info.Drops)
+						output += " - " + ItemMenager::GetInfo(drop).Name + " (id = " + std::to_string(drop) + ") x" + std::to_string(count) + "\n";
+					ImGui::TextUnformatted(output.c_str());
+				}
+
+				ImGui::Separator();
+
+				ImGui::Text("Defense: %d", info.Defense);
+				ImGui::Text("Attack damage: %d", info.AttackDamage);
+				ImGui::Text("Attack speed: %.2f", info.AttackSpeed);
+
+				ImGui::Separator();
+
+				ImGui::Text("Edible: %s", info.IsEdible ? "true" : "false");
+				if (info.IsEdible)
+				{
+					ImGui::Text("Food value: %d", info.FoodValue);
+					ImGui::Text("Has special effect: %s", info.HasSpecialEffect ? "true" : "false");
+					if (info.HasSpecialEffect && !info.FoodEffects.empty())
+					{
+						std::string effects = "Effects:\n";
+						effects.reserve(128);
+						for (const auto& [effect, duration] : info.FoodEffects)
+							effects += " - " + effect + " (" + std::to_string(duration) + "s)\n";
+						ImGui::TextUnformatted(effects.c_str());
+					}
+				}
+
+				ImGui::Separator();
+
+				ImGui::Text("Light emission: %.2f", info.LightEmission);
+				ImGui::Text("Light color: (%.2f, %.2f, %.2f, %.2f)",
+					info.LightColor.r, info.LightColor.g, info.LightColor.b, info.LightColor.a);
+
+				ImGui::Separator();
+
+				ImGui::Text("Weight: %.2f", info.Weight);
+				ImGui::Text("Friction: %.2f", info.Friction);
+
+				ImGui::Separator();
+			}
+		}
+
+		if (ImGui::CollapsingHeader("Entities"))
 		{
 			constexpr float entities_list_height = 250.0f;
 			static UUID selected = 0;

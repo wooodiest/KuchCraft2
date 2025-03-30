@@ -13,13 +13,81 @@
 
 namespace KuchCraft {
 
-	/// Represents the basic information about an item.
-	struct ItemInfo
-	{
-		std::string Name        = "AIR";
-		ItemType    Type        = ItemType::Utility;
-		bool        Transparent = true;
-	};
+    /// Represents the detailed information about an item or block.
+    struct ItemInfo
+    {
+    ///// === BASIC PROPERTIES 
+        /// Display name of the item/block.
+        std::string Name = "AIR"; 
+
+        /// A short description of the item.
+        std::string Description;
+
+        /// Defines if it's a block, tool, food, etc.
+        ItemType Type = ItemType::Utility;
+
+        /// Determines if the block is transparent.
+        bool Transparent = true;
+
+        /// Maximum number of items per stack.
+        int StackSize = 64;
+
+        /// Determines if the item can be crafted.
+        bool IsCraftable = false; 
+
+		/// TODO: Item recipes
+
+    ///// === DURABILITY & BREAKING ===
+        /// Determines how long the item lasts before breaking.
+        int Durability = 1; 
+
+        /// Time required to break this item/block.
+        float BreakingTime = 1.0f;
+
+        /// Tools that can break this item.
+        std::unordered_set<ItemID> BreakableBy; 
+
+        /// Items dropped when broken.
+        std::vector<std::pair<ItemID, int>> Drops; 
+
+    ///// === DEFENSE & DAMAGE ===
+        /// Defense points for armor-type items.
+        int Defense = 0; 
+
+        /// Attack damage if the item is a weapon.
+        int AttackDamage = 0; 
+
+        /// Speed of attacking with this item.
+        float AttackSpeed = 1.0f; 
+
+    ///// === FOOD PROPERTIES ===
+        /// Determines if the item can be eaten.
+        bool IsEdible = false;
+
+        /// How many hunger points this item restores.
+        int FoodValue = 0; 
+        
+        /// Does eating this item give a potion effect?
+        bool HasSpecialEffect = false; 
+
+        /// Effects given when eaten (e.g., "Speed", 10s).
+        std::vector<std::pair<std::string, float>> FoodEffects; 
+
+    ///// === ENVIRONMENTAL PROPERTIES ===
+        /// Determines how much light the item emits.
+        float LightEmission = 0.0f; 
+
+        /// Color of the emitted light.
+		glm::vec4 LightColor = glm::vec4(1.0f); 
+
+    ///// === PHYSICAL PROPERTIES ===
+        /// Affects physics.
+        float Weight = 1.0f; 
+
+        /// Determines slipperiness.
+        float Friction = 0.5f; 
+
+    };
 
 	class Item
 	{
@@ -30,6 +98,10 @@ namespace KuchCraft {
 		/// @param id The unique identifier of the item.
 		Item(ItemID id);
 
+        /// Constructor that initializes an item with a specific name.
+        /// @param name The name of the item.
+        Item(const std::string& name);
+
 		/// Constructor that initializes an item witch ItemData.
 		/// @param data TItemData representing id of specific item.
 		Item(ItemData data);
@@ -38,6 +110,16 @@ namespace KuchCraft {
 		/// @param data ItemData representing the ID of a specific item.
 		/// @param rotation The rotation of the item.
 		Item(ItemData data, ItemRotation rotation);
+
+        /// Constructor that initializes an item with a specific ID and rotation.
+        /// @param id The unique identifier of the item.
+        /// @param rotation The rotation of the item.
+        Item(ItemID id, ItemRotation rotation);
+
+        /// Constructor that initializes an item with a specific name and rotation.
+        /// @param name The name of the item
+        /// @param rotation The rotation of the item.
+        Item(const std::string& name, ItemRotation rotation);
 
 		~Item();
 
