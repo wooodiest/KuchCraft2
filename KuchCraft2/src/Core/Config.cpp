@@ -60,6 +60,7 @@ namespace KuchCraft {
 					WorldConfigData worldConfig;
 					worldConfig.WorldsDirectory        = json["World"]["WorldsDirectory"].get<std::string>();
 					worldConfig.WorldDataFile          = json["World"]["WorldDataFile"].get<std::string>();
+					worldConfig.BiomePackFile          = json["World"]["BiomePackFile"].get<std::string>();
 					worldConfig.TexturePackFile        = json["World"]["TexturePackFile"].get<std::string>();
 					worldConfig.TexturesDirectory      = json["World"]["TexturesDirectory"].get<std::string>();
 					worldConfig.RenderDistance         = json["World"]["RenderDistance"].get<uint32_t>();
@@ -126,6 +127,7 @@ namespace KuchCraft {
 			{ "WorldsDirectory",        s_WorldConfig.WorldsDirectory },
 			{ "WorldDataFile",          s_WorldConfig.WorldDataFile },
 			{ "TexturePackFile",        s_WorldConfig.TexturePackFile },
+			{ "BiomePackFile",          s_WorldConfig.BiomePackFile },
 			{ "TexturesDirectory",      s_WorldConfig.TexturesDirectory },
 			{ "RenderDistance",         s_WorldConfig.RenderDistance },
 			{ "KeptInMemoryDistance",   s_WorldConfig.KeptInMemoryDistance },

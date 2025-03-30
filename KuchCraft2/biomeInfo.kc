@@ -1,0 +1,44 @@
+{
+    "Biomes": [
+        {
+            "Name": "Desert",
+            "Terrain": {
+                "MaxHeight": 80,
+                "MinHeight": 50,
+                "Roughness": 0.2,
+                "SurfaceBlock": "Sand",
+                "SubSurfaceBlock": "Red sandstone"
+            },
+            "Vegetation": {
+                "VegetationFactor": 0.05,
+                "Data": [
+                    { "ID": "Fire coral", "Chance": 0.02 }
+                ]
+            }
+        },
+      {
+        "Name": "Plains",
+        "Terrain": {
+          "MaxHeight": 100,
+          "MinHeight": 60,
+          "Roughness": 0.4,
+          "SurfaceBlock": "Grass block",
+          "SubSurfaceBlock": "Dirt"
+        },
+        "Vegetation": {
+          "VegetationFactor": 0.3,
+          "Data": [
+            {
+              "ID": "Allium",
+              "Chance": 0.1
+            },
+            {
+              "ID": "White tulip",
+              "Chance": 0.15
+            }
+          ]
+        }
+      }
+    ]
+}
+

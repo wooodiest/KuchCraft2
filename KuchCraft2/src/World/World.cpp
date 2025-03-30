@@ -17,6 +17,8 @@
 #include "Graphics/Renderer.h"
 #include "Graphics/TextureManager.h"
 
+#include "World/ItemMenager.h"
+
 #include "Physics/ViewFrustum.h"
 
 #ifdef  INCLUDE_IMGUI
@@ -278,7 +280,7 @@ namespace KuchCraft {
 			/// Chunks
 			for (auto& chunk : m_VisibleChunks)
 				Renderer::DrawChunk(chunk);
-
+			
 			Renderer::EndWorld();
 		}
 	}

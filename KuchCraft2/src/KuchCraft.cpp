@@ -16,6 +16,7 @@
 #include "Graphics/TextureManager.h"
 
 #include "World/ItemMenager.h"
+#include "World/BiomeMenager.h"
 
 #ifdef  INCLUDE_IMGUI
 	#include <imgui.h>
@@ -27,6 +28,8 @@ namespace KuchCraft {
 	KuchCraft::KuchCraft()
 	{
 		ItemMenager::Reload();
+		BiomeMenager::Reload();
+
 		ChangeState(KuchCraftState::MainMenu);
 	}
 
