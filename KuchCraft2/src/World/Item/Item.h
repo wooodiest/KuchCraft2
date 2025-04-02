@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "World/ItemData.h"
+#include "World/Item/ItemData.h"
 
 #include "Graphics/Data/Texture.h"
 

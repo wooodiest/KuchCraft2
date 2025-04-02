@@ -1,6 +1,6 @@
 #pragma once
 
-#include "World/ItemData.h"
+#include "World/Item/ItemData.h"
 
 namespace KuchCraft {
 

@@ -1,8 +1,8 @@
 #include "kcpch.h"
 #include "WorldGenerator.h"
-#include "World/Chunk.h"
-#include "World/World.h"
-#include "World/BiomeMenager.h"
+#include "World/Chunk/Chunk.h"
+#include "World/World/World.h"
+#include "World/Biome/BiomeMenager.h"
 
 #include "Core/Config.h"
 
@@ -142,7 +142,7 @@ namespace KuchCraft {
         glm::vec3 position = chunk->GetPosition();
 
 		auto apply = [&](std::array<float, chunk_size_XZ * chunk_size_XZ>& tab, NoiseData& data) {
-			data.Noise->FillNoiseSet(tab.data(), position.x, position.y, position.z, chunk_size_XZ, 1, chunk_size_XZ);
+			data.Noise->FillNoiseSet(tab.data(), (int)position.x, (int)position.y, (int)position.z, chunk_size_XZ, 1, chunk_size_XZ);
 			for (int i = 0; i < tab.size(); i++)
 			{
 				tab[i] += 1;
@@ -204,7 +204,7 @@ namespace KuchCraft {
 
 				chunk->m_BiomesIDs[x * chunk_size_XZ + z] = selectedBiome->ID;
 
-				int groundHeight = glm::mix(0.8f, 1.2f, chunk->m_PeaksAndValies[x * chunk_size_XZ + z]);
+				int groundHeight = (int)glm::mix(0.8f, 1.2f, chunk->m_PeaksAndValies[x * chunk_size_XZ + z]);
 
 				for (int y = 0; y < chunk_size_Y; y++)
 				{

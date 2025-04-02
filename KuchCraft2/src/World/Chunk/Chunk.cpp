@@ -1,7 +1,7 @@
 #include "kcpch.h"
 #include "Chunk.h"
-#include "World/World.h"
-#include "WorldGenerator/WorldGenerator.h"
+#include "World/World/World.h"
+#include "World/WorldGenerator/WorldGenerator.h"
 
 namespace KuchCraft {
 

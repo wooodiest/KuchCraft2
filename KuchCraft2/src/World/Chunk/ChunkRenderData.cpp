@@ -1,9 +1,9 @@
 #include "kcpch.h"
 #include "ChunkRenderData.h"
 
-#include "World/World.h"
-#include "World/Chunk.h"
-#include "World/ItemMenager.h"
+#include "World/World/World.h"
+#include "World/Chunk/Chunk.h"
+#include "World/Item/ItemMenager.h"
 
 namespace KuchCraft
 {

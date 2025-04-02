@@ -15,8 +15,8 @@
 #include "Graphics/Data/Texture2D.h"
 #include "Graphics/TextureManager.h"
 
-#include "World/ItemMenager.h"
-#include "World/BiomeMenager.h"
+#include "World/Item/ItemMenager.h"
+#include "World/Biome/BiomeMenager.h"
 #include "World/WorldGenerator/WorldGenerator.h"
 
 #ifdef  INCLUDE_IMGUI

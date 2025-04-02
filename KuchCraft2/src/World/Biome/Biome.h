@@ -1,6 +1,6 @@
 #pragma once
 
-#include "World/Item.h"
+#include "World/Item/Item.h"
 
 #include <vector>
 #include <string>

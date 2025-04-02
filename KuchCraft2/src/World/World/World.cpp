@@ -5,19 +5,19 @@
 /// 
 
 #include "kcpch.h"
-#include "World/World.h"
+#include "World/World/World.h"
 
 #include "World/Entity.h"
 #include "World/ScriptableEntity.h"
 #include "World/Components.h"
-#include "World/WorldSerializer.h"
+#include "World/World/WorldSerializer.h"
 
 #include "Core/Application.h"
 #include "World/NativeScripts.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/TextureManager.h"
 
-#include "World/ItemMenager.h"
+#include "World/Item/ItemMenager.h"
 
 #include "Physics/ViewFrustum.h"
 

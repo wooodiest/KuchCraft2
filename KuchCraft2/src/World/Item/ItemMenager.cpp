@@ -3,7 +3,7 @@
 
 #include "Core/Config.h"
 
-#include "World/ItemData.h"
+#include "World/Item/ItemData.h"
 
 #include "Graphics/TextureManager.h"
 #include "Graphics/Data/Texture2D.h"

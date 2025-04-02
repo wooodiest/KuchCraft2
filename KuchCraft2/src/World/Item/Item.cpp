@@ -1,7 +1,7 @@
 #include "kcpch.h"
 #include "Item.h"
 
-#include "World/ItemMenager.h"
+#include "World/Item/ItemMenager.h"
 #include "Graphics/TextureManager.h"
 
 namespace KuchCraft {

@@ -22,7 +22,7 @@
 #include "Graphics/Data/Texture.h"
 #include "Graphics/Data/Texture2D.h"
 #include "Core/MetricTracker.h"
-#include "World/InGameTime.h"
+#include "World/World/InGameTime.h"
 
 namespace KuchCraft {
 

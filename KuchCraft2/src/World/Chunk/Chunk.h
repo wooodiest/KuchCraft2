@@ -1,7 +1,7 @@
 #pragma once
 
-#include "World/Item.h"
-#include "World/ChunkRenderData.h"
+#include "World/Item/Item.h"
+#include "World/Chunk/ChunkRenderData.h"
 
 namespace KuchCraft {
 

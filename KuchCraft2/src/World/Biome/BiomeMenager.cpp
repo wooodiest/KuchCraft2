@@ -2,7 +2,7 @@
 #include "BiomeMenager.h"
 
 #include "Core/Config.h"
-#include "World/ItemMenager.h"
+#include "World/Item/ItemMenager.h"
 
 #include <json.hpp>
 

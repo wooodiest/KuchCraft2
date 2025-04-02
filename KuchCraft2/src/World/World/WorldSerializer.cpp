@@ -1,5 +1,5 @@
 #include "kcpch.h"
-#include "World/WorldSerializer.h"
+#include "World/World/WorldSerializer.h"
 
 #include "World/Entity.h"
 #include "World/NativeScripts.h"

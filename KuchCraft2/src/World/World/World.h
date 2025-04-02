@@ -13,8 +13,8 @@
 
 #include "Graphics/Data/Camera.h"
 
-#include "World/Chunk.h"
-#include "World/InGameTime.h"
+#include "World/Chunk/Chunk.h"
+#include "World/World/InGameTime.h"
 
 namespace std {
 	template <>

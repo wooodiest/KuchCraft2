@@ -1,6 +1,6 @@
 #pragma once
 
-#include "World/Biome.h"
+#include "World/Biome/Biome.h"
 
 namespace KuchCraft {
 

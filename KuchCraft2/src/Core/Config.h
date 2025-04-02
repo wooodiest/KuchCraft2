@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include "World/InGameTime.h"
+#include "World/World/InGameTime.h"
 
 namespace KuchCraft {
 

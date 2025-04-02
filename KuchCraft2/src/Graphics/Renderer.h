@@ -16,8 +16,8 @@
 #include "Core/Event.h"
 #include "Graphics/RendererData.h"
 #include "World/Components.h"
-#include "World/Item.h"
-#include "World/Chunk.h"
+#include "World/Item/Item.h"
+#include "World/Chunk/Chunk.h"
 
 namespace KuchCraft {
 
