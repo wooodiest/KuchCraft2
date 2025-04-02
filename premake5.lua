@@ -36,8 +36,18 @@ project "KuchCraft2"
         "%{wks.location}/KuchCraft2/vendor/glm/glm/**.hpp",
         "%{wks.location}/KuchCraft2/vendor/glm/glm/**.inl",
         "%{wks.location}/KuchCraft2/vendor/stb_image/**.h",
-		"%{wks.location}/KuchCraft2/vendor/stb_image/**.cpp"
+		"%{wks.location}/KuchCraft2/vendor/stb_image/**.cpp",
+        "%{wks.location}/KuchCraft2/vendor/FastNoiseSIMD/**.h",
+        "%{wks.location}/KuchCraft2/vendor/FastNoiseSIMD/**.cpp",
     }
+
+    filter "files:**/FastNoiseSIMD/**.cpp"
+        flags { "NoPCH" }
+    filter {}
+
+    filter "files:**/FastNoiseSIMD/FastNoiseSIMD_avx2.cpp"
+        buildoptions { "/arch:AVX2" }
+    filter {}
 
     includedirs
     {
@@ -51,7 +61,7 @@ project "KuchCraft2"
         "%{wks.location}/KuchCraft2/vendor/entt",
         "%{wks.location}/KuchCraft2/vendor/stb_image",
         "%{wks.location}/KuchCraft2/vendor/fastNoiseLite",
-
+        "%{wks.location}/KuchCraft2/vendor/FastNoiseSIMD"
     }
 
     links

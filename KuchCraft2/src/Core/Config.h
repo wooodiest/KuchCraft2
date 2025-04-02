@@ -149,6 +149,9 @@ namespace KuchCraft {
         /// Biome description info file
         std::string BiomePackFile = "biomeInfo.kc";
 
+        /// World generator description info file
+        std::string WorldGeneratorPackFile = "worldGenerator.kc";
+
         /// Texture directory
         std::string TexturesDirectory = "assets/textures";
 

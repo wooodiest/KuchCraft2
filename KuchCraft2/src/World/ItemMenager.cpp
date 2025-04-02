@@ -49,8 +49,8 @@ namespace KuchCraft {
 		{
 			if (!item.contains("id"))
 			{
-				Log::Error("[ItemMenager] : Item needs id and name");
-				return;
+				Log::Error("[ItemMenager] : Item needs id");
+				continue;
 			}
 
 			ItemID ID = item["id"];
@@ -202,6 +202,13 @@ namespace KuchCraft {
 
 		for (const auto& item : json["Items"])
 		{
+			if (!item.contains("id"))
+			{
+				Log::Error("[ItemMenager] : Item needs id");
+				continue;
+
+			}
+
 			ItemID ID = item["id"];
 			ItemInfo& info = s_Data[ID];
 

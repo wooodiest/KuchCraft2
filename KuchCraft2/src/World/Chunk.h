@@ -167,7 +167,15 @@ namespace KuchCraft {
 
 		/// The render data for this chunk.
 		friend class ChunkRenderData;
+		friend class WorldGenerator;
 		ChunkRenderData m_RendereData;
+		std::array<int,   chunk_size_XZ* chunk_size_XZ>  m_BiomesIDs;
+		std::array<float, chunk_size_XZ * chunk_size_XZ> m_Continentalness;
+		std::array<float, chunk_size_XZ * chunk_size_XZ> m_PeaksAndValies;
+		std::array<float, chunk_size_XZ * chunk_size_XZ> m_Temperature;
+		std::array<float, chunk_size_XZ * chunk_size_XZ> m_Humidity;
+		std::array<float, chunk_size_XZ * chunk_size_XZ> m_Vegetation;
+		std::array<float, chunk_size_XZ * chunk_size_XZ> m_Erosion;
 
 		/// A 3D array storing items within the chunk.
 		Item m_Data[chunk_size_XZ][chunk_size_Y][chunk_size_XZ];

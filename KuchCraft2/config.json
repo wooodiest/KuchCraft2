@@ -57,17 +57,17 @@
     },
     "Window": {
         "FullScreen": false,
-        "Height": 899,
-        "HeightBeforeFullscreen": 899,
-        "PositionBeforeFullscreenX": 190,
-        "PositionBeforeFullscreenY": 67,
-        "PositionX": 537,
-        "PositionY": 68,
+        "Height": 1017,
+        "HeightBeforeFullscreen": 1017,
+        "PositionBeforeFullscreenX": 64,
+        "PositionBeforeFullscreenY": 23,
+        "PositionX": 0,
+        "PositionY": 23,
         "Resizable": true,
         "ShowCursor": true,
         "Vsync": false,
-        "Width": 1470,
-        "WidthBeforeFullscreen": 1470
+        "Width": 1920,
+        "WidthBeforeFullscreen": 1920
     },
     "World": {
         "BiomePackFile": "biomeInfo.kc",
@@ -75,10 +75,11 @@
         "ChunksToBuildInFrame": 1,
         "DurationOfDayInMinutes": 20,
         "KeptInMemoryDistance": 10,
-        "RenderDistance": 13,
+        "RenderDistance": 5,
         "TexturePackFile": "itemInfo.kc",
         "TexturesDirectory": "assets/textures",
         "WorldDataFile": "world_data.kc",
+        "WorldGeneratorPackFile": "worldGenerator.kc",
         "WorldsDirectory": "worlds"
     }
 }

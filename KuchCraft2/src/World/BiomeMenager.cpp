@@ -20,81 +20,81 @@ namespace KuchCraft {
 		file >> json;
 		file.close();
 	
-		if (!json.contains("Biomes"))
+		if (!json.contains("biomes"))
 		{
 			Log::Error("[BiomeMenager] : No 'Biomes' key in biome pack file");
 			return;
 		}
 	
-		for (const auto& biome : json["Biomes"])
+		for (const auto& biome : json["biomes"])
 		{
-			if (!biome.contains("Name"))
+			if (!biome.contains("name"))
 			{
 				Log::Error("[BiomeMenager] : Biome needs name");
-				return;
+				continue;
+			}
+
+			if (!biome.contains("id"))
+			{
+				Log::Error("[BiomeMenager] : Biome needs id");
+				continue;
 			}
 	
-			std::string name = biome["Name"];
+			std::string name = biome["name"];
 			s_Data[name] = BiomeInfo{};
 			BiomeInfo& info = s_Data[name];
 			info.Name = name;
-	
-			if (biome.contains("Terrain"))
+			info.ID = biome["id"];
+
+			if (biome.contains("terrain"))
 			{
-				const auto& terrain = biome["Terrain"];
+				const auto& terrain = biome["terrain"];
 				try
 				{
-					info.Terrain.MaxHeight       = terrain["MaxHeight"];
-					info.Terrain.MinHeight       = terrain["MinHeight"];
-					info.Terrain.Roughness       = terrain["Roughness"];
+					info.Terrain.Roughness          = terrain["roughness"];
+					info.Terrain.MinContinentalness = terrain["minContinentalness"];
+					info.Terrain.MaxContinentalness = terrain["maxContinentalness"];
 
-					if (terrain["SurfaceBlock"].is_number_integer())
-						info.Terrain.SurfaceBlock = terrain["SurfaceBlock"];
+					if (terrain["surfaceBlock"].is_number_integer())
+						info.Terrain.SurfaceBlock = terrain["surfaceBlock"];
 					else
-						info.Terrain.SurfaceBlock = ItemMenager::GetItemIDByName(terrain["SurfaceBlock"]);
+						info.Terrain.SurfaceBlock = ItemMenager::GetItemIDByName(terrain["surfaceBlock"]);
 
-					if (terrain["SubSurfaceBlock"].is_number_integer())
-						info.Terrain.SubSurfaceBlock = terrain["SubSurfaceBlock"];
+					if (terrain["subSurfaceBlock"].is_number_integer())
+						info.Terrain.SubSurfaceBlock = terrain["subSurfaceBlock"];
 					else
-						info.Terrain.SubSurfaceBlock = ItemMenager::GetItemIDByName(terrain["SubSurfaceBlock"]);
+						info.Terrain.SubSurfaceBlock = ItemMenager::GetItemIDByName(terrain["subSurfaceBlock"]);
 				}
 				catch (const std::exception& e)
 				{
-					Log::Error("[BiomeMenager] : Biome '{}' has invalid 'Terrain' data", name);
+					Log::Error("[BiomeMenager] : Biome '{}' has invalid 'terrain' data", name);
 					return;
 				}
 			}
 			else
 			{
-				Log::Error("[BiomeMenager] : Biome '{}' missing 'Terrain' data", name);
+				Log::Error("[BiomeMenager] : Biome '{}' missing 'terrain' data", name);
 				return;
 			}
-	
-			if (biome.contains("Vegetation"))
+
+			if (biome.contains("climate"))
 			{
-				const auto& vegetation = biome["Vegetation"];
+				const auto& climate = biome["climate"];
 				try
 				{
-					info.Vegetation.VegetationFactor = vegetation["VegetationFactor"];
-					for (const auto& item : vegetation["Data"])
-					{
-						if (item["ID"].is_number_integer())
-							info.Vegetation.Data.push_back({ item["ID"], item["Chance"] });
-						else
-							info.Vegetation.Data.push_back({ ItemMenager::GetItemIDByName(item["ID"]), item["Chance"] });
-					}
+					info.Climate.MinTemperature = climate["minTemperature"];
+					info.Climate.MaxTemperature = climate["maxTemperature"];
+					info.Climate.MinHumidity    = climate["minHumidity"];
+					info.Climate.MaxHumidity    = climate["maxHumidity"];
+
 				}
 				catch (const std::exception& e)
 				{
-					Log::Error("[BiomeMenager] : Biome '{}' has invalid 'Vegetation' data", name);
+					Log::Error("[BiomeMenager] : Biome '{}' has invalid 'climate' data", name);
 					return;
 				}
 			}
-			else
-			{
-				Log::Error("[BiomeMenager] : Biome '{}' missing 'Vegetation' data", name);
-				return;
-			}
+	
 		}
 	}
 

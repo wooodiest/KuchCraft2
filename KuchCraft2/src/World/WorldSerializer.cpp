@@ -103,6 +103,8 @@ namespace KuchCraft {
 			{ "Days",    m_World->GetInGameTime().GetTime().Days    }
 		};
 
+		wjson["Seed"] = m_World->GetSeed();
+
 		for (auto handle : m_World->m_Registry.view<entt::entity>())
 		{
 			Entity entity = { handle, &(*m_World) };
@@ -227,6 +229,11 @@ namespace KuchCraft {
 		nlohmann::json wjson;
 		file >> wjson;
 		file.close();
+
+		if (wjson.contains("Seed"))
+			m_World->m_Seed = wjson["Seed"].get<int>();
+		else
+			Log::Warn("[World Serializer] : Do not contains seed");
 
 		for (auto& ejson : wjson["Entities"])
 		{

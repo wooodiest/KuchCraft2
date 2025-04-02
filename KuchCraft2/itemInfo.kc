@@ -113,13 +113,11 @@
     },
     {
       "id": 5,
-      "name": "Acacia log",
+      "name": "Gravel",
       "type": "block",
       "transparent": false,
       "textures": {
-        "top": "block/acacia_log_top.png",
-        "bottom": "block/acacia_log_top.png",
-        "side": "block/acacia_log.png"
+        "all": "block/gravel.png"
       }
     },
     {
@@ -1138,11 +1136,13 @@
     },
     {
       "id": 114,
-      "name": "Gravel",
+      "name": "Acacia log",
       "type": "block",
       "transparent": false,
       "textures": {
-        "all": "block/gravel.png"
+        "top": "block/acacia_log_top.png",
+        "bottom": "block/acacia_log_top.png",
+        "side": "block/acacia_log.png"
       }
     },
     {

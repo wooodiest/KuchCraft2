@@ -125,6 +125,9 @@ namespace KuchCraft {
 		/// @return In-game time reference
 		InGameTime& GetInGameTime() { return m_InGameTime; }
 
+		/// Retrieves the seed used for generating random noises.
+		int GetSeed() const { return m_Seed; }
+
 		/// Retrieves a view of all entities that have the specified components.
 		/// @tparam Components - the component types to filter entities by.
 		/// @return A view of entities that have the specified component types.
@@ -188,6 +191,9 @@ namespace KuchCraft {
 
 		/// Indicates whether the world is currently paused.
 		bool m_IsPaused = false;
+
+		/// The seed used for generating random noises.
+		int m_Seed = 1234;
 
 		/// Total number of entities
 		uint64_t m_EntityCount = 0;

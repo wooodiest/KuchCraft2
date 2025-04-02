@@ -10,24 +10,26 @@ namespace KuchCraft {
 	struct BiomeInfo
 	{
 		std::string Name;
+		int ID;
 
 		struct TerrainInfo
 		{
-			int MaxHeight;
-			int MinHeight;
-			float Roughness;
+			float MinContinentalness;
+			float MaxContinentalness;
+
+			float  Roughness;
 			ItemID SurfaceBlock;
 			ItemID SubSurfaceBlock;
 
 		} Terrain;
 
-		struct Vegetation
+		struct ClimateInfo
 		{
-			float VegetationFactor;
-			/// ItemID, SpawnChance
-			std::vector<std::pair<ItemID, float>> Data;
-
-		} Vegetation;
+			float MinTemperature;
+			float MaxTemperature;
+			float MinHumidity;
+			float MaxHumidity;
+		} Climate;
 	};
 
 }

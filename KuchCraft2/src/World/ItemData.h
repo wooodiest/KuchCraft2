@@ -43,7 +43,8 @@ namespace KuchCraft
 		DebugBlock = 1,
 		Stone      = 2,
 		Dirt       = 3,
-		GrassBlock = 4
+		GrassBlock = 4,
+		Gravel     = 5
 	};
 
 	/// Enum representing possible rotations for an item.

@@ -1,44 +1,89 @@
 {
-    "Biomes": [
-        {
-            "Name": "Desert",
-            "Terrain": {
-                "MaxHeight": 80,
-                "MinHeight": 50,
-                "Roughness": 0.2,
-                "SurfaceBlock": "Sand",
-                "SubSurfaceBlock": "Red sandstone"
-            },
-            "Vegetation": {
-                "VegetationFactor": 0.05,
-                "Data": [
-                    { "ID": "Fire coral", "Chance": 0.02 }
-                ]
-            }
-        },
-      {
-        "Name": "Plains",
-        "Terrain": {
-          "MaxHeight": 100,
-          "MinHeight": 60,
-          "Roughness": 0.4,
-          "SurfaceBlock": "Grass block",
-          "SubSurfaceBlock": "Dirt"
-        },
-        "Vegetation": {
-          "VegetationFactor": 0.3,
-          "Data": [
-            {
-              "ID": "Allium",
-              "Chance": 0.1
-            },
-            {
-              "ID": "White tulip",
-              "Chance": 0.15
-            }
-          ]
-        }
+  "biomes": [
+    {
+      "name": "desert",
+      "id": 0,
+      "terrain": {
+        "roughness": 0.2,
+        "surfaceBlock": "Sand",
+        "subSurfaceBlock": "Red sandstone",
+        "minContinentalness": 0.0,
+        "maxContinentalness": 0.6
+      },
+      "climate": {
+        "minTemperature": 0.7,
+        "maxTemperature": 1.0,
+        "minHumidity": 0.0,
+        "maxHumidity": 0.3
       }
-    ]
+    },
+    {
+      "name": "plains",
+      "id": 1,
+      "terrain": {
+        "roughness": 0.3,
+        "surfaceBlock": "Grass block",
+        "subSurfaceBlock": "Dirt",
+        "minContinentalness": 0.3,
+        "maxContinentalness": 0.9
+      },
+      "climate": {
+        "minTemperature": 0.2,
+        "maxTemperature": 0.8,
+        "minHumidity": 0.3,
+        "maxHumidity": 1.0
+      }
+    },
+    {
+      "name": "mountains",
+      "id": 2,
+      "terrain": {
+        "roughness": 0.8,
+        "surfaceBlock": "Stone",
+        "subSurfaceBlock": "Gravel",
+        "minContinentalness": 0.5,
+        "maxContinentalness": 1.0
+      },
+      "climate": {
+        "minTemperature": 0.0,
+        "maxTemperature": 0.6,
+        "minHumidity": 0.2,
+        "maxHumidity": 0.7
+      }
+    },
+    {
+      "name": "taiga",
+      "id": 3,
+      "terrain": {
+        "roughness": 0.5,
+        "surfaceBlock": "Grass block snow",
+        "subSurfaceBlock": "Dirt",
+        "minContinentalness": 0.2,
+        "maxContinentalness": 0.8
+      },
+      "climate": {
+        "minTemperature": 0.0,
+        "maxTemperature": 0.5,
+        "minHumidity": 0.4,
+        "maxHumidity": 1.0
+      }
+    },
+    {
+      "name": "swamp",
+      "id": 4,
+      "terrain": {
+        "roughness": 0.1,
+        "surfaceBlock": "Mud",
+        "subSurfaceBlock": "Clay",
+        "minContinentalness": 0.1,
+        "maxContinentalness": 0.5
+      },
+      "climate": {
+        "minTemperature": 0.3,
+        "maxTemperature": 0.8,
+        "minHumidity": 0.7,
+        "maxHumidity": 1.0
+      }
+    }
+  ]
 }
-
